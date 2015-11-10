@@ -1,0 +1,16 @@
+# Android studio default git ignores
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+
+# Ignore IntelliJ specific files
+.idea
+*.iml
+
+# Ignore binary output files
+app/build
+bin
