@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SQRLClient</string>
+    <string name="no_uri">Please tap a SQRL login QR image to proceed.</string>
 </resources>
