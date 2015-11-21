@@ -41,26 +41,26 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         Resources resources = mainActivity.getResources();
         String expected = resources.getString(R.string.unknown_scheme, scheme);
 
-        // Get the URI text box and verify the uri matches
-        TextView uriTextView = (TextView)mainActivity.findViewById(R.id.URITextView);
-        assertNotNull("uriTextView is null", uriTextView);
-        assertEquals(expected, uriTextView.getText());
+        assertThatURITextViewMatchesString(mainActivity, expected);
     }
 
-    public void testshowErrorMessageIfURIHasNoNut() {
+    public void testShowErrorMessageIfURIHasNoNut() {
+        // Create the URL without the nut and start the activity
+        String sqrlUri = "sqrl://sqrl-login.appspot.com/sqrl/auth";
+        MainActivity mainActivity = startActivityWithGivenURI(sqrlUri);
+
+        // Generate the expected text output
+        Resources resources = mainActivity.getResources();
+        String expected = resources.getString(R.string.no_nut);
+
+        assertThatURITextViewMatchesString(mainActivity, expected);
     }
 
     private void startActivityWithGivenSchemeAndTestTextViewMatchesURI(String scheme) {
         String sqrlUri = scheme + "://sqrl-login.appspot.com/sqrl/auth?nut=19d9d15d103aa22dfb59f4d6b39e98b2";
         MainActivity mainActivity = startActivityWithGivenURI(sqrlUri);
 
-        // Get the URI text box and verify the uri matches
-        TextView uriTextView = (TextView)mainActivity.findViewById(R.id.URITextView);
-        assertNotNull("uriTextView is null", uriTextView);
-        assertEquals(sqrlUri, uriTextView.getText());
-
-        // Close the activity to prevent interference with future tests
-        mainActivity.finish();
+        assertThatURITextViewMatchesString(mainActivity, sqrlUri);
     }
 
     private MainActivity startActivityWithGivenURI(String uri) {
@@ -76,4 +76,12 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         return mainActivity;
     }
+
+    public void assertThatURITextViewMatchesString(MainActivity mainActivity, String expected) {
+        // Get the URI text box and verify the uri matches
+        TextView uriTextView = (TextView)mainActivity.findViewById(R.id.URITextView);
+        assertNotNull("uriTextView is null", uriTextView);
+        assertEquals(expected, uriTextView.getText());
+    }
+
 }

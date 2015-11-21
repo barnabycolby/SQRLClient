@@ -22,11 +22,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Check the scheme of the URL is recognised
+        // Check the scheme of the URI is recognised
         Resources resources = getResources();
         String uriScheme = uri.getScheme().toLowerCase();
         if (!uriScheme.equals("sqrl") && !uriScheme.equals("qrl")) {
             String errorMessage = resources.getString(R.string.unknown_scheme, uriScheme);
+            uriTextView.setText(errorMessage);
+            return;
+        }
+
+        // Check the URI has a nut (query string parameter)
+        String nut = uri.getQueryParameter("nut");
+        if (nut == null) {
+            String errorMessage = resources.getString(R.string.no_nut);
             uriTextView.setText(errorMessage);
             return;
         }
