@@ -11,9 +11,7 @@ public class SQRLUriTest {
     @Test
     public void throwExceptionForUnknownScheme() throws Exception {
         // Mock the Uri class
-        Uri mockedUri = mock(Uri.class);
-        when(mockedUri.getScheme()).thenReturn("abc");
-        when(mockedUri.getQueryParameter("nut")).thenReturn("Y0thBhbZk3N9DSxgTgfhXg");
+        Uri mockedUri = getMockedUri("abc", "Y0thBhbZk3N9DSxgTgfhXg");
 
         // Better JUnit assert exception thrown is not supported until later versions
         try {
@@ -28,9 +26,7 @@ public class SQRLUriTest {
     @Test
     public void throwExceptionForMissingNut() throws Exception {
         // Mock the Uri class
-        Uri mockedUri = mock(Uri.class);
-        when(mockedUri.getScheme()).thenReturn("sqrl");
-        when(mockedUri.getQueryParameter("nut")).thenReturn(null);
+        Uri mockedUri = getMockedUri("sqrl", null);
 
         // Better JUnit assert exception thrown is not supported until later versions
         try {
@@ -45,9 +41,7 @@ public class SQRLUriTest {
     @Test
     public void noExceptionThrownForValidSQRLUri() throws Exception {
         // Mock the Uri class
-        Uri mockedUri = mock(Uri.class);
-        when(mockedUri.getScheme()).thenReturn("qrl");
-        when(mockedUri.getQueryParameter("nut")).thenReturn("Y0thBhbZk3N9DSxgTgfhXg");
+        Uri mockedUri = getMockedUri("qrl", "Y0thBhbZk3N9DSxgTgfhXg");
 
         // Better JUnit assert exception thrown is not supported until later versions
         try {
@@ -55,5 +49,12 @@ public class SQRLUriTest {
         } catch (Exception ex) {
             fail("NoNutException was not thrown.");
         }
+    }
+
+    private Uri getMockedUri(String scheme, String nut) {
+        Uri mockedUri = mock(Uri.class);
+        when(mockedUri.getScheme()).thenReturn(scheme);
+        when(mockedUri.getQueryParameter("nut")).thenReturn(nut);
+        return mockedUri;
     }
 }
