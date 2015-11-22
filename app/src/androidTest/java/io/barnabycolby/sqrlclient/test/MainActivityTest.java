@@ -15,22 +15,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         super(MainActivity.class);
     }
 
-    public void testSetURITextViewToLowercaseSQRLURI() {
-        startActivityWithGivenSchemeAndTestTextViewMatchesURI("sqrl");
-    }
-
-    public void testSetURITextViewToLowercaseQRLURI() {
-        startActivityWithGivenSchemeAndTestTextViewMatchesURI("qrl");
-    }
-
-    public void testSetURITextViewToUppercaseSQRLURI() {
-        startActivityWithGivenSchemeAndTestTextViewMatchesURI("SQRL");
-    }
-    
-    public void testSetURITextViewToUppercaseQRLURI() {
-        startActivityWithGivenSchemeAndTestTextViewMatchesURI("QRL");
-    }
-
     public void testShowErrorMessageForUnsupportedScheme() {
         // Create the URL with the unsupported scheme and start the activity
         String scheme = "lsx";
@@ -41,7 +25,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         Resources resources = mainActivity.getResources();
         String expected = resources.getString(R.string.unknown_scheme, scheme);
 
-        assertThatURITextViewMatchesString(mainActivity, expected);
+        assertThatFriendlySiteNameMatchesString(mainActivity, expected);
     }
 
     public void testShowErrorMessageIfURIHasNoNut() {
@@ -53,14 +37,20 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         Resources resources = mainActivity.getResources();
         String expected = resources.getString(R.string.no_nut);
 
-        assertThatURITextViewMatchesString(mainActivity, expected);
+        assertThatFriendlySiteNameMatchesString(mainActivity, expected);
     }
 
-    private void startActivityWithGivenSchemeAndTestTextViewMatchesURI(String scheme) {
-        String sqrlUri = scheme + "://sqrl-login.appspot.com/sqrl/auth?nut=19d9d15d103aa22dfb59f4d6b39e98b2";
+    public void testShowHostnameForValidURIWithoutFriendlyName() {
+        String displayName = "sqrl-login.appspot.com";
+        String sqrlUri = "qrl://" + displayName + ":80/sqrl/auth?nut=bf53570f7b9556c296963e8bd1578ec5";
         MainActivity mainActivity = startActivityWithGivenURI(sqrlUri);
+        assertThatFriendlySiteNameMatchesString(mainActivity, displayName);
+    }
 
-        assertThatURITextViewMatchesString(mainActivity, sqrlUri);
+    public void testShowFriendlyNameForValidURIWithFriendlyName() {
+        String sqrlUri = "sqrl://www.grc.com/sqrl?nut=mCwPTJWrbcBNMJKc76sI8w&sfn=R1JD";
+        MainActivity mainActivity = startActivityWithGivenURI(sqrlUri);
+        assertThatFriendlySiteNameMatchesString(mainActivity, "GRC");
     }
 
     private MainActivity startActivityWithGivenURI(String uri) {
@@ -77,11 +67,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         return mainActivity;
     }
 
-    public void assertThatURITextViewMatchesString(MainActivity mainActivity, String expected) {
+    public void assertThatFriendlySiteNameMatchesString(MainActivity mainActivity, String expected) {
         // Get the URI text box and verify the uri matches
-        TextView uriTextView = (TextView)mainActivity.findViewById(R.id.URITextView);
-        assertNotNull("uriTextView is null", uriTextView);
-        assertEquals(expected, uriTextView.getText());
+        TextView friendlySiteNameTextView = (TextView)mainActivity.findViewById(R.id.FriendlySiteNameTextView);
+        assertNotNull("FriendlySiteNameTextView is null", friendlySiteNameTextView);
+        assertEquals(expected, friendlySiteNameTextView.getText());
     }
 
 }

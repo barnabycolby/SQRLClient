@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
         // Get the uri from the data and the uri text box
         Intent intent = getIntent();
         Uri uri = intent.getData();
-        TextView uriTextView = (TextView)findViewById(R.id.URITextView);
-        if (uriTextView == null || uri == null) {
+        TextView friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
+        if (friendlySiteNameTextView == null || uri == null) {
             return;
         }
 
@@ -32,15 +32,15 @@ public class MainActivity extends AppCompatActivity {
             sqrlUri = new SQRLUri(uri);
         } catch (UnknownSchemeException ex) {
             errorMessage = resources.getString(R.string.unknown_scheme, ex.getScheme());
-            uriTextView.setText(errorMessage);
+            friendlySiteNameTextView.setText(errorMessage);
             return;
         } catch (NoNutException ex) {
             errorMessage = resources.getString(R.string.no_nut);
-            uriTextView.setText(errorMessage);
+            friendlySiteNameTextView.setText(errorMessage);
             return;
         }
 
         // Set the textview to display the URI
-        uriTextView.setText(uri.toString());
+        friendlySiteNameTextView.setText(sqrlUri.getDisplayName());
     }
 }
