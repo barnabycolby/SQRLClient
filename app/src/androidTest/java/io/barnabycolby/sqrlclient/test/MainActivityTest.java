@@ -1,10 +1,12 @@
 package io.barnabycolby.sqrlclient.test;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.MoreAsserts;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.TextView;
 import android.content.res.Resources;
+import android.view.View;
 
 import io.barnabycolby.sqrlclient.MainActivity;
 import io.barnabycolby.sqrlclient.R;
@@ -24,6 +26,9 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         Resources resources = mainActivity.getResources();
         String tapToProceed = resources.getString(R.string.no_uri);
         assertThatFriendlySiteNameMatchesString(mainActivity, tapToProceed);
+
+        // Check that the confirm/deny buttons are hidden
+        assertThatConfirmDenySiteButtonsAreVisible(mainActivity, false);
     }
 
     public void testShowErrorMessageForUnsupportedScheme() {
@@ -56,12 +61,14 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         String sqrlUri = "qrl://" + displayName + ":80/sqrl/auth?nut=bf53570f7b9556c296963e8bd1578ec5";
         MainActivity mainActivity = startActivityWithGivenURI(sqrlUri);
         assertThatFriendlySiteNameMatchesString(mainActivity, displayName);
+        assertThatConfirmDenySiteButtonsAreVisible(mainActivity, true);
     }
 
     public void testShowFriendlyNameForValidURIWithFriendlyName() {
         String sqrlUri = "sqrl://www.grc.com/sqrl?nut=mCwPTJWrbcBNMJKc76sI8w&sfn=R1JD";
         MainActivity mainActivity = startActivityWithGivenURI(sqrlUri);
         assertThatFriendlySiteNameMatchesString(mainActivity, "GRC");
+        assertThatConfirmDenySiteButtonsAreVisible(mainActivity, true);
     }
 
     private MainActivity startActivityWithGivenURI(String uri) {
@@ -85,4 +92,14 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         assertEquals(expected, friendlySiteNameTextView.getText());
     }
 
+    private void assertThatConfirmDenySiteButtonsAreVisible(MainActivity mainActivity, boolean assertVisible) {
+        View confirmDenySiteButtons = mainActivity.findViewById(R.id.ConfirmDenySiteButtons);
+        assertNotNull("Could not find confirmDenySiteButtons.", confirmDenySiteButtons);
+
+        if (assertVisible) {
+            assertEquals(confirmDenySiteButtons.getVisibility(), View.VISIBLE);
+        } else {
+            MoreAsserts.assertNotEqual(confirmDenySiteButtons.getVisibility(), View.VISIBLE);
+        }
+    }
 }

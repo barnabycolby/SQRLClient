@@ -3,12 +3,15 @@ package io.barnabycolby.sqrlclient;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.widget.TextView;
+import android.widget.*;
 import android.net.Uri;
 import android.content.res.Resources;
+import android.util.Log;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private SQRLUri sqrlUri;
 
     @Override
@@ -42,5 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the textview to display the URI
         friendlySiteNameTextView.setText(sqrlUri.getDisplayName());
+
+        // Show the confirm/deny site buttons
+        View confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
+        if (confirmDenySiteButtons == null) {
+            Log.e(TAG, "ConfirmDenySiteButtons button group was null.");
+            Toast.makeText(this, resources.getString(R.string.cannot_display_buttons), Toast.LENGTH_LONG).show();
+            return;
+        }
+        confirmDenySiteButtons.setVisibility(View.VISIBLE);
     }
 }
