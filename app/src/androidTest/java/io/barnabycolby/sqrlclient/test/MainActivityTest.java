@@ -15,6 +15,17 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         super(MainActivity.class);
     }
 
+    public void testTapToProceedMessageShownWhenActivityOpenedNormally() {
+        // Start the activity normally
+        MainActivity mainActivity = getActivity();
+        assertNotNull("mainActivity is null", mainActivity);
+
+        // Obtain the tap to proceed message and assert that it is displayed
+        Resources resources = mainActivity.getResources();
+        String tapToProceed = resources.getString(R.string.no_uri);
+        assertThatFriendlySiteNameMatchesString(mainActivity, tapToProceed);
+    }
+
     public void testShowErrorMessageForUnsupportedScheme() {
         // Create the URL with the unsupported scheme and start the activity
         String scheme = "lsx";
