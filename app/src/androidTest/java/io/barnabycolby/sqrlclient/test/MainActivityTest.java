@@ -17,6 +17,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         super(MainActivity.class);
     }
 
+    //region TESTS
+
     public void testTapToProceedMessageShownWhenActivityOpenedNormally() {
         // Start the activity normally
         MainActivity mainActivity = getActivity();
@@ -71,6 +73,10 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         assertThatConfirmDenySiteButtonsAreVisible(mainActivity, true);
     }
 
+    //endregion
+
+    //region HELPERS
+
     private MainActivity startActivityWithGivenURI(String uri) {
         // Create an Intent with the given URI
         Intent sqrlSchemeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -102,4 +108,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
             MoreAsserts.assertNotEqual(confirmDenySiteButtons.getVisibility(), View.VISIBLE);
         }
     }
+
+    //endregion
 }
