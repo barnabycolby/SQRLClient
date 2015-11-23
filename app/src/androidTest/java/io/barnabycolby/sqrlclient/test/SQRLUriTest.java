@@ -6,7 +6,8 @@ import org.junit.runner.RunWith;
 import org.junit.Assert;
 import android.net.Uri;
 
-import io.barnabycolby.sqrlclient.*;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
+import io.barnabycolby.sqrlclient.exceptions.*;
 
 @RunWith(AndroidJUnit4.class)
 public class SQRLUriTest {

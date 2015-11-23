@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient;
+package io.barnabycolby.sqrlclient.exceptions;
 
 public class UnknownSchemeException extends Exception {
     private String scheme;

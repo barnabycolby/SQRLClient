@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient;
+package io.barnabycolby.sqrlclient.exceptions;
 
 public class NoNutException extends Exception {
 

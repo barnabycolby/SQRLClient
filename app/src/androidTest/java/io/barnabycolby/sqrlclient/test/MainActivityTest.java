@@ -7,7 +7,7 @@ import android.widget.TextView;
 import android.content.res.Resources;
 import android.view.View;
 
-import io.barnabycolby.sqrlclient.MainActivity;
+import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.R;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {

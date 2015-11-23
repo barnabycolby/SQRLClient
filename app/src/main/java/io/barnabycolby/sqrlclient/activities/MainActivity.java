@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient;
+package io.barnabycolby.sqrlclient.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
+import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 public class MainActivity extends AppCompatActivity {
 

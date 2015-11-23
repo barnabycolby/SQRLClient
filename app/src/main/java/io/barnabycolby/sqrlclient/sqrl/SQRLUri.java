@@ -1,9 +1,10 @@
-package io.barnabycolby.sqrlclient;
+package io.barnabycolby.sqrlclient.sqrl;
 
 import android.net.Uri;
 import android.util.Base64;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import io.barnabycolby.sqrlclient.exceptions.*;
 
 public class SQRLUri {
 
