@@ -43,12 +43,18 @@ public class SQRLUriTest {
 
     @Test
     public void noExceptionThrownForValidSQRLUri() throws Exception {
-        // Mock the Uri class
-        Uri uri = getUriSchemeAndNut("qrl", "Y0thBhbZk3N9DSxgTgfhXg");
+        String sqrlNut = "Y0thBhbZk3N9DSxgTgfhXg";
+        Uri qrlUri = getUriSchemeAndNut("qrl", sqrlNut);
+        Uri sqrlUri = getUriSchemeAndNut("sqrl", sqrlNut);
+        Uri QRLUri = getUriSchemeAndNut("QRL", sqrlNut);
+        Uri SQRLUri = getUriSchemeAndNut("SQRL", sqrlNut);
 
         // Better JUnit assert exception thrown is not supported until later versions
         try {
-            new SQRLUri(uri);
+            new SQRLUri(qrlUri);
+            new SQRLUri(sqrlUri);
+            new SQRLUri(QRLUri);
+            new SQRLUri(SQRLUri);
         } catch (Exception ex) {
             Assert.fail("NoNutException was not thrown.");
         }
