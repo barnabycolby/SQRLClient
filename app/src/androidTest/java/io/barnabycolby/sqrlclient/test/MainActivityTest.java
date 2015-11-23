@@ -1,7 +1,6 @@
 package io.barnabycolby.sqrlclient.test;
 
-import android.test.ActivityInstrumentationTestCase2;
-import android.test.MoreAsserts;
+import android.test.*;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.TextView;
@@ -24,13 +23,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         MainActivity mainActivity = getActivity();
         assertNotNull("mainActivity is null", mainActivity);
 
-        // Obtain the tap to proceed message and assert that it is displayed
-        Resources resources = mainActivity.getResources();
-        String tapToProceed = resources.getString(R.string.no_uri);
-        assertThatFriendlySiteNameMatchesString(mainActivity, tapToProceed);
-
-        // Check that the confirm/deny buttons are hidden
-        assertThatConfirmDenySiteButtonsAreVisible(mainActivity, false);
+        assertTapToProceedMessageShownAndConfirmDenyButtonsNotVisible(mainActivity);
     }
 
     public void testShowErrorMessageForUnsupportedScheme() {
@@ -73,6 +66,23 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         assertThatConfirmDenySiteButtonsAreVisible(mainActivity, true);
     }
 
+    public void testTapToProceedMessageShownWhenSiteDenied() {
+        // Prevent UI control from taking focus away from the test method
+        setActivityInitialTouchMode(true);
+
+        // Get to the point where the button will be shown
+        String sqrlUri = "sqrl://www.grc.com/sqrl?nut=mCwPTJWrbcBNMJKc76sI8w&sfn=R1JD";
+        MainActivity mainActivity = startActivityWithGivenURI(sqrlUri);
+        assertThatConfirmDenySiteButtonsAreVisible(mainActivity, true);
+
+        // Click the deny button
+        View denySiteButton = mainActivity.findViewById(R.id.DenySiteButton);
+        TouchUtils.clickView(this, denySiteButton);
+
+        // Check that the user was redirected to the original view showing the 'tap to proceed' message
+        assertTapToProceedMessageShownAndConfirmDenyButtonsNotVisible(mainActivity);
+    }
+
     //endregion
 
     //region HELPERS
@@ -107,6 +117,16 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         } else {
             MoreAsserts.assertNotEqual(confirmDenySiteButtons.getVisibility(), View.VISIBLE);
         }
+    }
+
+    private void assertTapToProceedMessageShownAndConfirmDenyButtonsNotVisible(MainActivity mainActivity) {
+        // Obtain the tap to proceed message and assert that it is displayed
+        Resources resources = mainActivity.getResources();
+        String tapToProceed = resources.getString(R.string.no_uri);
+        assertThatFriendlySiteNameMatchesString(mainActivity, tapToProceed);
+
+        // Check that the confirm/deny buttons are hidden
+        assertThatConfirmDenySiteButtonsAreVisible(mainActivity, false);
     }
 
     //endregion

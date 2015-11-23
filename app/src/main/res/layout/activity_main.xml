@@ -26,9 +26,11 @@
             android:text="@string/confirm_site_name"
         />
         <Button
+            android:id="@+id/DenySiteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/incorrect_site_name"
+            android:onClick="denySite"
         />
     </LinearLayout>
 

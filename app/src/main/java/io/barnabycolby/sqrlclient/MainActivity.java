@@ -12,7 +12,9 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private TextView friendlySiteNameTextView;
     private SQRLUri sqrlUri;
+    private View confirmDenySiteButtons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         // Get the uri from the data and the uri text box
         Intent intent = getIntent();
         Uri uri = intent.getData();
-        TextView friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
+        friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
         if (friendlySiteNameTextView == null || uri == null) {
             return;
         }
@@ -47,12 +49,22 @@ public class MainActivity extends AppCompatActivity {
         friendlySiteNameTextView.setText(sqrlUri.getDisplayName());
 
         // Show the confirm/deny site buttons
-        View confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
+        confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
         if (confirmDenySiteButtons == null) {
             Log.e(TAG, "ConfirmDenySiteButtons button group was null.");
             Toast.makeText(this, resources.getString(R.string.cannot_display_buttons), Toast.LENGTH_LONG).show();
             return;
         }
         confirmDenySiteButtons.setVisibility(View.VISIBLE);
+    }
+
+    public void denySite(View view) {
+        Log.e(TAG, "BUTTON PRESSED");
+        // Set the text view to show the 'tap to proceed' message
+        String noUriMessage = getResources().getString(R.string.no_uri);
+        friendlySiteNameTextView.setText(noUriMessage);
+
+        // Hide the confirm/deny buttons
+        confirmDenySiteButtons.setVisibility(View.GONE);
     }
 }
