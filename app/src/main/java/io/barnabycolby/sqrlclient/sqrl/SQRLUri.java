@@ -59,4 +59,8 @@ public class SQRLUri {
         }
         return builder.build().toString();
     }
+
+    public String getHost() {
+        return this.uri.getHost();
+    }
 }
