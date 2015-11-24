@@ -49,4 +49,14 @@ public class SQRLUri {
             return friendlyName;
         }
     }
+
+    public String getCommunicationURL() {
+        Uri.Builder builder = this.uri.buildUpon();
+        if (this.uri.getScheme().toLowerCase().equals("sqrl")) {
+            builder.scheme("https");
+        } else {
+            builder.scheme("http");
+        }
+        return builder.build().toString();
+    }
 }

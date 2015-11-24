@@ -76,6 +76,18 @@ public class SQRLUriTest {
         Assert.assertEquals("GRC", sqrlUri.getDisplayName());
     }
 
+    @Test
+    public void calculateCommunicationURLSuccessfully() throws Exception {
+        String baseUrl = "://www.grc.com/sqrl?nut=rOL2Cj3VMlyfRhwOTAl-7w&sfn=R1JD";
+        Uri uri = Uri.parse("sqrl" + baseUrl);
+        SQRLUri sqrlUri = new SQRLUri(uri);
+        Assert.assertEquals("https" + baseUrl, sqrlUri.getCommunicationURL());
+
+        uri = Uri.parse("qrl" + baseUrl);
+        sqrlUri = new SQRLUri(uri);
+        Assert.assertEquals("http" + baseUrl, sqrlUri.getCommunicationURL());
+    }
+
     private Uri getUriSchemeAndNut(String scheme, String nut) {
         String uri = scheme + "://www.grc.com/sqrl";
         if (nut != null) {
