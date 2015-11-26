@@ -3,8 +3,10 @@ package io.barnabycolby.sqrlclient.test;
 import android.support.test.runner.AndroidJUnit4;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import static org.mockito.Mockito.*;
 import android.net.Uri;
 import java.net.URLConnection;
+import java.io.*;
 
 import io.barnabycolby.sqrlclient.sqrl.*;
 
@@ -12,6 +14,7 @@ import io.barnabycolby.sqrlclient.sqrl.*;
 public class SQRLRequestTest {
     private Uri uri;
     private SQRLUri sqrlUri;
+    private SQRLIdentity sqrlIdentity;
     private SQRLRequest request;
 
     @Before
@@ -19,12 +22,12 @@ public class SQRLRequestTest {
         // Create the SQRL URI
         uri = Uri.parse("sqrl://www.grc.com/sqrl?nut=P2Kr_4GB49GrwAF_kpDuJA&sfn=R1JD");
         sqrlUri = new SQRLUri(uri);
-        request = new SQRLRequest(sqrlUri);
+        sqrlIdentity = new SQRLIdentity();
+        request = new SQRLRequest(sqrlUri, sqrlIdentity);
     }
 
     @Test
     public void createConnectionToTheCorrectURL() throws Exception {
-        // Check the correct url was used
         URLConnection connection = request.getConnection();
         String actual = connection.getURL().toExternalForm();
         String expected = "https://www.grc.com/sqrl?nut=P2Kr_4GB49GrwAF_kpDuJA&sfn=R1JD";
@@ -37,5 +40,42 @@ public class SQRLRequestTest {
         Assert.assertEquals(uri.getHost(), connection.getRequestProperty("Host"));
         Assert.assertEquals("SQRL/1", connection.getRequestProperty("User-Agent"));
         Assert.assertEquals("application/x-www-form-urlencoded", connection.getRequestProperty("Content-type"));
+    }
+
+    @Test
+    public void correctlyGenerateQueryRequest() throws Exception {
+        // First, we need to mock the connection object and the writer object
+        URLConnection connection = mock(URLConnection.class);
+        doNothing().when(connection).setDoOutput(true);
+        // We create a partial mock so that we can verify the final message (by calling to string)
+        // without having to specify how the message should be constructed
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream spyOutputStream = spy(outputStream);
+        when(connection.getOutputStream()).thenReturn(spyOutputStream);
+        
+        // We also need to mock the SQRLIdentity object so that we know the keys that will be returned
+        sqrlIdentity = mock(SQRLIdentity.class);
+        String identityKey = "Jjl2OhUyP93M14-AQ3stYMaoZ2vq1BHfmAhxWjM1CuU";
+        when(sqrlIdentity.getIdentityKey()).thenReturn(identityKey);
+        // This is the expected client and server values
+        String expectedClientValue = "dmVyPTENCmNtZD1xdWVyeQ0KaWRrPUpqbDJPaFV5UDkzTTE0LUFRM3N0WU1hb1oydnExQkhmbUFoeFdqTTFDdVUNCg";
+        String expectedServerValue = "c3FybDovL3d3dy5ncmMuY29tL3Nxcmw_bnV0PVAyS3JfNEdCNDlHcndBRl9rcER1SkEmc2ZuPVIxSkQ";
+        String expectedDataToSign = expectedClientValue + expectedServerValue;
+        String signatureOfExpectedData = "je8rKDoBUnS0PdAyYNQQ-RpZ1YtI_bj4dTZCRnKDvTAcG1Vj_FQtPZlnKeajGFlZCJMH2JRWyBkRs5Y747drDw";
+        when(sqrlIdentity.signUsingIdentityPrivateKey(expectedDataToSign)).thenReturn(signatureOfExpectedData);
+
+        // Next, instantiate a SQRLRequest object with the mocked objects
+        request = new SQRLRequest(sqrlUri, sqrlIdentity, connection);
+
+        // Calculate what the expected data should be
+        String expectedData = "client=" + expectedClientValue;
+        expectedData += "&server=" + expectedServerValue;
+        expectedData += "&ids=" + signatureOfExpectedData;
+
+        // Ask the request object to send the data, and then verify it
+        request.send();
+        verify(connection).setDoOutput(true);
+        String dataSent = spyOutputStream.toString();
+        Assert.assertEquals(expectedData, dataSent);
     }
 }

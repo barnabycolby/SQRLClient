@@ -88,6 +88,14 @@ public class SQRLUriTest {
         Assert.assertEquals("http" + baseUrl, sqrlUri.getCommunicationURL());
     }
 
+    @Test
+    public void getFullUriAsStringReturnsUriAsString() throws Exception {
+        String uriAsString = "sqrl://www.grc.com/sqrl?nut=rOL2Cj3VMlyfRhwOTAl-7w&sfn=R1JD";
+        Uri uri = Uri.parse(uriAsString);
+        SQRLUri sqrlUri = new SQRLUri(uri);
+        Assert.assertEquals(uriAsString, sqrlUri.getFullUriAsString());
+    }
+
     private Uri getUriSchemeAndNut(String scheme, String nut) {
         String uri = scheme + "://www.grc.com/sqrl";
         if (nut != null) {
