@@ -50,7 +50,6 @@ public class SQRLRequestTest {
     public void correctlyGenerateQueryRequest() throws Exception {
         // First, we need to mock the connection object and the writer object
         HttpURLConnection connection = mock(HttpURLConnection.class);
-        doNothing().when(connection).setDoOutput(true);
         // We create a partial mock so that we can verify the final message (by calling to string)
         // without having to specify how the message should be constructed
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
