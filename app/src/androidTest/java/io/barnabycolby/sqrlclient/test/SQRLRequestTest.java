@@ -27,7 +27,7 @@ public class SQRLRequestTest {
     }
 
     @Test
-    public void createConnectionToTheCorrectURL() throws Exception {
+    public void createConnectionToTheCorrectURLAllowingIncomingAndOutgoingTraffic() throws Exception {
         HttpURLConnection connection = request.getConnection();
         String actual = connection.getURL().toExternalForm();
         String expected = "https://www.grc.com/sqrl?nut=P2Kr_4GB49GrwAF_kpDuJA&sfn=R1JD";
@@ -77,8 +77,11 @@ public class SQRLRequestTest {
         expectedData += "&ids=" + signatureOfExpectedData;
 
         // Ask the request object to send the data, and then verify it
-        request.send();
+        SQRLResponse response = request.send();
         String dataSent = spyOutputStream.toString();
         Assert.assertEquals(expectedData, dataSent);
+
+        // Finally, verify that we did actually get some data back
+        Assert.assertNotNull(response);
     }
 }
