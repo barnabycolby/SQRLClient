@@ -38,6 +38,10 @@ public class SQRLRequest {
             this.connection.setRequestProperty("Host", this.sqrlUri.getHost());
             this.connection.setRequestProperty("User-Agent", "SQRL/1");
             this.connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+
+            // Allow outgoing and incoming data
+            this.connection.setDoOutput(true);
+            this.connection.setDoInput(true);
         }
 
         return this.connection;
@@ -67,7 +71,6 @@ public class SQRLRequest {
 
     public void send() throws MalformedURLException, IOException, CryptographyException {
         // Get the output stream as a writer to make our life easier
-        this.getConnection().setDoOutput(true);
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.getConnection().getOutputStream(), "UTF-8");
 
         // Write the data

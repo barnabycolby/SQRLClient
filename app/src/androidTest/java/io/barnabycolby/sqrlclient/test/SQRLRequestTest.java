@@ -32,6 +32,9 @@ public class SQRLRequestTest {
         String actual = connection.getURL().toExternalForm();
         String expected = "https://www.grc.com/sqrl?nut=P2Kr_4GB49GrwAF_kpDuJA&sfn=R1JD";
         Assert.assertEquals(expected, actual);
+
+        Assert.assertTrue(connection.getDoInput());
+        Assert.assertTrue(connection.getDoOutput());
     }
 
     @Test
@@ -75,7 +78,6 @@ public class SQRLRequestTest {
 
         // Ask the request object to send the data, and then verify it
         request.send();
-        verify(connection).setDoOutput(true);
         String dataSent = spyOutputStream.toString();
         Assert.assertEquals(expectedData, dataSent);
     }
