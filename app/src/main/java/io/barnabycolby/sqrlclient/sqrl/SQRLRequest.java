@@ -1,6 +1,6 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
-import java.net.URLConnection;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.io.*;
 import java.net.URL;
@@ -12,24 +12,27 @@ public class SQRLRequest {
 
     private SQRLUri sqrlUri;
     private SQRLIdentity sqrlIdentity;
-    private URLConnection connection;
+    private HttpURLConnection connection;
 
     public SQRLRequest(SQRLUri sqrlUri, SQRLIdentity sqrlIdentity) {
         this.sqrlUri = sqrlUri;
         this.sqrlIdentity = sqrlIdentity;
     }
 
-    public SQRLRequest(SQRLUri sqrlUri, SQRLIdentity sqrlIdentity, URLConnection connection) {
+    public SQRLRequest(SQRLUri sqrlUri, SQRLIdentity sqrlIdentity, HttpURLConnection connection) {
         this.sqrlUri = sqrlUri;
         this.sqrlIdentity = sqrlIdentity;
         this.connection = connection;
     }
 
-    public URLConnection getConnection() throws MalformedURLException, IOException {
+    public HttpURLConnection getConnection() throws MalformedURLException, IOException {
         // Open the connection
         if (this.connection == null) {
             URL url = new URL(this.sqrlUri.getCommunicationURL());
-            this.connection = url.openConnection();
+            this.connection = (HttpURLConnection)url.openConnection();
+
+            // Make sure that this is a post request
+            this.connection.setRequestMethod("POST");
 
             // Set the request properties
             this.connection.setRequestProperty("Host", this.sqrlUri.getHost());

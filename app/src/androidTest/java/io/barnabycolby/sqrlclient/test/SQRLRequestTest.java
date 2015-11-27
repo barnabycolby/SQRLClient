@@ -5,7 +5,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import static org.mockito.Mockito.*;
 import android.net.Uri;
-import java.net.URLConnection;
+import java.net.HttpURLConnection;
 import java.io.*;
 
 import io.barnabycolby.sqrlclient.sqrl.*;
@@ -28,15 +28,16 @@ public class SQRLRequestTest {
 
     @Test
     public void createConnectionToTheCorrectURL() throws Exception {
-        URLConnection connection = request.getConnection();
+        HttpURLConnection connection = request.getConnection();
         String actual = connection.getURL().toExternalForm();
         String expected = "https://www.grc.com/sqrl?nut=P2Kr_4GB49GrwAF_kpDuJA&sfn=R1JD";
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void setCorrectHeadersBasedOnURI() throws Exception {
-        URLConnection connection = request.getConnection();
+    public void setCorrectMethodAndHeadersBasedOnURI() throws Exception {
+        HttpURLConnection connection = request.getConnection();
+        Assert.assertEquals("POST", connection.getRequestMethod());
         Assert.assertEquals(uri.getHost(), connection.getRequestProperty("Host"));
         Assert.assertEquals("SQRL/1", connection.getRequestProperty("User-Agent"));
         Assert.assertEquals("application/x-www-form-urlencoded", connection.getRequestProperty("Content-type"));
@@ -45,7 +46,7 @@ public class SQRLRequestTest {
     @Test
     public void correctlyGenerateQueryRequest() throws Exception {
         // First, we need to mock the connection object and the writer object
-        URLConnection connection = mock(URLConnection.class);
+        HttpURLConnection connection = mock(HttpURLConnection.class);
         doNothing().when(connection).setDoOutput(true);
         // We create a partial mock so that we can verify the final message (by calling to string)
         // without having to specify how the message should be constructed
