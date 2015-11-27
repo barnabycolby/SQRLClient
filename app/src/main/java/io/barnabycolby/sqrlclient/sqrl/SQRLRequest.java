@@ -84,6 +84,11 @@ public class SQRLRequest {
         // Make sure that all the data is written
         outputStreamWriter.flush();
 
+        // Check the response code
+        if (this.getConnection().getResponseCode() != 200) {
+            throw new IOException();
+        }
+
         return new SQRLResponse();
     }
 }

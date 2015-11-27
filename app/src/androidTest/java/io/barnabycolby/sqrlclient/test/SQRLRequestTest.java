@@ -55,6 +55,7 @@ public class SQRLRequestTest {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream spyOutputStream = spy(outputStream);
         when(connection.getOutputStream()).thenReturn(spyOutputStream);
+        when(connection.getResponseCode()).thenReturn(200);
         
         // We also need to mock the SQRLIdentity object so that we know the keys that will be returned
         sqrlIdentity = mock(SQRLIdentity.class);
@@ -76,11 +77,57 @@ public class SQRLRequestTest {
         expectedData += "&ids=" + signatureOfExpectedData;
 
         // Ask the request object to send the data, and then verify it
-        SQRLResponse response = request.send();
+        request.send();
         String dataSent = spyOutputStream.toString();
         Assert.assertEquals(expectedData, dataSent);
+    }
 
-        // Finally, verify that we did actually get some data back
-        Assert.assertNotNull(response);
+    @Test
+    public void sendShouldThrowExceptionWhenConnectionReturnsNon200() throws Exception {
+        assertExceptionThrownWhenConnectionReturnsGivenCode(201);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(204);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(226);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(300);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(301);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(302);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(308);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(400);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(401);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(402);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(403);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(404);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(407);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(500);
+        assertExceptionThrownWhenConnectionReturnsGivenCode(504);
+    }
+
+    @Test
+    public void sendMessageWithoutExceptionWhenResponseCodeIs200() throws Exception {
+        // Create the necessary mocks
+        HttpURLConnection connectionMock = mock(HttpURLConnection.class);
+        OutputStream mockOutputStream = mock(OutputStream.class);
+        when(connectionMock.getOutputStream()).thenReturn(mockOutputStream);
+        when(connectionMock.getResponseCode()).thenReturn(200);
+
+        request = new SQRLRequest(sqrlUri, sqrlIdentity, connectionMock);
+        request.send();
+    }
+
+    private void assertExceptionThrownWhenConnectionReturnsGivenCode(int responseCode) throws Exception {
+        // Create the necessary mocks
+        HttpURLConnection connectionMock = mock(HttpURLConnection.class);
+        OutputStream mockOutputStream = mock(OutputStream.class);
+        when(connectionMock.getOutputStream()).thenReturn(mockOutputStream);
+        when(connectionMock.getResponseCode()).thenReturn(responseCode);
+
+        request = new SQRLRequest(sqrlUri, sqrlIdentity, connectionMock);
+
+        // Verify that send throws an exception
+        try {
+            request.send();
+        } catch (IOException ex) {
+            return;
+        }
+        Assert.fail("request.send() did not throw an exception for response code " + responseCode);
     }
 }
