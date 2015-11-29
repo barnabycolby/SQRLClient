@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void denySite(View view) {
-        Log.e(TAG, "BUTTON PRESSED");
         // Set the text view to show the 'tap to proceed' message
         String noUriMessage = getResources().getString(R.string.no_uri);
         friendlySiteNameTextView.setText(noUriMessage);
