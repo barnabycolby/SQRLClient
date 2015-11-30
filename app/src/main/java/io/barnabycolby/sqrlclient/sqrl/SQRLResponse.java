@@ -7,7 +7,6 @@ import java.util.Map;
 import android.support.v4.util.ArrayMap;
 import java.nio.charset.Charset;
 import android.util.Base64;
-import android.util.Log;
 
 public class SQRLResponse {
     public SQRLResponse(HttpURLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException {
@@ -62,14 +61,11 @@ public class SQRLResponse {
         // Split the response into lines, each containing a name and value pair
         String[] nameValuePairsAsStrings = serverResponse.split("\r\n");
 
-        Map map = new ArrayMap();
+        Map<String, String> map = new ArrayMap<String, String>();
 
         for (String nameValuePairAsString : nameValuePairsAsStrings) {
             String[] separatedNameAndValuePair = nameValuePairAsString.split("=", 2);
             if (separatedNameAndValuePair.length != 2) {
-                for (String token : separatedNameAndValuePair) {
-                    Log.v("MainActivity", token);
-                }
                 throw new InvalidServerResponseException();
             }
 
