@@ -16,6 +16,7 @@ public class SQRLRequestTest {
     private SQRLUri sqrlUri;
     private SQRLIdentity sqrlIdentity;
     private SQRLRequest request;
+    private String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
 
     @Before
     public void setUp() throws Exception {
@@ -56,6 +57,8 @@ public class SQRLRequestTest {
         ByteArrayOutputStream spyOutputStream = spy(outputStream);
         when(connection.getOutputStream()).thenReturn(spyOutputStream);
         when(connection.getResponseCode()).thenReturn(200);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(serverResponse.getBytes());
+        when(connection.getInputStream()).thenReturn(inputStream);
         
         // We also need to mock the SQRLIdentity object so that we know the keys that will be returned
         sqrlIdentity = mock(SQRLIdentity.class);

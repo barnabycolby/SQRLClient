@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.URL;
 import android.util.Base64;
 import java.nio.charset.Charset;
-import io.barnabycolby.sqrlclient.exceptions.CryptographyException;
+import io.barnabycolby.sqrlclient.exceptions.*;
 
 public class SQRLRequest {
 
@@ -69,7 +69,7 @@ public class SQRLRequest {
         return base64Encode(fullUri);
     }
 
-    public SQRLResponse send() throws MalformedURLException, IOException, CryptographyException {
+    public SQRLResponse send() throws MalformedURLException, IOException, CryptographyException, VersionNotSupportedException, InvalidServerResponseException {
         // Get the output stream as a writer to make our life easier
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.getConnection().getOutputStream(), "UTF-8");
 
