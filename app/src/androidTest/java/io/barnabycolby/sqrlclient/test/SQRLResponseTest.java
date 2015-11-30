@@ -72,6 +72,17 @@ public class SQRLResponseTest {
         assertSuccessForGivenServerResponse(serverResponse);
     }
 
+    @Test
+    public void shouldThrowInvalidServerResponseIfNameValuePairsNotSeparatedByEqualsSign() throws Exception {
+        // tif24
+        String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWYyNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // sfn:GRC
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuR1JDDQo";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+    }
+
     private <E extends Exception> void assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
         // Create the necessary mocks
         HttpURLConnection connectionMock = mock(HttpURLConnection.class);
