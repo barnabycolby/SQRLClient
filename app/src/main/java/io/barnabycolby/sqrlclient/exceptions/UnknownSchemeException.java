@@ -4,7 +4,7 @@ public class UnknownSchemeException extends Exception {
     private String scheme;
 
     public UnknownSchemeException(String scheme) {
-        super();
+        super("The uri scheme " + scheme + "is not supported.");
         this.scheme = scheme;
     }
 
