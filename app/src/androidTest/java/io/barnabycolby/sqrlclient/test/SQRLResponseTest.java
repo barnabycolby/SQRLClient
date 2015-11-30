@@ -1,15 +1,23 @@
 package io.barnabycolby.sqrlclient.test;
 
 import android.support.test.runner.AndroidJUnit4;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import static org.mockito.Mockito.*;
-import android.net.Uri;
-import java.net.HttpURLConnection;
-import java.io.*;
-import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
 
-import io.barnabycolby.sqrlclient.sqrl.*;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+
+import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
+import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
+import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class SQRLResponseTest {
@@ -48,19 +56,19 @@ public class SQRLResponseTest {
     @Test
     public void shouldSuccessfullyParseVersionString() throws Exception {
         // ver=
-        String serverResponse = "dmVyPQpudXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQp0aWY9MjQKcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BCnNmbj1HUkMK";
+        String serverResponse = "dmVyPQ0KbnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
         assertExceptionThrownForGivenServerResponse(VersionNotSupportedException.class, serverResponse);
 
-        // ver=10
-        serverResponse = "dmVyPTEwCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BCnRpZj0yNApxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0EKc2ZuPUdSQwo";
+        // ver=17
+        serverResponse = "dmVyPTE3DQpudXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0KdGlmPTI0DQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
         assertExceptionThrownForGivenServerResponse(VersionNotSupportedException.class, serverResponse);
 
         // ver=2,4,6
-        serverResponse = "dmVyPTIsNCw2Cm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BCnRpZj0yNApxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0EKc2ZuPUdSQwo";
+        serverResponse = "dmVyPTIsNCw2DQpudXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0KdGlmPTI0DQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
         assertExceptionThrownForGivenServerResponse(VersionNotSupportedException.class, serverResponse);
         
         // ver=2,3,1,5
-        serverResponse = "dmVyPTIsMywxLDUKbnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0EKdGlmPTI0CnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQpzZm49R1JDCg";
+        serverResponse = "dmVyPTIsMywxLDUNCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
         assertSuccessForGivenServerResponse(serverResponse);
     }
 
@@ -76,6 +84,8 @@ public class SQRLResponseTest {
         } catch (Exception ex) {
             if (exceptionType.isInstance(ex)) {
                 return;
+            } else {
+                throw ex;
             }
         }
         
