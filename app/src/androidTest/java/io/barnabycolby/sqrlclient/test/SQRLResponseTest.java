@@ -84,13 +84,29 @@ public class SQRLResponseTest {
     }
 
     @Test
-    public void shouldThrowInvalidServerResponseIfServerResponseDoesNotContainAVersion() throws Exception {
-        // Mission ver
+    public void shouldThrowInvalidServerResponseIfServerResponseDoesNotContainRequiredPairs() throws Exception {
+        // Missing ver
         String serverResponse = "bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
 
         // version=1 instead of ver=1
         serverResponse = "dmVyc2lvbj0xDQpudXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0KdGlmPTI0DQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // Missing nut
+        serverResponse = "dmVyPTENCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // Missing tif
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // Missing qry
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // Missing sfn
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0K";
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
     }
 

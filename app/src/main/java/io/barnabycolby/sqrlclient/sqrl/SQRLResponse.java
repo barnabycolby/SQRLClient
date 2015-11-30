@@ -9,6 +9,8 @@ import java.nio.charset.Charset;
 import android.util.Base64;
 
 public class SQRLResponse {
+    private Map<String, String> nameValuePairs;
+
     public SQRLResponse(HttpURLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException {
         // Check the response code
         if (connection.getResponseCode() != 200) {
@@ -20,15 +22,31 @@ public class SQRLResponse {
         byte[] encodedServerResponse = convertInputStreamToByteArray(inputStream);
         byte[] decodedResponse = Base64.decode(encodedServerResponse, Base64.URL_SAFE);
         String serverResponse = new String(decodedResponse, Charset.forName("UTF-8"));
-        Map<String, String> nameValuePairs = convertServerResponseToMap(serverResponse);
+        this.nameValuePairs = convertServerResponseToMap(serverResponse);
 
-        // Check that the version is present and compatible with the version supported by this client
+        checkThatAllRequiredNameValuePairsArePresent();
+
+        // Check that the version is compatible with the version supported by this client
         String versionString = nameValuePairs.get("ver");
-        if (versionString == null) {
-            throw new InvalidServerResponseException();
-        }
         if (!isVersionSupported(versionString)) {
             throw new VersionNotSupportedException(versionString);
+        }
+    }
+
+    private void checkThatAllRequiredNameValuePairsArePresent() throws InvalidServerResponseException {
+        checkParameterIsPresent("ver");
+        checkParameterIsPresent("nut");
+        checkParameterIsPresent("tif");
+        checkParameterIsPresent("qry");
+        checkParameterIsPresent("sfn");
+    }
+
+    private void checkParameterIsPresent(String parameter) throws InvalidServerResponseException {
+        String errorMessageSuffix = " parameter was not present in server response.";
+
+        String parameterValue = nameValuePairs.get(parameter);
+        if (parameterValue == null) {
+            throw new InvalidServerResponseException("\"" + parameter + "\"" + errorMessageSuffix);
         }
     }
 
@@ -66,7 +84,7 @@ public class SQRLResponse {
         for (String nameValuePairAsString : nameValuePairsAsStrings) {
             String[] separatedNameAndValuePair = nameValuePairAsString.split("=", 2);
             if (separatedNameAndValuePair.length != 2) {
-                throw new InvalidServerResponseException();
+                throw new InvalidServerResponseException("Servers response was in an unrecognised format.");
             }
 
             map.put(separatedNameAndValuePair[0], separatedNameAndValuePair[1]);
