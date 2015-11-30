@@ -83,6 +83,17 @@ public class SQRLResponseTest {
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
     }
 
+    @Test
+    public void shouldThrowInvalidServerResponseIfServerResponseDoesNotContainAVersion() throws Exception {
+        // Mission ver
+        String serverResponse = "bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // version=1 instead of ver=1
+        serverResponse = "dmVyc2lvbj0xDQpudXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0KdGlmPTI0DQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+    }
+
     private <E extends Exception> void assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
         // Create the necessary mocks
         HttpURLConnection connectionMock = mock(HttpURLConnection.class);
