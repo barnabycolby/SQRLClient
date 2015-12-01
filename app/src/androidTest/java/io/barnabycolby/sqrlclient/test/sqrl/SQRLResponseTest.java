@@ -12,9 +12,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
-import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
-import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.exceptions.CommandFailedException;
+import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
+import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
+import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
 import static org.mockito.Mockito.mock;
@@ -154,7 +155,7 @@ public class SQRLResponseTest {
         // Transient error (0x20)
         // tif=60
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NjANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
-        assertExceptionThrownForGivenServerResponse(CommandFailedException.class, serverResponse);
+        assertExceptionThrownForGivenServerResponse(TransientErrorException.class, serverResponse);
 
         // Client failure (0x80)
         // tif=c0

@@ -15,7 +15,7 @@ public class SQRLResponse {
     private Map<String, String> nameValuePairs;
     private int tif;
 
-    public SQRLResponse(HttpURLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException {
+    public SQRLResponse(HttpURLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException {
         // Check the response code
         if (connection.getResponseCode() != 200) {
             throw new IOException();
@@ -34,7 +34,7 @@ public class SQRLResponse {
         checkTifIsValidAndCommandDidNotFail();
     }
 
-    private void checkTifIsValidAndCommandDidNotFail() throws InvalidServerResponseException, CommandFailedException {
+    private void checkTifIsValidAndCommandDidNotFail() throws InvalidServerResponseException, CommandFailedException, TransientErrorException {
         String tifValue = nameValuePairs.get("tif");
         
         // As we have no idea how long the tif value is, we iterate over each character
@@ -52,6 +52,7 @@ public class SQRLResponse {
                 errorMessage = "Query function is not supported by server.";
             } else if ((this.tif & TifBits.TRANSIENT_ERROR) != 0) {
                 errorMessage = "A transient error occurred, should retry with updated nut and qry values.";
+                throw new TransientErrorException(errorMessage);
             } else if ((this.tif & TifBits.CLIENT_FAILURE) != 0) {
                 errorMessage = "Some aspect of the request was incorrect, according to the server.";
             } else if ((this.tif & TifBits.BAD_ID_ASSOCIATION) != 0) {
