@@ -1,6 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
 public class TifBits {
+    public static final int CURRENT_ID_MATCH = 0x1;
     public static final int FUNCTION_NOT_SUPPORTED = 0x10;
     public static final int TRANSIENT_ERROR = 0x20;
     public static final int COMMAND_FAILED = 0x40;

@@ -132,4 +132,12 @@ public class SQRLResponse {
 
         return map;
     }
+
+    public boolean accountExists() {
+        if ((this.tif & TifBits.CURRENT_ID_MATCH) != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -173,6 +173,27 @@ public class SQRLResponseTest {
         assertExceptionThrownForGivenServerResponse(CommandFailedException.class, serverResponse);
     }
 
+    @Test
+    public void shouldCorrectlyDetermineWhetherAccountExistsBasedOnTif() throws Exception {
+        // Account exists
+        // tif=1
+        String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MQ0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        SQRLResponse sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
+        Assert.assertTrue(sqrlResponse.accountExists());
+
+        // Account exists
+        // tif=5
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NQ0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
+        Assert.assertTrue(sqrlResponse.accountExists());
+
+        // Account does not exist
+        // tif=400
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NDAwDQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
+        Assert.assertFalse(sqrlResponse.accountExists());
+    }
+
     private SQRLResponse instantiateSQRLResponesFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
         HttpURLConnection connectionMock = mock(HttpURLConnection.class);
