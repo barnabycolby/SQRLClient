@@ -55,12 +55,8 @@ public class SQRLResponseTest {
 
     @Test
     public void shouldSuccessfullyParseVersionString() throws Exception {
-        // ver=
-        String serverResponse = "dmVyPQ0KbnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
-        assertExceptionThrownForGivenServerResponse(VersionNotSupportedException.class, serverResponse);
-
         // ver=17
-        serverResponse = "dmVyPTE3DQpudXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0KdGlmPTI0DQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        String serverResponse = "dmVyPTE3DQpudXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0KdGlmPTI0DQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
         assertExceptionThrownForGivenServerResponse(VersionNotSupportedException.class, serverResponse);
 
         // ver=2,4,6
@@ -107,6 +103,29 @@ public class SQRLResponseTest {
 
         // Missing sfn
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0K";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+    }
+
+    @Test
+    public void shouldThrowInvalidServerResponseIfRequiredNameValuePairsAreMissingValues() throws Exception {
+        // ver=
+        String serverResponse = "dmVyPQ0KbnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // nut=
+        serverResponse = "dmVyPTENCm51dD0NCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // tif=
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9DQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // qry=
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0NCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // sfn=
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPQ0K";
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
     }
 

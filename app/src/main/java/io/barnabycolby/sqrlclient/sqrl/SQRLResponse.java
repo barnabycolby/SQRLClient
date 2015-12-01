@@ -34,18 +34,18 @@ public class SQRLResponse {
     }
 
     private void checkThatAllRequiredNameValuePairsArePresent() throws InvalidServerResponseException {
-        checkParameterIsPresent("ver");
-        checkParameterIsPresent("nut");
-        checkParameterIsPresent("tif");
-        checkParameterIsPresent("qry");
-        checkParameterIsPresent("sfn");
+        checkNameValuePairIsPresent("ver");
+        checkNameValuePairIsPresent("nut");
+        checkNameValuePairIsPresent("tif");
+        checkNameValuePairIsPresent("qry");
+        checkNameValuePairIsPresent("sfn");
     }
 
-    private void checkParameterIsPresent(String parameter) throws InvalidServerResponseException {
+    private void checkNameValuePairIsPresent(String parameter) throws InvalidServerResponseException {
         String errorMessageSuffix = " parameter was not present in server response.";
 
         String parameterValue = nameValuePairs.get(parameter);
-        if (parameterValue == null) {
+        if (parameterValue == null || parameterValue.isEmpty()) {
             throw new InvalidServerResponseException("\"" + parameter + "\"" + errorMessageSuffix);
         }
     }
