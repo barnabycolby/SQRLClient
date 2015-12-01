@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.test;
+package io.barnabycolby.sqrlclient.test.sqrl;
 
 import android.support.test.runner.AndroidJUnit4;
 import org.junit.*;

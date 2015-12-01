@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.test;
+package io.barnabycolby.sqrlclient.test.activities;
 
 import android.test.*;
 import android.content.Intent;
