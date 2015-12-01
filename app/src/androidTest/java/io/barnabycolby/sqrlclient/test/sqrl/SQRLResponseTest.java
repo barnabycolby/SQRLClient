@@ -141,15 +141,19 @@ public class SQRLResponseTest {
     }
 
 
-    private <E extends Exception> void assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
+    private SQRLResponse instantiateSQRLResponesFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
         HttpURLConnection connectionMock = mock(HttpURLConnection.class);
         when(connectionMock.getResponseCode()).thenReturn(200);
         InputStream inputStream = new ByteArrayInputStream(serverResponse.getBytes());
         when(connectionMock.getInputStream()).thenReturn(inputStream);
 
+        return new SQRLResponse(connectionMock);
+    }
+
+    private <E extends Exception> void assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
         try {
-            new SQRLResponse(connectionMock);
+            instantiateSQRLResponesFromServerResponseString(serverResponse);
         } catch (Exception ex) {
             if (exceptionType.isInstance(ex)) {
                 return;
@@ -163,13 +167,7 @@ public class SQRLResponseTest {
     }
 
     private void assertSuccessForGivenServerResponse(String serverResponse) throws Exception {
-        // Create the necessary mocks
-        HttpURLConnection connectionMock = mock(HttpURLConnection.class);
-        when(connectionMock.getResponseCode()).thenReturn(200);
-        InputStream inputStream = new ByteArrayInputStream(serverResponse.getBytes());
-        when(connectionMock.getInputStream()).thenReturn(inputStream);
-
-        new SQRLResponse(connectionMock);
+        instantiateSQRLResponesFromServerResponseString(serverResponse);
     }
 
     private void assertExceptionThrownWhenConnectionReturnsGivenCode(int responseCode) throws Exception {
