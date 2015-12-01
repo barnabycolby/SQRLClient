@@ -69,7 +69,7 @@ public class SQRLRequest {
         return base64Encode(fullUri);
     }
 
-    public SQRLResponse send() throws MalformedURLException, IOException, CryptographyException, VersionNotSupportedException, InvalidServerResponseException {
+    public SQRLResponse send() throws MalformedURLException, IOException, CryptographyException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException {
         // Get the output stream as a writer to make our life easier
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.getConnection().getOutputStream(), "UTF-8");
 

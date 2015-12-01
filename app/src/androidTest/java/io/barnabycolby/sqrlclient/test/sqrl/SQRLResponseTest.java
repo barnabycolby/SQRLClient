@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 
 import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
+import io.barnabycolby.sqrlclient.exceptions.CommandFailedException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
 import static org.mockito.Mockito.mock;
@@ -140,6 +141,36 @@ public class SQRLResponseTest {
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
     }
 
+    /**
+     * This test handles the cases where the tif value has the 0x40 bit set (Command failed)
+     */
+    @Test
+    public void shouldHandleCommandFailedServerResponses() throws Exception {
+        // Function not supported (0x10)
+        // tif=50
+        String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NTANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
+        assertExceptionThrownForGivenServerResponse(CommandFailedException.class, serverResponse);
+
+        // Transient error (0x20)
+        // tif=60
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NjANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
+        assertExceptionThrownForGivenServerResponse(CommandFailedException.class, serverResponse);
+
+        // Client failure (0x80)
+        // tif=c0
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9YzANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
+        assertExceptionThrownForGivenServerResponse(CommandFailedException.class, serverResponse);
+
+        // Bad ID Association (0x100)
+        // tif=140
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MTQwDQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(CommandFailedException.class, serverResponse);
+
+        // Invalid link origin (0x200)
+        // tif=240
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQwDQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(CommandFailedException.class, serverResponse);
+    }
 
     private SQRLResponse instantiateSQRLResponesFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks

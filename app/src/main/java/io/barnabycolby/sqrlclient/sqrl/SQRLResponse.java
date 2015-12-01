@@ -1,18 +1,21 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
-import java.net.HttpURLConnection;
-import java.io.*;
-import io.barnabycolby.sqrlclient.exceptions.*;
-import java.util.Map;
-import android.support.v4.util.ArrayMap;
-import java.nio.charset.Charset;
 import android.util.Base64;
+import android.support.v4.util.ArrayMap;
+
+import io.barnabycolby.sqrlclient.exceptions.*;
+
+import java.io.*;
 import java.lang.Character;
+import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
+import java.util.Map;
 
 public class SQRLResponse {
     private Map<String, String> nameValuePairs;
+    private int tif;
 
-    public SQRLResponse(HttpURLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException {
+    public SQRLResponse(HttpURLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException {
         // Check the response code
         if (connection.getResponseCode() != 200) {
             throw new IOException();
@@ -27,23 +30,41 @@ public class SQRLResponse {
 
         // Perform response validity checks
         checkThatAllRequiredNameValuePairsArePresent();
-        checkVersionIsValid();
-        checkTifIsValid();
+        checkVersionIsValidAndSupported();
+        checkTifIsValidAndCommandDidNotFail();
     }
 
-    private void checkTifIsValid() throws InvalidServerResponseException {
+    private void checkTifIsValidAndCommandDidNotFail() throws InvalidServerResponseException, CommandFailedException {
         String tifValue = nameValuePairs.get("tif");
         
         // As we have no idea how long the tif value is, we iterate over each character
-        for (int i = 0; i < tifValue.length(); i++) {
-            char c = tifValue.charAt(i);
-            if (Character.digit(c, 16) == -1) {
-                throw new InvalidServerResponseException("\"tif\" value in server response was not hexadecimal.");
+        try {
+            this.tif = Integer.parseInt(tifValue, 16);
+        } catch (NumberFormatException ex) {
+            throw new InvalidServerResponseException("\"tif\" value in server response was not hexadecimal.");
+        }
+
+        // Check for the command not failed bit
+        if ((this.tif & TifBits.COMMAND_FAILED) != 0) {
+            String errorMessage = "An unknown error occurred.";
+
+            if ((this.tif & TifBits.FUNCTION_NOT_SUPPORTED) != 0) {
+                errorMessage = "Query function is not supported by server.";
+            } else if ((this.tif & TifBits.TRANSIENT_ERROR) != 0) {
+                errorMessage = "A transient error occurred, should retry with updated nut and qry values.";
+            } else if ((this.tif & TifBits.CLIENT_FAILURE) != 0) {
+                errorMessage = "Some aspect of the request was incorrect, according to the server.";
+            } else if ((this.tif & TifBits.BAD_ID_ASSOCIATION) != 0) {
+                errorMessage = "Perhaps the wrong SQRL Identity was used?";
+            } else if ((this.tif & TifBits.INVALID_LINK_ORIGIN) != 0) {
+                errorMessage = "The url passed to the server was invalid, according to the server.";
             }
+
+            throw new CommandFailedException(errorMessage);
         }
     }
 
-    private void checkVersionIsValid() throws VersionNotSupportedException {
+    private void checkVersionIsValidAndSupported() throws VersionNotSupportedException {
         // Check that the version is compatible with the version supported by this client
         String versionString = nameValuePairs.get("ver");
         if (!isVersionSupported(versionString)) {
