@@ -7,6 +7,7 @@ import java.util.Map;
 import android.support.v4.util.ArrayMap;
 import java.nio.charset.Charset;
 import android.util.Base64;
+import java.lang.Character;
 
 public class SQRLResponse {
     private Map<String, String> nameValuePairs;
@@ -24,8 +25,25 @@ public class SQRLResponse {
         String serverResponse = new String(decodedResponse, Charset.forName("UTF-8"));
         this.nameValuePairs = convertServerResponseToMap(serverResponse);
 
+        // Perform response validity checks
         checkThatAllRequiredNameValuePairsArePresent();
+        checkVersionIsValid();
+        checkTifIsValid();
+    }
 
+    private void checkTifIsValid() throws InvalidServerResponseException {
+        String tifValue = nameValuePairs.get("tif");
+        
+        // As we have no idea how long the tif value is, we iterate over each character
+        for (int i = 0; i < tifValue.length(); i++) {
+            char c = tifValue.charAt(i);
+            if (Character.digit(c, 16) == -1) {
+                throw new InvalidServerResponseException("\"tif\" value in server response was not hexadecimal.");
+            }
+        }
+    }
+
+    private void checkVersionIsValid() throws VersionNotSupportedException {
         // Check that the version is compatible with the version supported by this client
         String versionString = nameValuePairs.get("ver");
         if (!isVersionSupported(versionString)) {

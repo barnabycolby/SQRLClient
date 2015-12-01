@@ -107,6 +107,17 @@ public class SQRLResponseTest {
     }
 
     @Test
+    public void shouldThrowInvalidServerResponseIfTifIsNotAHexidecimalValue() throws Exception {
+        // tif=beans
+        String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9YmVhbnMNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+
+        // tif=1fg
+        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MWZnDQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+    }
+
+    @Test
     public void shouldThrowInvalidServerResponseIfRequiredNameValuePairsAreMissingValues() throws Exception {
         // ver=
         String serverResponse = "dmVyPQ0KbnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnRpZj0yNA0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
@@ -128,6 +139,7 @@ public class SQRLResponseTest {
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPQ0K";
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
     }
+
 
     private <E extends Exception> void assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
         // Create the necessary mocks
