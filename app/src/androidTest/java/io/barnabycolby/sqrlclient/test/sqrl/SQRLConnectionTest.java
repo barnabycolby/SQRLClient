@@ -1,14 +1,16 @@
 package io.barnabycolby.sqrlclient.test.sqrl;
 
 import android.support.test.runner.AndroidJUnit4;
+import android.net.Uri;
+
+import io.barnabycolby.sqrlclient.sqrl.*;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+
 import org.junit.*;
 import org.junit.runner.RunWith;
 import static org.mockito.Mockito.*;
-import android.net.Uri;
-import java.net.HttpURLConnection;
-import java.io.*;
-
-import io.barnabycolby.sqrlclient.sqrl.*;
 
 @RunWith(AndroidJUnit4.class)
 public class SQRLConnectionTest {
