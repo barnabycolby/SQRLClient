@@ -16,6 +16,7 @@ import io.barnabycolby.sqrlclient.exceptions.CommandFailedException;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
 import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
+import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
 import static org.mockito.Mockito.mock;
@@ -45,7 +46,7 @@ public class SQRLResponseTest {
     @Test
     public void constructRequestWithoutExceptionWhenResponseCodeIs200() throws Exception {
         // Create the necessary mocks
-        HttpURLConnection connectionMock = mock(HttpURLConnection.class);
+        SQRLConnection connectionMock = mock(SQRLConnection.class);
         OutputStream mockOutputStream = mock(OutputStream.class);
         when(connectionMock.getOutputStream()).thenReturn(mockOutputStream);
         when(connectionMock.getResponseCode()).thenReturn(200);
@@ -196,7 +197,7 @@ public class SQRLResponseTest {
 
     private SQRLResponse instantiateSQRLResponesFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
-        HttpURLConnection connectionMock = mock(HttpURLConnection.class);
+        SQRLConnection connectionMock = mock(SQRLConnection.class);
         when(connectionMock.getResponseCode()).thenReturn(200);
         InputStream inputStream = new ByteArrayInputStream(serverResponse.getBytes());
         when(connectionMock.getInputStream()).thenReturn(inputStream);
@@ -225,7 +226,7 @@ public class SQRLResponseTest {
 
     private void assertExceptionThrownWhenConnectionReturnsGivenCode(int responseCode) throws Exception {
         // Create the necessary mocks
-        HttpURLConnection connectionMock = mock(HttpURLConnection.class);
+        SQRLConnection connectionMock = mock(SQRLConnection.class);
         OutputStream mockOutputStream = mock(OutputStream.class);
         when(connectionMock.getOutputStream()).thenReturn(mockOutputStream);
         when(connectionMock.getResponseCode()).thenReturn(responseCode);

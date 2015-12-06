@@ -4,6 +4,7 @@ import android.util.Base64;
 import android.support.v4.util.ArrayMap;
 
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
 
 import java.io.*;
 import java.lang.Character;
@@ -15,7 +16,7 @@ public class SQRLResponse {
     private Map<String, String> nameValuePairs;
     private int tif;
 
-    public SQRLResponse(HttpURLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException {
+    public SQRLResponse(SQRLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException {
         // Check the response code
         if (connection.getResponseCode() != 200) {
             throw new IOException();
