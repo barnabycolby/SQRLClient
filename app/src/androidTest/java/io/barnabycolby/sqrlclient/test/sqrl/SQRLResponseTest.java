@@ -159,6 +159,7 @@ public class SQRLResponseTest {
         TransientErrorException transientErrorException = (TransientErrorException)assertExceptionThrownForGivenServerResponse(TransientErrorException.class, serverResponse);
         Assert.assertEquals("sqYNVbO3_OVKNtND42wd_A", transientErrorException.getNut());
         Assert.assertEquals("/sqrl?nut=sqYNVbO3_OVKNtND42wd_A", transientErrorException.getQry());
+        Assert.assertEquals(serverResponse, transientErrorException.getLastServerResponse());
 
         // Client failure (0x80)
         // tif=c0

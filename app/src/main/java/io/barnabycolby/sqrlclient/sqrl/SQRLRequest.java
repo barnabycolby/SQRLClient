@@ -44,29 +44,39 @@ public class SQRLRequest {
         return base64Encode(fullUri);
     }
 
-    public SQRLResponse send() throws MalformedURLException, IOException, CryptographyException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException {
+    public SQRLResponse send() throws MalformedURLException, IOException, CryptographyException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException, NoNutException {
         // Get the output stream as a writer to make our life easier
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getOutputStream(), "UTF-8");
 
-        // Write the data
         String clientValue = getClientValue();
-        String serverValue = getServerValue();
-        String idsValue = this.sqrlIdentity.signUsingIdentityPrivateKey(clientValue + serverValue);
-        outputStreamWriter.write("client=" + clientValue);
-        outputStreamWriter.write("&server=" + serverValue);
-        outputStreamWriter.write("&ids=" + idsValue);
-
-        // Make sure that all the data is written
-        outputStreamWriter.flush();
+        generateAndSendRequest(outputStreamWriter, clientValue, getServerValue());
 
         SQRLResponse response;
+        String lastServerResponse;
         try {
             response = this.sqrlResponseFactory.create(this.sqrlConnection);
             return response;
         } catch (TransientErrorException ex) {
-            // Absorb the exception, causing the retry below
+            // Update the connection to use the new qry value retrieved by the response
+            this.sqrlConnection.updatePathAndQuery(ex.getQry());
+            outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getOutputStream(), "UTF-8");
+
+            // Store the last server response so that we can access it later
+            lastServerResponse = ex.getLastServerResponse();
+
+            // Now we try one last time to contact the server
         }
 
+        generateAndSendRequest(outputStreamWriter, clientValue, lastServerResponse);
         return this.sqrlResponseFactory.create(this.sqrlConnection);
+    }
+
+    private void generateAndSendRequest(OutputStreamWriter outputStreamWriter, String clientValue, String serverValue) throws IOException, CryptographyException {
+        String idsValue = this.sqrlIdentity.signUsingIdentityPrivateKey(clientValue + serverValue);
+
+        outputStreamWriter.write("client=" + clientValue);
+        outputStreamWriter.write("&server=" + serverValue);
+        outputStreamWriter.write("&ids=" + idsValue);
+        outputStreamWriter.flush();
     }
 }

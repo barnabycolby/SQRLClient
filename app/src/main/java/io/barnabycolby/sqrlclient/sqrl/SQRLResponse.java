@@ -32,10 +32,13 @@ public class SQRLResponse {
         // Perform response validity checks
         checkThatAllRequiredNameValuePairsArePresent();
         checkVersionIsValidAndSupported();
-        checkTifIsValidAndCommandDidNotFail();
+        checkTifIsValidAndCommandDidNotFail(new String(encodedServerResponse, Charset.forName("UTF-8")));
     }
 
-    private void checkTifIsValidAndCommandDidNotFail() throws InvalidServerResponseException, CommandFailedException, TransientErrorException {
+    /**
+     * This method requires the server response as a parameter just in case it needs to throw a TransientErrorException
+     */
+    private void checkTifIsValidAndCommandDidNotFail(String serverResponse) throws InvalidServerResponseException, CommandFailedException, TransientErrorException {
         String tifValue = nameValuePairs.get("tif");
         
         // As we have no idea how long the tif value is, we iterate over each character
@@ -53,7 +56,7 @@ public class SQRLResponse {
                 errorMessage = "Query function is not supported by server.";
             } else if ((this.tif & TifBits.TRANSIENT_ERROR) != 0) {
                 errorMessage = "A transient error occurred, should retry with updated nut and qry values.";
-                throw new TransientErrorException(errorMessage, nameValuePairs.get("nut"), nameValuePairs.get("qry"));
+                throw new TransientErrorException(errorMessage, nameValuePairs.get("nut"), nameValuePairs.get("qry"), serverResponse);
             } else if ((this.tif & TifBits.CLIENT_FAILURE) != 0) {
                 errorMessage = "Some aspect of the request was incorrect, according to the server.";
             } else if ((this.tif & TifBits.BAD_ID_ASSOCIATION) != 0) {
