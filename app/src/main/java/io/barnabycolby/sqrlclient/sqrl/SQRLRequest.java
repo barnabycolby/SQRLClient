@@ -1,27 +1,32 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import android.util.Base64;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.io.*;
 import java.net.URL;
-import android.util.Base64;
 import java.nio.charset.Charset;
+
 import io.barnabycolby.sqrlclient.exceptions.*;
 
 public class SQRLRequest {
 
     private SQRLUri sqrlUri;
     private SQRLIdentity sqrlIdentity;
+    private SQRLResponseFactory sqrlResponseFactory;
     private HttpURLConnection connection;
 
-    public SQRLRequest(SQRLUri sqrlUri, SQRLIdentity sqrlIdentity) {
+    public SQRLRequest(SQRLUri sqrlUri, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory) {
         this.sqrlUri = sqrlUri;
         this.sqrlIdentity = sqrlIdentity;
+        this.sqrlResponseFactory = sqrlResponseFactory;
     }
 
-    public SQRLRequest(SQRLUri sqrlUri, SQRLIdentity sqrlIdentity, HttpURLConnection connection) {
+    public SQRLRequest(SQRLUri sqrlUri, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, HttpURLConnection connection) {
         this.sqrlUri = sqrlUri;
         this.sqrlIdentity = sqrlIdentity;
+        this.sqrlResponseFactory = sqrlResponseFactory;
         this.connection = connection;
     }
 
@@ -84,6 +89,14 @@ public class SQRLRequest {
         // Make sure that all the data is written
         outputStreamWriter.flush();
 
-        return new SQRLResponse(this.getConnection());
+        SQRLResponse response;
+        try {
+            response = this.sqrlResponseFactory.create(this.getConnection());
+            return response;
+        } catch (TransientErrorException ex) {
+            // Absorb the exception, causing the retry below
+        }
+
+        return this.sqrlResponseFactory.create(this.getConnection());
     }
 }
