@@ -53,7 +53,7 @@ public class SQRLResponse {
                 errorMessage = "Query function is not supported by server.";
             } else if ((this.tif & TifBits.TRANSIENT_ERROR) != 0) {
                 errorMessage = "A transient error occurred, should retry with updated nut and qry values.";
-                throw new TransientErrorException(errorMessage);
+                throw new TransientErrorException(errorMessage, nameValuePairs.get("nut"), nameValuePairs.get("qry"));
             } else if ((this.tif & TifBits.CLIENT_FAILURE) != 0) {
                 errorMessage = "Some aspect of the request was incorrect, according to the server.";
             } else if ((this.tif & TifBits.BAD_ID_ASSOCIATION) != 0) {

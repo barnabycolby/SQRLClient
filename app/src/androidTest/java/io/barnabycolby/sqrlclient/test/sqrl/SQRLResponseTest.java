@@ -156,7 +156,9 @@ public class SQRLResponseTest {
         // Transient error (0x20)
         // tif=60
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NjANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
-        assertExceptionThrownForGivenServerResponse(TransientErrorException.class, serverResponse);
+        TransientErrorException transientErrorException = (TransientErrorException)assertExceptionThrownForGivenServerResponse(TransientErrorException.class, serverResponse);
+        Assert.assertEquals("sqYNVbO3_OVKNtND42wd_A", transientErrorException.getNut());
+        Assert.assertEquals("/sqrl?nut=sqYNVbO3_OVKNtND42wd_A", transientErrorException.getQry());
 
         // Client failure (0x80)
         // tif=c0
@@ -205,12 +207,12 @@ public class SQRLResponseTest {
         return new SQRLResponse(connectionMock);
     }
 
-    private <E extends Exception> void assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
+    private <E extends Exception> Exception assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
         try {
             instantiateSQRLResponesFromServerResponseString(serverResponse);
         } catch (Exception ex) {
             if (exceptionType.isInstance(ex)) {
-                return;
+                return ex;
             } else {
                 throw ex;
             }
@@ -218,6 +220,7 @@ public class SQRLResponseTest {
         
         // An exception was not thrown
         Assert.fail("SQRLResponse constructor did not throw a " + exceptionType.getSimpleName());
+        return null;
     }
 
     private void assertSuccessForGivenServerResponse(String serverResponse) throws Exception {
