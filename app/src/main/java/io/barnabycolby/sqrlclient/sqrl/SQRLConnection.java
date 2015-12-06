@@ -15,7 +15,10 @@ public class SQRLConnection {
 
     public SQRLConnection(SQRLUri sqrlUri) throws MalformedURLException, IOException {
         this.sqrlUri = sqrlUri;
+        initialiseConnection();
+    }
 
+    private void initialiseConnection() throws MalformedURLException, IOException {
         URL url = new URL(this.sqrlUri.getCommunicationURL());
         this.connection = (HttpURLConnection)url.openConnection();
 
@@ -52,7 +55,12 @@ public class SQRLConnection {
         return this.connection;
     }
 
-    public void updatePathAndQuery(String newQuery) throws MalformedURLException, NoNutException {
+    public void updatePathAndQuery(String newQuery) throws MalformedURLException, NoNutException, IOException {
+        // Ask SQRLUri to update itself
         this.sqrlUri.updatePathAndQuery(newQuery);
+
+        // Now we need to update the connection to use the new SQRLUri
+        this.connection.disconnect();
+        this.initialiseConnection();
     }
 }
