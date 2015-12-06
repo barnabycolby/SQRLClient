@@ -1,13 +1,16 @@
 package io.barnabycolby.sqrlclient.test.sqrl;
 
-import android.support.test.runner.AndroidJUnit4;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.Assert;
 import android.net.Uri;
+import android.support.test.runner.AndroidJUnit4;
 
-import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
+
+import java.net.MalformedURLException;
+
+import org.junit.Assert;
+import org.junit.runner.RunWith;
+import org.junit.Test;
 
 @RunWith(AndroidJUnit4.class)
 public class SQRLUriTest {
@@ -94,6 +97,53 @@ public class SQRLUriTest {
         Uri uri = Uri.parse(uriAsString);
         SQRLUri sqrlUri = new SQRLUri(uri);
         Assert.assertEquals(uriAsString, sqrlUri.getFullUriAsString());
+    }
+
+    @Test
+    public void throwExceptionWhenUpdateQueryCalledWithInvalidQuery() throws Exception {
+        String uriAsString = "sqrl://www.grc.com/sqrl?nut=rOL2Cj3VMlyfRhwOTAl-7w&sfn=R1JD";
+        Uri uri = Uri.parse(uriAsString);
+        SQRLUri sqrlUri = new SQRLUri(uri);
+
+        String queryString = "/foo(bar)baz quux";
+        try {
+            sqrlUri.updatePathAndQuery(queryString);
+        } catch (MalformedURLException ex) {
+            return;
+        }
+
+        Assert.fail("MalformedURLException was not thrown when updateQuery called with \"" + queryString + "\"");
+    }
+
+    @Test
+    public void throwExceptionWhenUpdateQueryCalledWithoutNut() throws Exception {
+        String uriAsString = "sqrl://www.grc.com/sqrl?nut=rOL2Cj3VMlyfRhwOTAl-7w&sfn=R1JD";
+        Uri uri = Uri.parse(uriAsString);
+        SQRLUri sqrlUri = new SQRLUri(uri);
+
+        String queryString = "/auth?sfn=R1JD";
+        try {
+            sqrlUri.updatePathAndQuery(queryString);
+        } catch (NoNutException ex) {
+            return;
+        }
+
+        Assert.fail("NoNutException was not thrown when updateQuery called with \"" + queryString + "\"");
+    }
+
+    @Test
+    public void correctlyUpdateUriWhenUpdatePathAndQueryCalled() throws Exception {
+        String originalPathAndQuery = "/sqrl?nut=rOL2Cj3VMlyfRhwOTAl-7w&sfn=R1JD";
+        String baseUri = "sqrl://www.grc.com";
+        String uriAsString = baseUri + originalPathAndQuery;
+        Uri uri = Uri.parse(uriAsString);
+        SQRLUri sqrlUri = new SQRLUri(uri);
+
+        String newPathAndQueryString = "/auth?nut=xrLqqZwU8Xpk71NfAD2mOQ";
+        sqrlUri.updatePathAndQuery(newPathAndQueryString);
+
+        String expectedUri = baseUri + newPathAndQueryString;
+        Assert.assertEquals(expectedUri, sqrlUri.getFullUriAsString());
     }
 
     private Uri getUriSchemeAndNut(String scheme, String nut) {

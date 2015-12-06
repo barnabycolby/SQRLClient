@@ -1,5 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import io.barnabycolby.sqrlclient.exceptions.NoNutException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,5 +50,9 @@ public class SQRLConnection {
 
     public HttpURLConnection getConnection() {
         return this.connection;
+    }
+
+    public void updatePathAndQuery(String newQuery) throws MalformedURLException, NoNutException {
+        this.sqrlUri.updatePathAndQuery(newQuery);
     }
 }

@@ -2,9 +2,14 @@ package io.barnabycolby.sqrlclient.sqrl;
 
 import android.net.Uri;
 import android.util.Base64;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
+import android.util.Patterns;
+
 import io.barnabycolby.sqrlclient.exceptions.*;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 public class SQRLUri {
 
@@ -20,11 +25,7 @@ public class SQRLUri {
             throw new UnknownSchemeException(uriScheme);
         }
 
-        // Check the URI has a nut (query string parameter)
-        String nut = uri.getQueryParameter("nut");
-        if (nut == null) {
-            throw new NoNutException();
-        }
+        checkUriHasNut(uri);
     }
 
     public String getDisplayName() {
@@ -66,5 +67,44 @@ public class SQRLUri {
 
     public String getFullUriAsString() {
         return this.uri.toString();
+    }
+
+    public void updatePathAndQuery(String newQuery) throws MalformedURLException, NoNutException {
+        Uri.Builder builder = this.uri.buildUpon();
+        builder.clearQuery();
+        
+        // Split the string on the ? character, so that we can deal with the path and query separately
+        String[] newQueryComponents = newQuery.split("\\?", 2);
+
+        // Set the path
+        builder.encodedPath(newQueryComponents[0]);
+
+        // Set the query, if one has been given
+        if (newQueryComponents.length > 1) {
+            builder.encodedQuery(newQueryComponents[1]);
+        }
+
+        // We must check the validity of the URL, as the Uri class does not perform any validation
+        // The validator only recognises certain schemes, so we must first change the scheme of our new URI
+        builder.scheme("http");
+        Uri newUri = builder.build();
+        if (!Patterns.WEB_URL.matcher(newUri.toString()).matches()) {
+            throw new MalformedURLException();
+        }
+        // Reset the scheme
+        builder.scheme(this.uri.getScheme());
+        newUri = builder.build();
+
+        // If the Uri has a nut then we commit the change
+        checkUriHasNut(newUri);
+        this.uri = newUri;
+    }
+
+    private void checkUriHasNut(Uri uriToCheck) throws NoNutException {
+        // Check the URI has a nut (query string parameter)
+        String nut = uriToCheck.getQueryParameter("nut");
+        if (nut == null) {
+            throw new NoNutException();
+        }
     }
 }
