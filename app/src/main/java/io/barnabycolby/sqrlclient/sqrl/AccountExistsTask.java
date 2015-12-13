@@ -59,7 +59,7 @@ public class AccountExistsTask extends AsyncTask<SQRLUri, Void, Boolean> {
     protected void onPostExecute(Boolean result) {
         String textToSet;
 
-        if (result == null
+        if (result == null) {
             textToSet = "Something went wrong.";
         } else if (result.booleanValue()) {
             textToSet = this.accountExistsString;
