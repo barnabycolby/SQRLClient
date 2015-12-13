@@ -6,4 +6,6 @@
     <string name="confirm_site_name">Confirm</string>
     <string name="incorrect_site_name">This is not the right site</string>
     <string name="cannot_display_buttons">Could not display the confirm/deny site buttons.</string>
+    <string name="account_exists">The account already exists.</string>
+    <string name="account_does_not_exist">The account does not yet exist.</string>
 </resources>

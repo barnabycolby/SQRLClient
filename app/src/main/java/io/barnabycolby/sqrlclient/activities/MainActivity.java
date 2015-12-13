@@ -1,15 +1,17 @@
 package io.barnabycolby.sqrlclient.activities;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.content.Intent;
-import android.widget.*;
-import android.net.Uri;
 import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import io.barnabycolby.sqrlclient.R;
+import android.widget.*;
+
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.sqrl.AccountExistsTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView friendlySiteNameTextView;
     private SQRLUri sqrlUri;
     private View confirmDenySiteButtons;
+    private Resources resources;
+    private TextView accountExistsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Store the uri in a SQRLUri so that we can query it more easily
-        Resources resources = getResources();
+        this.resources = getResources();
         String errorMessage;
         try {
             sqrlUri = new SQRLUri(uri);
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         confirmDenySiteButtons.setVisibility(View.VISIBLE);
+
+        this.accountExistsTextView = (TextView)findViewById(R.id.AccountExistsTextView);
     }
 
     public void denySite(View view) {
@@ -66,7 +72,15 @@ public class MainActivity extends AppCompatActivity {
         String noUriMessage = getResources().getString(R.string.no_uri);
         friendlySiteNameTextView.setText(noUriMessage);
 
-        // Hide the confirm/deny buttons
+        // Hide the unnecessary UI elements
         confirmDenySiteButtons.setVisibility(View.GONE);
+        accountExistsTextView.setVisibility(View.GONE);
+    }
+
+    public void confirmSite(View view) {
+        String accountExistsString = resources.getString(R.string.account_exists);
+        String accountDoesNotExistString = resources.getString(R.string.account_does_not_exist);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(accountExistsTextView, accountExistsString, accountDoesNotExistString);
+        accountExistsTask.execute(this.sqrlUri);
     }
 }

@@ -15,8 +15,8 @@
 
     <LinearLayout
         android:id="@+id/ConfirmDenySiteButtons"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/FriendlySiteNameTextView"
         android:visibility="gone"
         >
@@ -24,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/confirm_site_name"
+            android:onClick="confirmSite"
         />
         <Button
             android:id="@+id/DenySiteButton"
@@ -33,5 +34,13 @@
             android:onClick="denySite"
         />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/AccountExistsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@id/ConfirmDenySiteButtons"
+        />
 
 </RelativeLayout>
