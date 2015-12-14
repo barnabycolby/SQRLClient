@@ -15,6 +15,14 @@ import io.barnabycolby.sqrlclient.sqrl.AccountExistsTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 
+/**
+ * Activity takes a SQRL URI and provides the user with the ability to query the server to display whether an account exists or not.
+ * <p>
+ * SQRL Uri is passed to this activity by clicking on a sqrl:// or qrl:// hyperlink (normally a QR code) in a browser.
+ * The sites friendly name is displayed to the user with the choice of sending or not sending the query request to the site.
+ * If the user proceeds, then text is displayed to indicate whether the account exists.
+ * </p>
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -68,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         this.accountExistsTextView = (TextView)findViewById(R.id.AccountExistsTextView);
     }
 
+    /**
+     * Called when the deny site button is clicked.
+     */
     public void denySite(View view) {
         // Set the text view to show the 'tap to proceed' message
         String noUriMessage = getResources().getString(R.string.no_uri);
@@ -78,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
         accountExistsTextView.setVisibility(View.GONE);
     }
 
+    /**
+     * Called when the confirm site button is clicked.
+     */
     public void confirmSite(View view) {
         SQRLRequestFactory factory = new SQRLRequestFactory(this.sqrlUri);
         AccountExistsTask accountExistsTask = new AccountExistsTask(factory, accountExistsTextView, resources);

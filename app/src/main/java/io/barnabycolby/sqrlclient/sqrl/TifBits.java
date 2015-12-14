@@ -1,5 +1,8 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+/**
+ * Maps friendly names of the flags encoded by the tif value to their actual hexadecimal value.
+ */
 public class TifBits {
     public static final int CURRENT_ID_MATCH = 0x1;
     public static final int FUNCTION_NOT_SUPPORTED = 0x10;

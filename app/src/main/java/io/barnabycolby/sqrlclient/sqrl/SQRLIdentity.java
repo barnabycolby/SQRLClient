@@ -5,6 +5,9 @@ import android.util.Base64;
 import java.nio.charset.Charset;
 import io.barnabycolby.sqrlclient.exceptions.CryptographyException;
 
+/**
+ * Wraps a SQRL Identity to provide helper methods for using the identity.
+ */
 public class SQRLIdentity {
     private Sodium sodium;
 
@@ -13,11 +16,22 @@ public class SQRLIdentity {
         this.sodium = NaCl.sodium();
     }
 
+    /**
+     * Gets the SQRL Identity public key.
+     *
+     * @return The identity key.
+     */
     public String getIdentityKey() {
         // Currently this simply returns a hardcoded public key
         return "AKcDCChuFwzyHo2gm14fbuFmi27MIjUmcEXJx4pWdLo";
     }
 
+    /**
+     * Signs a message using the private key of the SQRL Identity.
+     *
+     * @return The signed message.
+     * @throws CryptographyException  If an unrecoverable cryptographic error occurs when signing the message.
+     */
     public String signUsingIdentityPrivateKey(String message) throws CryptographyException {
         // Currently this uses a hardcoded private key that matches
         // the public key used above

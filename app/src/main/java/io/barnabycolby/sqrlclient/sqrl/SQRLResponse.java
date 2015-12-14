@@ -12,10 +12,24 @@ import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+/**
+ * Parses a SQRL servers response to allow easy access to the information it contains.
+ */
 public class SQRLResponse {
     private Map<String, String> nameValuePairs;
     private int tif;
 
+    /**
+     * Constructs a SQRLResponse object using the given connection.
+     *
+     * @param connection The connection that the request was sent over.
+     *
+     * @throws IOException  If an IO error occurs when reading the response.
+     * @throws VersionNotSupportedException  If the server is using a response not supported by this client.
+     * @throws InvalidServerResponseException  If the servers response was invalid.
+     * @throws CommandFailedException  If the servers response indicates that the command failed.
+     * @throws TransientErrorException  If the servers response indicates that a transient error occurs.
+     */
     public SQRLResponse(SQRLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException {
         // Check the response code
         if (connection.getResponseCode() != 200) {
@@ -36,7 +50,13 @@ public class SQRLResponse {
     }
 
     /**
-     * This method requires the server response as a parameter just in case it needs to throw a TransientErrorException
+     * Checks the tif value in the servers response for any possible errors.
+     *
+     * @param serverResponse  The server response is required just in case a TransientErrorException needs to be thrown.
+     *
+     * @throws InvalidServerResponseException  If the tif value is not valid.
+     * @throws CommandFailedException  If the tif value indicates a command failed error.
+     * @throws TransientErrorException  If the tif value indicates a transient error.
      */
     private void checkTifIsValidAndCommandDidNotFail(String serverResponse) throws InvalidServerResponseException, CommandFailedException, TransientErrorException {
         String tifValue = nameValuePairs.get("tif");
@@ -69,6 +89,11 @@ public class SQRLResponse {
         }
     }
 
+    /**
+     * Checks the version value in the servers response is valid and supported.
+     *
+     * @throws VersionNotSupportedException  If the versions supported by the server are not supported by this client.
+     */
     private void checkVersionIsValidAndSupported() throws VersionNotSupportedException {
         // Check that the version is compatible with the version supported by this client
         String versionString = nameValuePairs.get("ver");
@@ -77,6 +102,11 @@ public class SQRLResponse {
         }
     }
 
+    /**
+     * Checks that all required name value pairs are present in the servers response.
+     *
+     * @throws InvalidServerResponseException  If some of the required name value pairs are not present in the servers response.
+     */
     private void checkThatAllRequiredNameValuePairsArePresent() throws InvalidServerResponseException {
         checkNameValuePairIsPresent("ver");
         checkNameValuePairIsPresent("nut");
@@ -85,6 +115,12 @@ public class SQRLResponse {
         checkNameValuePairIsPresent("sfn");
     }
 
+    /**
+     * Checks whether a name value pair is present in the servers response.
+     *
+     * @param parameter  The name of the parameter in the servers response.
+     * @throws InvalidServerResponseException  If the name value pair was not present in the response.
+     */
     private void checkNameValuePairIsPresent(String parameter) throws InvalidServerResponseException {
         String errorMessageSuffix = " parameter was not present in server response.";
 
@@ -94,6 +130,13 @@ public class SQRLResponse {
         }
     }
 
+    /**
+     * Checks whether the version string contains a version supported by this client.
+     *
+     * @param versionString  The value of the version parameter in the servers response.
+     * 
+     * @return True if the version of this client is supported, false otherwise.
+     */
     private boolean isVersionSupported(String versionString) {
         String[] serverSupportedVersions = versionString.split(",");
         for (String version : serverSupportedVersions) {
@@ -105,6 +148,14 @@ public class SQRLResponse {
         return false;
     }
 
+    /**
+     * Converts an input stream to a byte array.
+     *
+     * @param inputStream  The input stream to convert to a byte array.
+     * @return The resulting byte array.
+     *
+     * @throws IOException  If an IO error occurs.
+     */
     private byte[] convertInputStreamToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
 
@@ -119,6 +170,14 @@ public class SQRLResponse {
         return dataStream.toByteArray();
     }
 
+    /**
+     * Converts the server response string to a map of the name value pairs.
+     *
+     * @param serverResponse  The server response as a string.
+     * @return The resulting map of name value pairs.
+     *
+     * @throws InvalidServerResponseException  If the servers response was invalid.
+     */
     private Map<String, String> convertServerResponseToMap(String serverResponse) throws InvalidServerResponseException {
         // Split the response into lines, each containing a name and value pair
         String[] nameValuePairsAsStrings = serverResponse.split("\r\n");
@@ -137,6 +196,11 @@ public class SQRLResponse {
         return map;
     }
 
+    /**
+     * Checks whether tthe user account exists on the SQRL server already.
+     *
+     * @return True if the account exists, false otherwise.
+     */
     public boolean accountExists() {
         if ((this.tif & TifBits.CURRENT_ID_MATCH) != 0) {
             return true;

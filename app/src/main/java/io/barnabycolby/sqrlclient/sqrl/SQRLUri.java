@@ -11,10 +11,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+/**
+ * A wrapper around a Uri object that provides extra validation and helper methods related to the SQRL protocol.
+ */
 public class SQRLUri {
 
     private Uri uri;
 
+    /**
+     * Constructor that takes the Uri to wrap.
+     *
+     * @param uri  The Uri to wrap.
+     * @throws UnknownSchemeException  If the scheme of the uri was not sqrl or qrl.
+     * @throws NoNutException  If the uri did not contain a nut query parameter.
+     */
     public SQRLUri(Uri uri) throws UnknownSchemeException, NoNutException {
         // Store the URI for later
         this.uri = uri;
@@ -28,6 +38,11 @@ public class SQRLUri {
         checkUriHasNut(uri);
     }
 
+    /**
+     * Gets the display name, which is the encoded friendly name, or the hostname if this is not present.
+     *
+     * @return The display name.
+     */
     public String getDisplayName() {
         // Check for a friendly name parameter
         String friendlyNameBase64Encoded = this.uri.getQueryParameter("sfn");
@@ -51,6 +66,13 @@ public class SQRLUri {
         }
     }
 
+    /**
+     * Gets the url that should be used for communication.
+     *
+     * The URL used for communication should be the original URI with either the http or https scheme, based on the SQRL scheme.
+     *
+     * @return The communication URL.
+     */
     public String getCommunicationURL() {
         Uri.Builder builder = this.uri.buildUpon();
         if (this.uri.getScheme().toLowerCase().equals("sqrl")) {
@@ -61,14 +83,29 @@ public class SQRLUri {
         return builder.build().toString();
     }
 
+    /**
+     * Gets the hostname of the URI.
+     */
     public String getHost() {
         return this.uri.getHost();
     }
 
+    /**
+     * Gets the URI as a string.
+     */
     public String getFullUriAsString() {
         return this.uri.toString();
     }
 
+    /**
+     * Updates the path and query values of the URI.
+     *
+     * Updates the patha and query values of the URI using the given string.
+     *
+     * @param newQuery  The new path and query as a single string.
+     * @throws MalformedURLException  If the path and query were invalid.
+     * @throws NoNutException  If the path and query did not contain a nut query parameter.
+     */
     public void updatePathAndQuery(String newQuery) throws MalformedURLException, NoNutException {
         Uri.Builder builder = this.uri.buildUpon();
         builder.clearQuery();
@@ -100,6 +137,12 @@ public class SQRLUri {
         this.uri = newUri;
     }
 
+    /**
+     * Checks if a URI has a nut query parameter value.
+     *
+     * @param uriToCheck  The URI to check.
+     * @throws NoNutException  If the URI does not contain a nut vaule.
+     */
     private void checkUriHasNut(Uri uriToCheck) throws NoNutException {
         // Check the URI has a nut (query string parameter)
         String nut = uriToCheck.getQueryParameter("nut");
