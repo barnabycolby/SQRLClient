@@ -13,6 +13,7 @@ import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.AccountExistsTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
+import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
     public void confirmSite(View view) {
         String accountExistsString = resources.getString(R.string.account_exists);
         String accountDoesNotExistString = resources.getString(R.string.account_does_not_exist);
-        AccountExistsTask accountExistsTask = new AccountExistsTask(accountExistsTextView, accountExistsString, accountDoesNotExistString);
-        accountExistsTask.execute(this.sqrlUri);
+        SQRLRequestFactory factory = new SQRLRequestFactory(this.sqrlUri);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(factory, accountExistsTextView, accountExistsString, accountDoesNotExistString);
+        accountExistsTask.execute();
     }
 }
