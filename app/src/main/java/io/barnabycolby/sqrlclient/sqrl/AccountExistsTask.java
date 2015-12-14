@@ -1,7 +1,6 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -12,12 +11,13 @@ import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
 import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
+import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 
 import java.io.IOException;
 
-public class AccountExistsTask extends AsyncTask<Void, Void, Boolean> {
+public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     private SQRLRequestFactory sqrlRequestFactory;
     private TextView accountExistsTextView;
     private Resources resources;
@@ -46,6 +46,7 @@ public class AccountExistsTask extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
+    @Override
     protected void onPostExecute(Boolean result) {
         String textToSet;
 
@@ -58,5 +59,8 @@ public class AccountExistsTask extends AsyncTask<Void, Void, Boolean> {
         }
 
         this.accountExistsTextView.setText(textToSet);
+
+        // Signal that all execution has finished
+        this.executionFinished();
     }
 }
