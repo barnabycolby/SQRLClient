@@ -5,9 +5,9 @@ package io.barnabycolby.sqrlclient.exceptions;
  *
  * The SQRL entity could be the SQRL URI or a SQRL servers response.
  */
-public class NoNutException extends Exception {
+public class NoNutException extends SQRLException {
 
     public NoNutException() {
-        super("There was no nut.");
+        super("The required nut parameter was not present.");
     }
 }

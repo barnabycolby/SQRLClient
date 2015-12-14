@@ -22,10 +22,9 @@ public class SQRLUri {
      * Constructor that takes the Uri to wrap.
      *
      * @param uri  The Uri to wrap.
-     * @throws UnknownSchemeException  If the scheme of the uri was not sqrl or qrl.
-     * @throws NoNutException  If the uri did not contain a nut query parameter.
+     * @throws SQRLException  If the scheme of the uri was not sqrl or qrl, or the uri did not contain a nut query parameter.
      */
-    public SQRLUri(Uri uri) throws UnknownSchemeException, NoNutException {
+    public SQRLUri(Uri uri) throws SQRLException {
         // Store the URI for later
         this.uri = uri;
 

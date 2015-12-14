@@ -48,15 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Store the uri in a SQRLUri so that we can query it more easily
         this.resources = getResources();
-        String errorMessage;
         try {
             sqrlUri = new SQRLUri(uri);
-        } catch (UnknownSchemeException ex) {
-            errorMessage = resources.getString(R.string.unknown_scheme, ex.getScheme());
-            friendlySiteNameTextView.setText(errorMessage);
-            return;
-        } catch (NoNutException ex) {
-            errorMessage = resources.getString(R.string.no_nut);
+        } catch (SQRLException ex) {
+            String errorMessage = resources.getString(R.string.invalid_link);
             friendlySiteNameTextView.setText(errorMessage);
             return;
         }

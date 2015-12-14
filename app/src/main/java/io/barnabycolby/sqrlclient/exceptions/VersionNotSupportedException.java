@@ -3,7 +3,7 @@ package io.barnabycolby.sqrlclient.exceptions;
 /**
  * Signifies that the SQRL server is using a version not supported by this client.
  */
-public class VersionNotSupportedException extends Exception {
+public class VersionNotSupportedException extends SQRLException {
 
     /**
      * Constructor that takes the version value from the servers response so that it can be displayed to the user.

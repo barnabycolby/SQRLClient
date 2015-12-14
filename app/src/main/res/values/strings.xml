@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">SQRLClient</string>
     <string name="no_uri">Please tap a SQRL login QR image to proceed.</string>
-    <string name="unknown_scheme">The link was not valid (unrecognised scheme: %s).</string>
-    <string name="no_nut">The link was not valid (contained no nut).</string>
+    <string name="invalid_link">The link was not valid.</string>
     <string name="confirm_site_name">Confirm</string>
     <string name="incorrect_site_name">This is not the right site</string>
     <string name="cannot_display_buttons">Could not display the confirm/deny site buttons.</string>

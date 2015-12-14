@@ -25,12 +25,10 @@ public class SQRLResponse {
      * @param connection The connection that the request was sent over.
      *
      * @throws IOException  If an IO error occurs when reading the response.
-     * @throws VersionNotSupportedException  If the server is using a response not supported by this client.
-     * @throws InvalidServerResponseException  If the servers response was invalid.
-     * @throws CommandFailedException  If the servers response indicates that the command failed.
+     * @throws SQRLException  If the servers response resulted in an unrecoverable error.
      * @throws TransientErrorException  If the servers response indicates that a transient error occurs.
      */
-    public SQRLResponse(SQRLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException {
+    public SQRLResponse(SQRLConnection connection) throws IOException, SQRLException, TransientErrorException {
         // Check the response code
         if (connection.getResponseCode() != 200) {
             throw new IOException();

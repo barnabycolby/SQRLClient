@@ -20,6 +20,8 @@ public class SQRLConnection {
      * Constructor takes a SQRLUri object describing the information required to initialise communication with the SQRL server.
      *
      * @param sqrlUri  The SQRLUri containing information required to initialise communication with the server.
+     * @throws MalformedURLException  If the url was not valid for communication.
+     * @throws IOException  If an IO error occurred when creating the connection.
      */
     public SQRLConnection(SQRLUri sqrlUri) throws MalformedURLException, IOException {
         this.sqrlUri = sqrlUri;

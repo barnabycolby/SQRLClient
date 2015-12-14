@@ -6,7 +6,7 @@ package io.barnabycolby.sqrlclient.exceptions;
  * When a transient error occurs, the nut and qry values contained by the servers response should be used to try and recover from the error.
  * The request should be resent using the new nut and qry values, which can be retrieved from this exception.
  */
-public class TransientErrorException extends Exception {
+public class TransientErrorException extends SQRLException {
     private String nut;
     private String qry;
     private String lastServerResponse;

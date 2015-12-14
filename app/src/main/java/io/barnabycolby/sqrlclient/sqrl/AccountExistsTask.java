@@ -5,12 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import io.barnabycolby.sqrlclient.exceptions.CommandFailedException;
-import io.barnabycolby.sqrlclient.exceptions.CryptographyException;
-import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
-import io.barnabycolby.sqrlclient.exceptions.NoNutException;
-import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
-import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
+import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
@@ -59,7 +54,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
             SQRLRequest request = this.sqrlRequestFactory.create();
             SQRLResponse response = request.send();
             return Boolean.valueOf(response.accountExists());
-        } catch (IOException | CryptographyException | VersionNotSupportedException | InvalidServerResponseException | CommandFailedException | TransientErrorException | NoNutException ex) {
+        } catch (SQRLException | IOException ex) {
             Log.e("SQRLClient", "Account exists task failed: " + ex.getMessage());
             return null;
         }

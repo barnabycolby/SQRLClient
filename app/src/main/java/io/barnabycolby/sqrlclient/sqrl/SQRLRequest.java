@@ -73,14 +73,9 @@ public class SQRLRequest {
      *
      * @throws MalformedURLException  If the URL used to communicate with the server was malformed.
      * @throws IOException  If an IO error occurs during communication.
-     * @throws CryptographyException  If an unrecoverable error occurs during SQRL cryptographic operations.
-     * @throws VersionNotSupportedException  If the servers version was not supported by this client.
-     * @throws InvalidServerResponseException  If the servers response could not be parsed.
-     * @throws CommandFailedException  If the servers response indicated a command failed error.
-     * @throws TransientErrorException  If the servers response indicated a transient error that was unreoverable.
-     * @throws NoNutException  If the servers response did not contain a nut query parameter.
+     * @throws SQRLException  If the servers response resulted in an unrecoverable error.
      */
-    public SQRLResponse send() throws MalformedURLException, IOException, CryptographyException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException, NoNutException {
+    public SQRLResponse send() throws MalformedURLException, IOException, SQRLException {
         // Get the output stream as a writer to make our life easier
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getOutputStream(), "UTF-8");
 

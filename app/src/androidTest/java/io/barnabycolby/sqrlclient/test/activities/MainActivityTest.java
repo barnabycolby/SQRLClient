@@ -34,7 +34,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         // Generate the expected text output
         Resources resources = mainActivity.getResources();
-        String expected = resources.getString(R.string.unknown_scheme, scheme);
+        String expected = resources.getString(R.string.invalid_link);
 
         assertThatFriendlySiteNameMatchesString(mainActivity, expected);
     }
@@ -46,7 +46,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         // Generate the expected text output
         Resources resources = mainActivity.getResources();
-        String expected = resources.getString(R.string.no_nut);
+        String expected = resources.getString(R.string.invalid_link);
 
         assertThatFriendlySiteNameMatchesString(mainActivity, expected);
     }

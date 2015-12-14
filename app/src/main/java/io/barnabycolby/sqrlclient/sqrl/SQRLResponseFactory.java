@@ -14,10 +14,8 @@ public interface SQRLResponseFactory {
      *
      * @param connection  The connection passed directly to the SQRLResponse constructor.
      * @throws IOException  If the server response could not be retrieved.
-     * @throws VersionNotSupportedException  If the servers version was not supported.
-     * @throws InvalidServerResponseException  If the servers response could not be parsed.
-     * @throws CommandFailedException  If the servers response indicated that the command failed.
-     * @throws TransientErrorException  If the servers response indicated a transient error.
+     * @throws SQRLException  If the server response indicated that we could not continue, perhaps because it was invalid or because it sent an error flag.
+     * @throws TransientErrorException  If the servers response indicated a transient error. This should contain information that provides an opportunity for the request to be reissued.
      */
-    public SQRLResponse create(SQRLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException;
+    public SQRLResponse create(SQRLConnection connection) throws IOException, SQRLException, TransientErrorException;
 }

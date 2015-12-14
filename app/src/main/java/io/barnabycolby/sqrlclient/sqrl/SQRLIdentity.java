@@ -50,7 +50,7 @@ public class SQRLIdentity {
 
         // Check for errors
         if (result < 0) {
-            throw new CryptographyException();
+            throw new CryptographyException("Could not sign the message using the identities private key.");
         }
 
         String signedMessageAsString = Base64.encodeToString(signedMessage, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);

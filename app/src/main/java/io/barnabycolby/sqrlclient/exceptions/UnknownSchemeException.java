@@ -5,7 +5,7 @@ package io.barnabycolby.sqrlclient.exceptions;
  *
  * Recognised schemes include sqrl and qrl.
  */
-public class UnknownSchemeException extends Exception {
+public class UnknownSchemeException extends SQRLException {
     private String scheme;
 
     /**
