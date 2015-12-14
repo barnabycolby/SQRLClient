@@ -8,4 +8,6 @@
     <string name="cannot_display_buttons">Could not display the confirm/deny site buttons.</string>
     <string name="account_exists">The account already exists.</string>
     <string name="account_does_not_exist">The account does not yet exist.</string>
+    <string name="something_went_wrong">Something went wrong.</string>
+    <string name="contacting_server">Contacting server...</string>
 </resources>

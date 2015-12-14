@@ -1,5 +1,6 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
 import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
+import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 
 import java.io.IOException;
@@ -18,18 +20,17 @@ import java.io.IOException;
 public class AccountExistsTask extends AsyncTask<Void, Void, Boolean> {
     private SQRLRequestFactory sqrlRequestFactory;
     private TextView accountExistsTextView;
-    private String accountExistsString;
-    private String accountDoesNotExistString;
+    private Resources resources;
 
-    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, String accountExistsString, String accountDoesNotExistString) {
+    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, Resources resources) {
         this.sqrlRequestFactory = sqrlRequestFactory;
         this.accountExistsTextView = accountExistsTextView;
-        this.accountExistsString = accountExistsString;
-        this.accountDoesNotExistString = accountDoesNotExistString;
+        this.resources = resources;
     }
 
     protected void onPreExecute() {
-        this.accountExistsTextView.setText("Contacting server...");
+        String contactingServerText = this.resources.getString(R.string.contacting_server);
+        this.accountExistsTextView.setText(contactingServerText);
         this.accountExistsTextView.setVisibility(View.VISIBLE);
     }
 
@@ -49,11 +50,11 @@ public class AccountExistsTask extends AsyncTask<Void, Void, Boolean> {
         String textToSet;
 
         if (result == null) {
-            textToSet = "Something went wrong.";
+            textToSet = this.resources.getString(R.string.something_went_wrong);
         } else if (result.booleanValue()) {
-            textToSet = this.accountExistsString;
+            textToSet = this.resources.getString(R.string.account_exists);
         } else {
-            textToSet = this.accountDoesNotExistString;
+            textToSet = this.resources.getString(R.string.account_does_not_exist);
         }
 
         this.accountExistsTextView.setText(textToSet);
