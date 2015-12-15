@@ -25,7 +25,7 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getName();
     private TextView friendlySiteNameTextView;
     private SQRLUri sqrlUri;
     private View confirmDenySiteButtons;

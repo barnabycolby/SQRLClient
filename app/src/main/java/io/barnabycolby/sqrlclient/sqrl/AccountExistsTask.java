@@ -17,6 +17,8 @@ import java.io.IOException;
  * result.
  */
 public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
+    private static final String TAG = AccountExistsTask.class.getName();
+
     private SQRLRequestFactory sqrlRequestFactory;
     private TextView accountExistsTextView;
     private Resources resources;
@@ -55,7 +57,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
             SQRLResponse response = request.send();
             return Boolean.valueOf(response.accountExists());
         } catch (SQRLException | IOException ex) {
-            Log.e("SQRLClient", "Account exists task failed: " + ex.getMessage());
+            Log.e(TAG, "Account exists task failed: " + ex.getMessage());
             return null;
         }
     }
