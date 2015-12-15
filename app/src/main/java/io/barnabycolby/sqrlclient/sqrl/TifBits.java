@@ -10,5 +10,4 @@ public class TifBits {
     public static final int COMMAND_FAILED = 0x40;
     public static final int CLIENT_FAILURE = 0x80;
     public static final int BAD_ID_ASSOCIATION = 0x100;
-    public static final int INVALID_LINK_ORIGIN = 0x200;
 }

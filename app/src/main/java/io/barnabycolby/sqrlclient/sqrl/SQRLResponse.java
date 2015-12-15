@@ -81,8 +81,6 @@ public class SQRLResponse {
                 errorMessage = App.getApplicationResources().getString(R.string.client_failure);
             } else if ((this.tif & TifBits.BAD_ID_ASSOCIATION) != 0) {
                 errorMessage = App.getApplicationResources().getString(R.string.bad_id_association);
-            } else if ((this.tif & TifBits.INVALID_LINK_ORIGIN) != 0) {
-                errorMessage = App.getApplicationResources().getString(R.string.invalid_link_origin);
             }
 
             throw new CommandFailedException(errorMessage);
