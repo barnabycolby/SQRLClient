@@ -32,8 +32,9 @@ public class SQRLResponse {
      */
     public SQRLResponse(SQRLConnection connection) throws IOException, SQRLException, TransientErrorException {
         // Check the response code
-        if (connection.getResponseCode() != 200) {
-            throw new IOException();
+        int responseCode = connection.getResponseCode();
+        if (responseCode != 200) {
+            throw new IOException(App.getApplicationResources().getString(R.string.non_200_response_code, responseCode));
         }
 
         // Extract the values from the data

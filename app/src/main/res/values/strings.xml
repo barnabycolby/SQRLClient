@@ -22,4 +22,5 @@
     <string name="invalid_link_origin">The url passed to the server was invalid, according to the server.</string>
     <string name="server_response_missing_parameter">\"%s\" parameter was not present in server response.</string>
     <string name="invalid_server_response">Servers response was in an unrecognised format.</string>
+    <string name="non_200_response_code">The response code of the servers response was %d instead of 200.</string>
 </resources>

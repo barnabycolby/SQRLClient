@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Uri uri = intent.getData();
         friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
-        if (friendlySiteNameTextView == null || uri == null) {
+        if (uri == null) {
+            Log.e(TAG, "Uri passed via intent was null.");
             return;
         }
 
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (SQRLException ex) {
             String errorMessage = resources.getString(R.string.invalid_link);
             friendlySiteNameTextView.setText(errorMessage);
+            Log.e(TAG, "Could not create SQRLUri: " + ex.getMessage());
             return;
         }
 
@@ -61,11 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Show the confirm/deny site buttons
         confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
-        if (confirmDenySiteButtons == null) {
-            Log.e(TAG, "ConfirmDenySiteButtons button group was null.");
-            Toast.makeText(this, resources.getString(R.string.cannot_display_buttons), Toast.LENGTH_LONG).show();
-            return;
-        }
         confirmDenySiteButtons.setVisibility(View.VISIBLE);
 
         this.accountExistsTextView = (TextView)findViewById(R.id.AccountExistsTextView);
