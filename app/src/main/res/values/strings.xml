@@ -9,4 +9,17 @@
     <string name="account_does_not_exist">The account does not yet exist.</string>
     <string name="something_went_wrong">Something went wrong.</string>
     <string name="contacting_server">Contacting server...</string>
+    <string name="transient_error">A transient error occurred, sender should resend request using new nut and qry values.</string>
+    <string name="unknown_scheme">The uri scheme %s is not supported.</string>
+    <string name="no_nut">The required nut parameter was not present.</string>
+    <string name="enable_test_mode">You must enable test mode before calling await.</string>
+    <string name="identity_signature_failed">Could not sign the message using the identities private key.</string>
+    <string name="tif_value_not_hexadecimal">\"tif\" value in server response was not hexadecimal.</string>
+    <string name="unknown_error">An unknown error occurred.</string>
+    <string name="query_function_not_supported">Query function is not supported by server.</string>
+    <string name="client_failure">Some aspect of the request was incorrect, according to the server.</string>
+    <string name="bad_id_association">Perhaps the wrong SQRL Identity was used?</string>
+    <string name="invalid_link_origin">The url passed to the server was invalid, according to the server.</string>
+    <string name="server_response_missing_parameter">\"%s\" parameter was not present in server response.</string>
+    <string name="invalid_server_response">Servers response was in an unrecognised format.</string>
 </resources>

@@ -1,9 +1,14 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
-import org.abstractj.kalium.*;
 import android.util.Base64;
-import java.nio.charset.Charset;
+
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.CryptographyException;
+import io.barnabycolby.sqrlclient.R;
+
+import java.nio.charset.Charset;
+
+import org.abstractj.kalium.*;
 
 /**
  * Wraps a SQRL Identity to provide helper methods for using the identity.
@@ -50,7 +55,7 @@ public class SQRLIdentity {
 
         // Check for errors
         if (result < 0) {
-            throw new CryptographyException("Could not sign the message using the identities private key.");
+            throw new CryptographyException(App.getApplicationResources().getString(R.string.identity_signature_failed));
         }
 
         String signedMessageAsString = Base64.encodeToString(signedMessage, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);

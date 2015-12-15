@@ -1,5 +1,8 @@
 package io.barnabycolby.sqrlclient.exceptions;
 
+import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.R;
+
 /**
  * Signifies that a SQRL entity did not contain the required nut value.
  *
@@ -8,6 +11,6 @@ package io.barnabycolby.sqrlclient.exceptions;
 public class NoNutException extends SQRLException {
 
     public NoNutException() {
-        super("The required nut parameter was not present.");
+        super(App.getApplicationResources().getString(R.string.no_nut));
     }
 }

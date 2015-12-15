@@ -1,5 +1,8 @@
 package io.barnabycolby.sqrlclient.exceptions;
 
+import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.R;
+
 /**
  * Signifies that a URI did not have a recognised scheme.
  *
@@ -14,7 +17,7 @@ public class UnknownSchemeException extends SQRLException {
      * @param scheme  The scheme that was not recognised.
      */
     public UnknownSchemeException(String scheme) {
-        super("The uri scheme " + scheme + "is not supported.");
+        super(App.getApplicationResources().getString(R.string.unknown_scheme, scheme));
         this.scheme = scheme;
     }
 

@@ -2,6 +2,9 @@ package io.barnabycolby.sqrlclient.helpers;
 
 import android.os.AsyncTask;
 
+import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.R;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +58,7 @@ public abstract class TestableAsyncTask<Params, Progress, Result> extends AsyncT
      */
     public void await() throws Exception {
         if (this.countDownLatch == null) {
-            throw new Exception("You must enable test mode before calling await.");
+            throw new Exception(App.getApplicationResources().getString(R.string.enable_test_mode));
         }
 
         this.countDownLatch.await();
@@ -72,7 +75,7 @@ public abstract class TestableAsyncTask<Params, Progress, Result> extends AsyncT
      */
     public boolean await(int timeout, TimeUnit unit) throws Exception {
         if (this.countDownLatch == null) {
-            throw new Exception("You must enable test mode before calling await.");
+            throw new Exception(App.getApplicationResources().getString(R.string.enable_test_mode));
         }
 
         return this.countDownLatch.await(timeout, unit);

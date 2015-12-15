@@ -1,5 +1,8 @@
 package io.barnabycolby.sqrlclient.exceptions;
 
+import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.R;
+
 /**
  * Signifies that the SQRL server responded with a transient error, indicated by the tif flags.
  *
@@ -19,7 +22,7 @@ public class TransientErrorException extends SQRLException {
      * @param lastServerResponse The last response sent by the server in it's entirity. It should be a base64url encoded list of name value pairs.
      */
     public TransientErrorException(String nut, String qry, String lastServerResponse) {
-        super("A transient error occurred, sender should resend request using new nut and qry values.");
+        super(App.getApplicationResources().getString(R.string.transient_error));
 
         this.nut = nut;
         this.qry = qry;

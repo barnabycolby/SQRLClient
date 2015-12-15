@@ -3,7 +3,9 @@ package io.barnabycolby.sqrlclient.sqrl;
 import android.util.Base64;
 import android.support.v4.util.ArrayMap;
 
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
 
 import java.io.*;
@@ -63,23 +65,23 @@ public class SQRLResponse {
         try {
             this.tif = Integer.parseInt(tifValue, 16);
         } catch (NumberFormatException ex) {
-            throw new InvalidServerResponseException("\"tif\" value in server response was not hexadecimal.");
+            throw new InvalidServerResponseException(App.getApplicationResources().getString(R.string.tif_value_not_hexadecimal));
         }
 
         // Check for the command not failed bit
         if ((this.tif & TifBits.COMMAND_FAILED) != 0) {
-            String errorMessage = "An unknown error occurred.";
+            String errorMessage = App.getApplicationResources().getString(R.string.unknown_error);
 
             if ((this.tif & TifBits.FUNCTION_NOT_SUPPORTED) != 0) {
-                errorMessage = "Query function is not supported by server.";
+                errorMessage = App.getApplicationResources().getString(R.string.query_function_not_supported);
             } else if ((this.tif & TifBits.TRANSIENT_ERROR) != 0) {
                 throw new TransientErrorException(nameValuePairs.get("nut"), nameValuePairs.get("qry"), serverResponse);
             } else if ((this.tif & TifBits.CLIENT_FAILURE) != 0) {
-                errorMessage = "Some aspect of the request was incorrect, according to the server.";
+                errorMessage = App.getApplicationResources().getString(R.string.client_failure);
             } else if ((this.tif & TifBits.BAD_ID_ASSOCIATION) != 0) {
-                errorMessage = "Perhaps the wrong SQRL Identity was used?";
+                errorMessage = App.getApplicationResources().getString(R.string.bad_id_association);
             } else if ((this.tif & TifBits.INVALID_LINK_ORIGIN) != 0) {
-                errorMessage = "The url passed to the server was invalid, according to the server.";
+                errorMessage = App.getApplicationResources().getString(R.string.invalid_link_origin);
             }
 
             throw new CommandFailedException(errorMessage);
@@ -119,11 +121,10 @@ public class SQRLResponse {
      * @throws InvalidServerResponseException  If the name value pair was not present in the response.
      */
     private void checkNameValuePairIsPresent(String parameter) throws InvalidServerResponseException {
-        String errorMessageSuffix = " parameter was not present in server response.";
-
         String parameterValue = nameValuePairs.get(parameter);
         if (parameterValue == null || parameterValue.isEmpty()) {
-            throw new InvalidServerResponseException("\"" + parameter + "\"" + errorMessageSuffix);
+            String errorMessage = App.getApplicationResources().getString(R.string.server_response_missing_parameter, parameter);
+            throw new InvalidServerResponseException(errorMessage);
         }
     }
 
@@ -184,7 +185,7 @@ public class SQRLResponse {
         for (String nameValuePairAsString : nameValuePairsAsStrings) {
             String[] separatedNameAndValuePair = nameValuePairAsString.split("=", 2);
             if (separatedNameAndValuePair.length != 2) {
-                throw new InvalidServerResponseException("Servers response was in an unrecognised format.");
+                throw new InvalidServerResponseException();
             }
 
             map.put(separatedNameAndValuePair[0], separatedNameAndValuePair[1]);
