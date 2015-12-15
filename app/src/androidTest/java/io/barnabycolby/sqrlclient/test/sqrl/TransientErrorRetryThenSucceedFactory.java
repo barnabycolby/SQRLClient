@@ -29,7 +29,7 @@ public class TransientErrorRetryThenSucceedFactory implements SQRLResponseFactor
             this.spyOutputStream = spy(new ByteArrayOutputStream());
             when(this.mockConnection.getOutputStream()).thenReturn(spyOutputStream);
 
-            throw new TransientErrorException("Retry and reissue.", getNut(), getQry(), getLastServerResponse());
+            throw new TransientErrorException(getNut(), getQry(), getLastServerResponse());
         } else {
             return mock(SQRLResponse.class);
         }

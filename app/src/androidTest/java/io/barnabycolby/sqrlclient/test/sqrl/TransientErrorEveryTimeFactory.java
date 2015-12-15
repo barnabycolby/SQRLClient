@@ -17,7 +17,7 @@ public class TransientErrorEveryTimeFactory implements SQRLResponseFactory {
     }
 
     public SQRLResponse create(SQRLConnection connection) throws IOException, VersionNotSupportedException, InvalidServerResponseException, CommandFailedException, TransientErrorException {
-        throw new TransientErrorException("Retry and reissue.", getNut(), getQry(), getLastServerResponse());
+        throw new TransientErrorException(getNut(), getQry(), getLastServerResponse());
     }
 
     public String getNut() {

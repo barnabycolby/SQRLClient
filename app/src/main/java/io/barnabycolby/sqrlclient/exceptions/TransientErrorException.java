@@ -14,13 +14,12 @@ public class TransientErrorException extends SQRLException {
     /**
      * Constructs a new instance with the necessary values allowing the client to recover if possible.
      *
-     * @param message  A message indicating what went wrong.
      * @param nut  The nut value sent in the servers response.
      * @param qry  The qry value sent in the servers response.
      * @param lastServerResponse The last response sent by the server in it's entirity. It should be a base64url encoded list of name value pairs.
      */
-    public TransientErrorException(String message, String nut, String qry, String lastServerResponse) {
-        super(message);
+    public TransientErrorException(String nut, String qry, String lastServerResponse) {
+        super("A transient error occurred, sender should resend request using new nut and qry values.");
 
         this.nut = nut;
         this.qry = qry;
