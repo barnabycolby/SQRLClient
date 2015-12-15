@@ -110,7 +110,6 @@ public class SQRLResponse {
         checkNameValuePairIsPresent("nut");
         checkNameValuePairIsPresent("tif");
         checkNameValuePairIsPresent("qry");
-        checkNameValuePairIsPresent("sfn");
     }
 
     /**

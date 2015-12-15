@@ -103,10 +103,6 @@ public class SQRLResponseTest {
         // Missing qry
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnNmbj1HUkMNCg";
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
-
-        // Missing sfn
-        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0K";
-        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
     }
 
     @Test
@@ -136,10 +132,6 @@ public class SQRLResponseTest {
 
         // qry=
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0NCnNmbj1HUkMNCg";
-        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
-
-        // sfn=
-        serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPQ0K";
         assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
     }
 
