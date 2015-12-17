@@ -53,7 +53,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         try {
             // Perform the query and return the result
-            SQRLRequest request = this.sqrlRequestFactory.create();
+            SQRLQueryRequest request = this.sqrlRequestFactory.createQuery();
             SQRLResponse response = request.send();
             return Boolean.valueOf(response.accountExists());
         } catch (SQRLException | IOException ex) {

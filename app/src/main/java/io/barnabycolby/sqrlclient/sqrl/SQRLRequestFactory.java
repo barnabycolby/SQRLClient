@@ -24,10 +24,10 @@ public class SQRLRequestFactory {
      * @throws MalformedURLException  If the URI used to create the request is malformed. The URI is retrieved from the SQRLUri object passed in via the constructor.
      * @throws IOException  If the connection to the server could not be created.
      */
-    public SQRLRequest create() throws MalformedURLException, IOException {
+    public SQRLQueryRequest createQuery() throws MalformedURLException, IOException {
         SQRLConnection sqrlConnection = new SQRLConnection(this.sqrlUri);
         SQRLIdentity sqrlIdentity = new SQRLIdentity();
         SQRLResponseFactory factory = new RealSQRLResponseFactory();
-        return new SQRLRequest(sqrlConnection, sqrlIdentity, factory);
+        return new SQRLQueryRequest(sqrlConnection, sqrlIdentity, factory);
     }
 }

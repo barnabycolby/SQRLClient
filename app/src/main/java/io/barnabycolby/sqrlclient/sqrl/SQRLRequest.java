@@ -10,9 +10,9 @@ import java.nio.charset.Charset;
 import io.barnabycolby.sqrlclient.exceptions.*;
 
 /**
- * Allows easy creation and sending of a SQRL request to be sent to a server.
+ * Implements common functionality of SQRL requests, allowing easy implementation of new SQRL requests.
  */
-public class SQRLRequest {
+public abstract class SQRLRequest {
 
     private SQRLConnection sqrlConnection;
     private SQRLIdentity sqrlIdentity;
@@ -33,6 +33,20 @@ public class SQRLRequest {
     }
 
     /**
+     * Gets the value of the cmd parameter to be sent in the client value of the request.
+     *
+     * @return The cmd parameter value.
+     */
+    protected abstract String getCommandString();
+
+    /**
+     * Indicates whether the server unlock key and verify unlock key should be included in the client request.
+     *
+     * @return True if the keys should be included, false otherwise.
+     */
+    protected abstract boolean areUnlockRequestKeysRequired();
+
+    /**
      * Generates the value of the client parameter that forms part of the request.
      *
      * @return The value of the client parameter that forms part of the request.
@@ -42,7 +56,7 @@ public class SQRLRequest {
         String clientValue = "ver=1\r\n";
 
         // Add remaining values
-        clientValue += "cmd=query\r\n";
+        clientValue += "cmd=" + getCommandString() + "\r\n";
         clientValue += "idk=" + this.sqrlIdentity.getIdentityKey() + "\r\n";
 
         return base64Encode(clientValue);

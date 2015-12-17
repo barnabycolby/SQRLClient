@@ -7,7 +7,7 @@ import android.widget.TextView;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.AccountExistsTask;
-import io.barnabycolby.sqrlclient.sqrl.SQRLRequest;
+import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
@@ -55,10 +55,10 @@ public class AccountExistsTaskTest {
     @Test
     public void shouldDisplayCorrectMessageWhenExceptionIsThrown() throws Exception {
         // Create the factory that throws the exception
-        SQRLRequest mockSQRLRequest = mock(SQRLRequest.class);
+        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
         doThrow(new InvalidServerResponseException("Exception thrown by unit test.")).when(mockSQRLRequest).send();
         SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
-        when(mockFactory.create()).thenReturn(mockSQRLRequest);
+        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
 
         createAndRunAccountExistsTaskAndVerifyText(mockFactory, this.something_went_wrong);
     }
@@ -67,10 +67,10 @@ public class AccountExistsTaskTest {
         // Create the factory that ensures the account does not exist
         SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
         when(mockSQRLResponse.accountExists()).thenReturn(accountExistsResponse);
-        SQRLRequest mockSQRLRequest = mock(SQRLRequest.class);
+        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
         when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
         SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
-        when(mockFactory.create()).thenReturn(mockSQRLRequest);
+        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
 
         createAndRunAccountExistsTaskAndVerifyText(mockFactory, expectedText);
     }
