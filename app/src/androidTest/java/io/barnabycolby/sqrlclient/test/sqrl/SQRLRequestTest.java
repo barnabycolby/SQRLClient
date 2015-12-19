@@ -19,6 +19,10 @@ public class SQRLRequestTest {
     private Uri uri;
     private SQRLUri sqrlUri;
 
+    private static String defaultExpectedClientValue = "dmVyPTENCmNtZD10ZXN0DQppZGs9SmpsMk9oVXlQOTNNMTQtQVEzc3RZTWFvWjJ2cTFCSGZtQWh4V2pNMUN1VQ0K";
+    private static String defaultExpectedServerValue = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NjANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
+    private static String defaultSignatureOfExpectedData = "h9hvfEq0u21TD2QkxsBiYwyPWw9VBjCd9WfB5oOpJy0CSODIvEMjYlNu5cJRHyQqb5sq0bDaGWutzjFxBXjnDA";
+
     @Before
     public void setUp() throws Exception {
         // Create the SQRL URI
@@ -28,16 +32,12 @@ public class SQRLRequestTest {
 
     @Test
     public void shouldResendRequestUsingNewNutAndQryIfTransientErrorOccurs() throws Exception {
+        // Create the required mocks
         SQRLConnection connection = getMockSQRLConnection(this.sqrlUri);
-
-        // Mock the SQRLIdentity
-        String expectedClientValue = "dmVyPTENCmNtZD10ZXN0DQppZGs9SmpsMk9oVXlQOTNNMTQtQVEzc3RZTWFvWjJ2cTFCSGZtQWh4V2pNMUN1VQ0K";
-        String expectedServerValue = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NjANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
-        String signatureOfExpectedData = "h9hvfEq0u21TD2QkxsBiYwyPWw9VBjCd9WfB5oOpJy0CSODIvEMjYlNu5cJRHyQqb5sq0bDaGWutzjFxBXjnDA";
-        SQRLIdentity sqrlIdentity = getMockSQRLIdentity(expectedClientValue, expectedServerValue, signatureOfExpectedData);
+        SQRLIdentity sqrlIdentity = getMockSQRLIdentity();
 
         // Create the TransientErrorRetryThenSucceedFactory that allows us to mock SQRLResponse behaviour
-        TransientErrorRetryThenSucceedFactory sqrlResponseFactory = new TransientErrorRetryThenSucceedFactory(connection, expectedServerValue);
+        TransientErrorRetryThenSucceedFactory sqrlResponseFactory = new TransientErrorRetryThenSucceedFactory(connection, defaultExpectedServerValue);
 
         SQRLTestRequest request = new SQRLTestRequest(connection, sqrlIdentity, sqrlResponseFactory, false);
         request.send();
@@ -46,24 +46,20 @@ public class SQRLRequestTest {
         verify(connection).updatePathAndQuery(sqrlResponseFactory.getQry());
 
         // Verify that the second message used the servers last reply for the server parameter
-        String expectedData = "client=" + expectedClientValue;
-        expectedData += "&server=" + expectedServerValue;
-        expectedData += "&ids=" + signatureOfExpectedData;
+        String expectedData = "client=" + defaultExpectedClientValue;
+        expectedData += "&server=" + defaultExpectedServerValue;
+        expectedData += "&ids=" + defaultSignatureOfExpectedData;
         Assert.assertEquals(expectedData, sqrlResponseFactory.getDataSentAfterException());
     }
 
     @Test
     public void shouldThrowTransientErrorExceptionIfItOccursTwice() throws Exception {
+        // Create the required mocks
         SQRLConnection connection = getMockSQRLConnection(this.sqrlUri);
-
-        // Mock the SQRLIdentity
-        String expectedClientValue = "dmVyPTENCmNtZD10ZXN0DQppZGs9SmpsMk9oVXlQOTNNMTQtQVEzc3RZTWFvWjJ2cTFCSGZtQWh4V2pNMUN1VQ0K";
-        String expectedServerValue = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NjANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
-        String signatureOfExpectedData = "h9hvfEq0u21TD2QkxsBiYwyPWw9VBjCd9WfB5oOpJy0CSODIvEMjYlNu5cJRHyQqb5sq0bDaGWutzjFxBXjnDA";
-        SQRLIdentity sqrlIdentity = getMockSQRLIdentity(expectedClientValue, expectedServerValue, signatureOfExpectedData);
+        SQRLIdentity sqrlIdentity = getMockSQRLIdentity();
 
         // Create the TransientErrorRetryThenSucceedFactory that allows us to mock SQRLResponse behaviour
-        TransientErrorEveryTimeFactory sqrlResponseFactory = new TransientErrorEveryTimeFactory(expectedServerValue);
+        TransientErrorEveryTimeFactory sqrlResponseFactory = new TransientErrorEveryTimeFactory(defaultExpectedServerValue);
 
         SQRLTestRequest request = new SQRLTestRequest(connection, sqrlIdentity, sqrlResponseFactory, false);
 
@@ -87,6 +83,10 @@ public class SQRLRequestTest {
         when(connection.getOutputStream()).thenReturn(spyOutputStream);
         doNothing().when(connection).updatePathAndQuery((String)notNull());
         return connection;
+    }
+
+    public static SQRLIdentity getMockSQRLIdentity() throws Exception {
+        return getMockSQRLIdentity(defaultExpectedClientValue, defaultExpectedServerValue, defaultSignatureOfExpectedData);
     }
 
     public static SQRLIdentity getMockSQRLIdentity(String expectedClientValue, String expectedServerValue, String signatureOfExpectedData) throws Exception { 
