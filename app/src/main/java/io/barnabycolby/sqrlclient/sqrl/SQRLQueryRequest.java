@@ -3,7 +3,7 @@ package io.barnabycolby.sqrlclient.sqrl;
 import java.net.HttpURLConnection;
 
 /**
- * Allows easy creation and sending of a SQRL request to be sent to a server.
+ * Creates and sends a query request to the given SQRL server.
  */
 public class SQRLQueryRequest extends SQRLRequest {
 
