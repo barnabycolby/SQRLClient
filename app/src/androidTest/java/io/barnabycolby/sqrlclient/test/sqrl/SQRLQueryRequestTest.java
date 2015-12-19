@@ -30,16 +30,11 @@ public class SQRLQueryRequestTest {
     @Test
     public void correctlyGenerateQueryRequest() throws Exception {
         // First, we need to mock the connection object and the writer object
-        SQRLConnection connection = mock(SQRLConnection.class);
-        when(connection.getSQRLUri()).thenReturn(this.sqrlUri);
-        // We create a partial mock so that we can verify the final message (by calling to string)
-        // without having to specify how the message should be constructed
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream spyOutputStream = spy(outputStream);
-        when(connection.getOutputStream()).thenReturn(spyOutputStream);
+        SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
         when(connection.getResponseCode()).thenReturn(200);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(serverResponse.getBytes());
         when(connection.getInputStream()).thenReturn(inputStream);
+
         // Mock the SQRLIdentity
         String expectedClientValue = "dmVyPTENCmNtZD1xdWVyeQ0KaWRrPUpqbDJPaFV5UDkzTTE0LUFRM3N0WU1hb1oydnExQkhmbUFoeFdqTTFDdVUNCg";
         String expectedServerValue = "c3FybDovL3d3dy5ncmMuY29tL3Nxcmw_bnV0PVAyS3JfNEdCNDlHcndBRl9rcER1SkEmc2ZuPVIxSkQ";
@@ -56,7 +51,7 @@ public class SQRLQueryRequestTest {
 
         // Ask the request object to send the data, and then verify it
         request.send();
-        String dataSent = spyOutputStream.toString();
+        String dataSent = connection.getOutputStream().toString();
         Assert.assertEquals(expectedData, dataSent);
     }
 }

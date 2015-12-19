@@ -28,13 +28,7 @@ public class SQRLRequestTest {
 
     @Test
     public void shouldResendRequestUsingNewNutAndQryIfTransientErrorOccurs() throws Exception {
-        // Create the SQRLConnection mock
-        SQRLConnection connection = mock(SQRLConnection.class);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream spyOutputStream = spy(outputStream);
-        when(connection.getSQRLUri()).thenReturn(this.sqrlUri);
-        when(connection.getOutputStream()).thenReturn(spyOutputStream);
-        doNothing().when(connection).updatePathAndQuery((String)notNull());
+        SQRLConnection connection = getMockSQRLConnection(this.sqrlUri);
 
         // Mock the SQRLIdentity
         String expectedClientValue = "dmVyPTENCmNtZD10ZXN0DQppZGs9SmpsMk9oVXlQOTNNMTQtQVEzc3RZTWFvWjJ2cTFCSGZtQWh4V2pNMUN1VQ0K";
@@ -60,13 +54,7 @@ public class SQRLRequestTest {
 
     @Test
     public void shouldThrowTransientErrorExceptionIfItOccursTwice() throws Exception {
-        // Create the SQRLConnection mock
-        SQRLConnection connection = mock(SQRLConnection.class);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream spyOutputStream = spy(outputStream);
-        when(connection.getSQRLUri()).thenReturn(this.sqrlUri);
-        when(connection.getOutputStream()).thenReturn(spyOutputStream);
-        doNothing().when(connection).updatePathAndQuery((String)notNull());
+        SQRLConnection connection = getMockSQRLConnection(this.sqrlUri);
 
         // Mock the SQRLIdentity
         String expectedClientValue = "dmVyPTENCmNtZD10ZXN0DQppZGs9SmpsMk9oVXlQOTNNMTQtQVEzc3RZTWFvWjJ2cTFCSGZtQWh4V2pNMUN1VQ0K";
@@ -86,6 +74,19 @@ public class SQRLRequestTest {
         }
 
         Assert.fail("TransientErrorException should have been thrown the second time a TransientErrorException occurred.");
+    }
+
+    public static SQRLConnection getMockSQRLConnection(SQRLUri sqrlUri) throws Exception {
+        // Create the SQRLConnection mock
+        // We create a partial mock so that we can verify the final message (by calling to string)
+        // without having to specify how the message should be constructed
+        SQRLConnection connection = mock(SQRLConnection.class);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream spyOutputStream = spy(outputStream);
+        when(connection.getSQRLUri()).thenReturn(sqrlUri);
+        when(connection.getOutputStream()).thenReturn(spyOutputStream);
+        doNothing().when(connection).updatePathAndQuery((String)notNull());
+        return connection;
     }
 
     public static SQRLIdentity getMockSQRLIdentity(String expectedClientValue, String expectedServerValue, String signatureOfExpectedData) throws Exception { 
