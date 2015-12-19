@@ -28,8 +28,7 @@ public class SQRLIdentRequest extends SQRLRequest {
 
     @Override
     protected boolean areServerUnlockAndVerifyUnlockKeysRequired() {
-        // Not implemented yet
-        throw new UnsupportedOperationException();
+        return !this.previousResponse.currentAccountExists();
     }
 
     @Override

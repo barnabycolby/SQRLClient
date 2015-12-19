@@ -25,6 +25,11 @@ public class SQRLIdentRequestTest {
         }
 
         @Override
+        public boolean areServerUnlockAndVerifyUnlockKeysRequired() {
+            return super.areServerUnlockAndVerifyUnlockKeysRequired();
+        }
+
+        @Override
         public String getCommandString() {
             return super.getCommandString();
         }
@@ -42,5 +47,35 @@ public class SQRLIdentRequestTest {
 
         // Assert the command string
         Assert.assertEquals(request.getCommandString(), "ident");
+    }
+
+    @Test
+    public void areServerUnlockAndVerifyUnlockKeysRequiredShouldReturnFalseIfAccountExists() throws Exception {
+        // Create the required mock objects
+        SQRLConnection connection = mock(SQRLConnection.class);
+        SQRLIdentity sqrlIdentity = mock(SQRLIdentity.class);
+        SQRLResponse previousResponse = mock(SQRLResponse.class);
+        when(previousResponse.currentAccountExists()).thenReturn(true);
+
+        // Next, instantiate a SQRLRequest object with the mocked objects
+        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(connection, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse);
+
+        // Assert the result of areServerUnlockAndVerifyUnlockKeysRequired
+        Assert.assertFalse(request.areServerUnlockAndVerifyUnlockKeysRequired());
+    }
+
+    @Test
+    public void areServerUnlockAndVerifyUnlockKeysRequiredShouldReturnTrueIfAccountDoesNotExist() throws Exception {
+        // Create the required mock objects
+        SQRLConnection connection = mock(SQRLConnection.class);
+        SQRLIdentity sqrlIdentity = mock(SQRLIdentity.class);
+        SQRLResponse previousResponse = mock(SQRLResponse.class);
+        when(previousResponse.currentAccountExists()).thenReturn(false);
+
+        // Next, instantiate a SQRLRequest object with the mocked objects
+        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(connection, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse);
+
+        // Assert the result of areServerUnlockAndVerifyUnlockKeysRequired
+        Assert.assertTrue(request.areServerUnlockAndVerifyUnlockKeysRequired());
     }
 }
