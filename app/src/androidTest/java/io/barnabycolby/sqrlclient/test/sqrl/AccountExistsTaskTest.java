@@ -66,7 +66,7 @@ public class AccountExistsTaskTest {
     private void accountExistsTestCorrectTextSet(boolean accountExistsResponse, String expectedText) throws Exception {
         // Create the factory that ensures the account does not exist
         SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
-        when(mockSQRLResponse.accountExists()).thenReturn(accountExistsResponse);
+        when(mockSQRLResponse.currentAccountExists()).thenReturn(accountExistsResponse);
         SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
         when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
         SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);

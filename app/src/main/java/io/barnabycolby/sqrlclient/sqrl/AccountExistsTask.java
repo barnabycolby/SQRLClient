@@ -55,7 +55,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
             // Perform the query and return the result
             SQRLQueryRequest request = this.sqrlRequestFactory.createQuery();
             SQRLResponse response = request.send();
-            return Boolean.valueOf(response.accountExists());
+            return Boolean.valueOf(response.currentAccountExists());
         } catch (SQRLException | IOException ex) {
             Log.e(TAG, "Account exists task failed: " + ex.getMessage());
             return null;

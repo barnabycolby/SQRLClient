@@ -193,11 +193,14 @@ public class SQRLResponse {
     }
 
     /**
-     * Checks whether tthe user account exists on the SQRL server already.
+     * Checks whether the current SQRL Identity is known by the SQRL server.
      *
-     * @return True if the account exists, false otherwise.
+     * More specifically, only if the current identity is known then this will return true.
+     * If only the previous identity, or no identity at all, is known then this will return false.
+     *
+     * @return True if the current SQRL Identity is known, false otherwise.
      */
-    public boolean accountExists() {
+    public boolean currentAccountExists() {
         if ((this.tif & TifBits.CURRENT_ID_MATCH) != 0) {
             return true;
         } else {

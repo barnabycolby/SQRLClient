@@ -175,19 +175,19 @@ public class SQRLResponseTest {
         // tif=1
         String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MQ0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
         SQRLResponse sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
-        Assert.assertTrue(sqrlResponse.accountExists());
+        Assert.assertTrue(sqrlResponse.currentAccountExists());
 
         // Account exists
         // tif=5
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NQ0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
         sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
-        Assert.assertTrue(sqrlResponse.accountExists());
+        Assert.assertTrue(sqrlResponse.currentAccountExists());
 
         // Account does not exist
         // tif=400
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NDAwDQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
         sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
-        Assert.assertFalse(sqrlResponse.accountExists());
+        Assert.assertFalse(sqrlResponse.currentAccountExists());
     }
 
     private SQRLResponse instantiateSQRLResponesFromServerResponseString(String serverResponse) throws Exception {
