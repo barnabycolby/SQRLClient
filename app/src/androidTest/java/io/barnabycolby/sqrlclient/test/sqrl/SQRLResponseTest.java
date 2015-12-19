@@ -198,6 +198,13 @@ public class SQRLResponseTest {
         Assert.assertEquals(serverQryValue, sqrlResponse.getQry());
     }
 
+    @Test
+    public void toStringReturnsRawServerResponse() throws Exception {
+        String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MQ0KcXJ5PS9zcXJsP251dD1JMl8zWFJETDhVQUVyUGlzRUFvUnVnDQpzZm49R1JDDQo";
+        SQRLResponse sqrlResponse = instantiateSQRLResponseFromServerResponseString(serverResponse);
+        Assert.assertEquals(serverResponse, sqrlResponse.toString());
+    }
+
     private SQRLResponse instantiateSQRLResponseFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
         SQRLConnection connectionMock = mock(SQRLConnection.class);

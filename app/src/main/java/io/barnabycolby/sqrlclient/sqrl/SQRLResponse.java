@@ -20,6 +20,7 @@ import java.util.Map;
 public class SQRLResponse {
     private Map<String, String> nameValuePairs;
     private int tif;
+    private String rawServerResponse;
 
     /**
      * Constructs a SQRLResponse object using the given connection.
@@ -44,10 +45,13 @@ public class SQRLResponse {
         String serverResponse = new String(decodedResponse, Charset.forName("UTF-8"));
         this.nameValuePairs = convertServerResponseToMap(serverResponse);
 
+        // Store the raw server response as a string, it will be required to create subsequent requests
+        this.rawServerResponse = new String(encodedServerResponse, Charset.forName("UTF-8"));
+
         // Perform response validity checks
         checkThatAllRequiredNameValuePairsArePresent();
         checkVersionIsValidAndSupported();
-        checkTifIsValidAndCommandDidNotFail(new String(encodedServerResponse, Charset.forName("UTF-8")));
+        checkTifIsValidAndCommandDidNotFail(this.rawServerResponse);
     }
 
     /**
@@ -217,7 +221,14 @@ public class SQRLResponse {
         return nameValuePairs.get("qry");
     }
 
+    /**
+     * Returns the unchanged raw server response as sent over the wire.
+     *
+     * If the SQRL server is following the protocol correctly, this will be a base64url encoded list of name value pairs.
+     *
+     * @return The unchanged raw server response.
+     */
     public String toString() {
-        throw new UnsupportedOperationException();
+        return this.rawServerResponse;
     }
 }
