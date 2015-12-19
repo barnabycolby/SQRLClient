@@ -190,6 +190,14 @@ public class SQRLResponseTest {
         Assert.assertFalse(sqrlResponse.currentAccountExists());
     }
 
+    @Test
+    public void getQryShouldReturnQryValueFromServerResponse() throws Exception {
+        String serverQryValue = "/sqrl?nut=I2_3XRDL8UAErPisEAoRug";
+        String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MQ0KcXJ5PS9zcXJsP251dD1JMl8zWFJETDhVQUVyUGlzRUFvUnVnDQpzZm49R1JDDQo";
+        SQRLResponse sqrlResponse = instantiateSQRLResponseFromServerResponseString(serverResponse);
+        Assert.assertEquals(serverQryValue, sqrlResponse.getQry());
+    }
+
     private SQRLResponse instantiateSQRLResponseFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
         SQRLConnection connectionMock = mock(SQRLConnection.class);

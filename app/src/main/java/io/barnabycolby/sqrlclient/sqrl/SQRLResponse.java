@@ -208,8 +208,13 @@ public class SQRLResponse {
         }
     }
 
+    /**
+     * Gets the qry value sent by the server.
+     *
+     * @return The qry value.
+     */
     public String getQry() {
-        throw new UnsupportedOperationException();
+        return nameValuePairs.get("qry");
     }
 
     public String toString() {
