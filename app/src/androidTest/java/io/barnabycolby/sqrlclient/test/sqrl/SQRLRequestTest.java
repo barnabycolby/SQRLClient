@@ -18,7 +18,6 @@ import io.barnabycolby.sqrlclient.sqrl.*;
 public class SQRLRequestTest {
     private Uri uri;
     private SQRLUri sqrlUri;
-    private String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
 
     @Before
     public void setUp() throws Exception {
