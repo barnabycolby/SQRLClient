@@ -18,7 +18,6 @@ import io.barnabycolby.sqrlclient.sqrl.*;
 public class SQRLQueryRequestTest {
     private Uri uri;
     private SQRLUri sqrlUri;
-    private String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
 
     @Before
     public void setUp() throws Exception {
@@ -29,11 +28,8 @@ public class SQRLQueryRequestTest {
 
     @Test
     public void correctlyGenerateQueryRequest() throws Exception {
-        // First, we need to mock the connection object and the writer object
+        // First, we need to mock the connection object
         SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
-        when(connection.getResponseCode()).thenReturn(200);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(serverResponse.getBytes());
-        when(connection.getInputStream()).thenReturn(inputStream);
 
         // Mock the SQRLIdentity
         String expectedClientValue = "dmVyPTENCmNtZD1xdWVyeQ0KaWRrPUpqbDJPaFV5UDkzTTE0LUFRM3N0WU1hb1oydnExQkhmbUFoeFdqTTFDdVUNCg";
@@ -42,7 +38,7 @@ public class SQRLQueryRequestTest {
         SQRLIdentity sqrlIdentity = SQRLRequestTest.getMockSQRLIdentity(expectedClientValue, expectedServerValue, signatureOfExpectedData);
 
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLQueryRequest request = new SQRLQueryRequest(connection, sqrlIdentity, new RealSQRLResponseFactory());
+        SQRLQueryRequest request = new SQRLQueryRequest(connection, sqrlIdentity, new MockSQRLResponseFactory());
 
         // Calculate what the expected data should be
         String expectedData = "client=" + expectedClientValue;
