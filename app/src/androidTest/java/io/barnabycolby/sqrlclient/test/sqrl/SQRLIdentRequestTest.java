@@ -4,7 +4,9 @@ import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.SQRLResponseFactory;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
