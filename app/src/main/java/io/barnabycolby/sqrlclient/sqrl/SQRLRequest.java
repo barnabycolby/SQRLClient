@@ -18,6 +18,7 @@ public abstract class SQRLRequest {
     private SQRLIdentity sqrlIdentity;
     private SQRLResponseFactory sqrlResponseFactory;
     private HttpURLConnection connection;
+    private SQRLResponse previousResponse;
 
     /**
      * Constructs a new SQRLRequest object.
@@ -30,6 +31,24 @@ public abstract class SQRLRequest {
         this.sqrlConnection = sqrlConnection;
         this.sqrlIdentity = sqrlIdentity;
         this.sqrlResponseFactory = sqrlResponseFactory;
+    }
+
+    /**
+     * Constructs a new SQRLRequest object using the previous response to chain the requests appropriately.
+     *
+     * @param sqrlConnection  The SQRL connection to send the request over.
+     * @param sqrlIdentity  The identity to use for server communication.
+     * @param sqrlResponseFactory  The factory to use when creating a new response object.
+     * @param previousResponse  The previous response sent by the server.
+     */
+    public SQRLRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, NoNutException, IOException {
+        this.sqrlConnection = sqrlConnection;
+        this.sqrlIdentity = sqrlIdentity;
+        this.sqrlResponseFactory = sqrlResponseFactory;
+        this.previousResponse = previousResponse;
+
+        // The connection needs to be updated using the qry value from the last server response
+        this.sqrlConnection.updatePathAndQuery(this.previousResponse.getQry());
     }
 
     /**
@@ -84,8 +103,12 @@ public abstract class SQRLRequest {
      * Generates the value of the server parameter that forms part of the request.
      */
     private String getServerValue() {
-        String fullUri = this.sqrlConnection.getSQRLUri().getFullUriAsString();
-        return base64Encode(fullUri);
+        if (this.previousResponse == null) {
+            String fullUri = this.sqrlConnection.getSQRLUri().getFullUriAsString();
+            return base64Encode(fullUri);
+        } else {
+            return this.previousResponse.toString();
+        }
     }
 
     /**

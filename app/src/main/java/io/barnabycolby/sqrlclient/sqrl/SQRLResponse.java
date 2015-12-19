@@ -207,4 +207,12 @@ public class SQRLResponse {
             return false;
         }
     }
+
+    public String getQry() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String toString() {
+        throw new UnsupportedOperationException();
+    }
 }

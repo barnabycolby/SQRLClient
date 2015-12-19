@@ -158,6 +158,40 @@ public class SQRLRequestTest {
         Assert.assertEquals(expectedData, dataSent);
     }
 
+    @Test
+    public void updateConnectionAndModifyServerValueUsingLastResponse() throws Exception {
+        String lastServerRawResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MQ0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
+        String previousResponseQry = "qry=/sqrl?nut=sqYNVbO3_OVKNtND42wd_A";
+
+        // Define the expected data (normal client value, server value equal to last response)
+        String expectedClientValue = defaultExpectedClientValue;
+        String expectedServerValue = lastServerRawResponse;
+        String identitySignature = "qIDJavPfsjVOHhslKwdF0K404b0xrHuTFERftMY1bzMUVNN3LYu0eQ2ddQ6TPwx4YKV8MQGwNEjnc_5ZPUdACg";
+
+        // First, we need to create the mocks
+        SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
+        SQRLIdentity sqrlIdentity = SQRLRequestTest.getMockSQRLIdentity(expectedClientValue, expectedServerValue, identitySignature);
+        SQRLResponse previousResponse = mock(SQRLResponse.class);
+        when(previousResponse.toString()).thenReturn(lastServerRawResponse);
+        when(previousResponse.getQry()).thenReturn(previousResponseQry);
+
+        // Next, instantiate a SQRLRequest object with the mocked objects
+        SQRLTestRequest request = new SQRLTestRequest(connection, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse, false);
+
+        // Verify that updatePathAndQuery was called
+        verify(connection).updatePathAndQuery(previousResponseQry);
+
+        // Calculate what the expected data should be
+        String expectedData = "client=" + expectedClientValue;
+        expectedData += "&server=" + expectedServerValue;
+        expectedData += "&ids=" + identitySignature;
+
+        // Ask the request object to send the data, and then verify it
+        request.send();
+        String dataSent = connection.getOutputStream().toString();
+        Assert.assertEquals(expectedData, dataSent);
+    }
+
     //endregion
 
     public static SQRLConnection getMockSQRLConnection(SQRLUri sqrlUri) throws Exception {
