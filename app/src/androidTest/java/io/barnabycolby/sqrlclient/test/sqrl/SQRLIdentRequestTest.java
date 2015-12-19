@@ -46,7 +46,7 @@ public class SQRLIdentRequestTest {
         SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(connection, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse);
 
         // Assert the command string
-        Assert.assertEquals(request.getCommandString(), "ident");
+        Assert.assertEquals("ident", request.getCommandString());
     }
 
     @Test
