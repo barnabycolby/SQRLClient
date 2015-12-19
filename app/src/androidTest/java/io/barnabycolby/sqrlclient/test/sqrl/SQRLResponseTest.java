@@ -174,23 +174,23 @@ public class SQRLResponseTest {
         // Account exists
         // tif=1
         String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MQ0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
-        SQRLResponse sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
+        SQRLResponse sqrlResponse = instantiateSQRLResponseFromServerResponseString(serverResponse);
         Assert.assertTrue(sqrlResponse.currentAccountExists());
 
         // Account exists
         // tif=5
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NQ0KcXJ5PS9zcXJsP251dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQpzZm49R1JDDQo";
-        sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
+        sqrlResponse = instantiateSQRLResponseFromServerResponseString(serverResponse);
         Assert.assertTrue(sqrlResponse.currentAccountExists());
 
         // Account does not exist
         // tif=400
         serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NDAwDQpxcnk9L3Nxcmw_bnV0PXNxWU5WYk8zX09WS050TkQ0MndkX0ENCnNmbj1HUkMNCg";
-        sqrlResponse = instantiateSQRLResponesFromServerResponseString(serverResponse);
+        sqrlResponse = instantiateSQRLResponseFromServerResponseString(serverResponse);
         Assert.assertFalse(sqrlResponse.currentAccountExists());
     }
 
-    private SQRLResponse instantiateSQRLResponesFromServerResponseString(String serverResponse) throws Exception {
+    private SQRLResponse instantiateSQRLResponseFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
         SQRLConnection connectionMock = mock(SQRLConnection.class);
         when(connectionMock.getResponseCode()).thenReturn(200);
@@ -202,7 +202,7 @@ public class SQRLResponseTest {
 
     private <E extends Exception> Exception assertExceptionThrownForGivenServerResponse(Class<E> exceptionType, String serverResponse) throws Exception {
         try {
-            instantiateSQRLResponesFromServerResponseString(serverResponse);
+            instantiateSQRLResponseFromServerResponseString(serverResponse);
         } catch (Exception ex) {
             if (exceptionType.isInstance(ex)) {
                 return ex;
@@ -217,7 +217,7 @@ public class SQRLResponseTest {
     }
 
     private void assertSuccessForGivenServerResponse(String serverResponse) throws Exception {
-        instantiateSQRLResponesFromServerResponseString(serverResponse);
+        instantiateSQRLResponseFromServerResponseString(serverResponse);
     }
 
     private void assertExceptionThrownWhenConnectionReturnsGivenCode(int responseCode) throws Exception {
