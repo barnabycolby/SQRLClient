@@ -24,7 +24,7 @@ public class SQRLQueryRequest extends SQRLRequest {
     }
 
     @Override
-    protected boolean areUnlockRequestKeysRequired() {
+    protected boolean areServerUnlockAndVerifyUnlockKeysRequired() {
         return false;
     }
 

@@ -16,7 +16,7 @@ public class SQRLTestRequest extends SQRLRequest {
     private SQRLIdentity sqrlIdentity;
     private SQRLResponseFactory sqrlResponseFactory;
     private HttpURLConnection connection;
-    private boolean unlockRequestKeysRequired;
+    private boolean serverUnlockAndVerifyUnlockKeysRequired;
 
     /**
      * Constructs a new SQRLRequest object.
@@ -25,14 +25,14 @@ public class SQRLTestRequest extends SQRLRequest {
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      */
-    public SQRLTestRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean unlockRequestKeysRequired) {
+    public SQRLTestRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean serverUnlockAndVerifyUnlockKeysRequired) {
         super(sqrlConnection, sqrlIdentity, sqrlResponseFactory);
-        this.unlockRequestKeysRequired = unlockRequestKeysRequired;
+        this.serverUnlockAndVerifyUnlockKeysRequired = serverUnlockAndVerifyUnlockKeysRequired;
     }
 
     @Override
-    protected boolean areUnlockRequestKeysRequired() {
-        return this.unlockRequestKeysRequired;
+    protected boolean areServerUnlockAndVerifyUnlockKeysRequired() {
+        return this.serverUnlockAndVerifyUnlockKeysRequired;
     }
 
     @Override

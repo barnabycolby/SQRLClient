@@ -44,7 +44,7 @@ public abstract class SQRLRequest {
      *
      * @return True if the keys should be included, false otherwise.
      */
-    protected abstract boolean areUnlockRequestKeysRequired();
+    protected abstract boolean areServerUnlockAndVerifyUnlockKeysRequired();
 
     /**
      * Generates the value of the client parameter that forms part of the request.
@@ -55,9 +55,15 @@ public abstract class SQRLRequest {
         // Protocol is in version 1 at the moment
         String clientValue = "ver=1\r\n";
 
-        // Add remaining values
+        // Add cmd and idk values
         clientValue += "cmd=" + getCommandString() + "\r\n";
         clientValue += "idk=" + this.sqrlIdentity.getIdentityKey() + "\r\n";
+
+        // If the suk and vuk should be sent
+        if (this.areServerUnlockAndVerifyUnlockKeysRequired()) {
+            clientValue += "suk=" + this.sqrlIdentity.getServerUnlockKey() + "\r\n";
+            clientValue += "vuk=" + this.sqrlIdentity.getVerifyUnlockKey() + "\r\n";
+        }
 
         return base64Encode(clientValue);
     }
