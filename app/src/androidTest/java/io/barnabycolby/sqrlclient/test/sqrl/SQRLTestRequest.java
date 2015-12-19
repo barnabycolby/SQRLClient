@@ -17,6 +17,7 @@ public class SQRLTestRequest extends SQRLRequest {
     private SQRLResponseFactory sqrlResponseFactory;
     private HttpURLConnection connection;
     private boolean serverUnlockAndVerifyUnlockKeysRequired;
+    private String commandString;
 
     /**
      * Constructs a new SQRLRequest object.
@@ -24,10 +25,27 @@ public class SQRLTestRequest extends SQRLRequest {
      * @param sqrlConnection  The SQRL connection to send the request over.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
+     * @param serverUnlockAndVerifyUnlockKeysRequired  The value that should be returned when areServerUnlockAndVerifyUnlockKeysRequired is called.
      */
     public SQRLTestRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean serverUnlockAndVerifyUnlockKeysRequired) {
         super(sqrlConnection, sqrlIdentity, sqrlResponseFactory);
         this.serverUnlockAndVerifyUnlockKeysRequired = serverUnlockAndVerifyUnlockKeysRequired;
+        this.commandString = "test";
+    }
+
+    /**
+     * Constructs a new SQRLRequest object that returns a given command string.
+     *
+     * @param sqrlConnection  The SQRL connection to send the request over.
+     * @param sqrlIdentity  The identity to use for server communication.
+     * @param sqrlResponseFactory  The factory to use when creating a new response object.
+     * @param serverUnlockAndVerifyUnlockKeysRequired  The value that should be returned when areServerUnlockAndVerifyUnlockKeysRequired is called.
+     * @param commandString  The command string that should be returned when getCommandString is called.
+     */
+    public SQRLTestRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean serverUnlockAndVerifyUnlockKeysRequired, String commandString) {
+        super(sqrlConnection, sqrlIdentity, sqrlResponseFactory);
+        this.serverUnlockAndVerifyUnlockKeysRequired = serverUnlockAndVerifyUnlockKeysRequired;
+        this.commandString = commandString;
     }
 
     @Override
@@ -37,6 +55,6 @@ public class SQRLTestRequest extends SQRLRequest {
 
     @Override
     protected String getCommandString() {
-        return "test";
+        return this.commandString;
     }
 }

@@ -39,6 +39,8 @@ public class SQRLRequestTest {
         sqrlUri = new SQRLUri(uri);
     }
 
+    //region TESTS
+
     @Test
     public void shouldResendRequestUsingNewNutAndQryIfTransientErrorOccurs() throws Exception {
         // Create the required mocks
@@ -129,6 +131,34 @@ public class SQRLRequestTest {
         String dataSent = connection.getOutputStream().toString();
         Assert.assertEquals(expectedData, dataSent);
     }
+
+    @Test
+    public void shouldCorrectlySetCmdValue() throws Exception {
+        // Define the expected data
+        // cmd=sausages
+        String expectedClientValue = "dmVyPTENCmNtZD1zYXVzYWdlcw0KaWRrPUpqbDJPaFV5UDkzTTE0LUFRM3N0WU1hb1oydnExQkhmbUFoeFdqTTFDdVUNCg";
+        String expectedServerValue = defaultExpectedServerValue;
+        String identitySignature = "jXIbDT2_7zycMGLDViWHfu9ABymsLNuTILnAdRYUaLo_HCFHrjDM4uLM8hVs7sC6SpMN0AOiqxtKc8h9JEnUCw";
+
+        // First, we need to create the mocks
+        SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
+        SQRLIdentity sqrlIdentity = SQRLRequestTest.getMockSQRLIdentity(expectedClientValue, expectedServerValue, identitySignature);
+
+        // Next, instantiate a SQRLRequest object with the mocked objects
+        SQRLTestRequest request = new SQRLTestRequest(connection, sqrlIdentity, new MockSQRLResponseFactory(), false, "sausages");
+
+        // Calculate what the expected data should be
+        String expectedData = "client=" + expectedClientValue;
+        expectedData += "&server=" + expectedServerValue;
+        expectedData += "&ids=" + identitySignature;
+
+        // Ask the request object to send the data, and then verify it
+        request.send();
+        String dataSent = connection.getOutputStream().toString();
+        Assert.assertEquals(expectedData, dataSent);
+    }
+
+    //endregion
 
     public static SQRLConnection getMockSQRLConnection(SQRLUri sqrlUri) throws Exception {
         // Create the SQRLConnection mock
