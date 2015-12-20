@@ -29,6 +29,10 @@ public class AccountExistsTaskTest {
     private String account_exists = "TestString2";
     private String account_does_not_exist = "TestString3";
     private String something_went_wrong = "TestString4";
+    private SQRLResponse mockSQRLResponse;
+    private SQRLQueryRequest mockSQRLRequest;
+    private SQRLRequestFactory mockFactory;
+    private CreateAccountDialogFactory mockCreateAccountDialogFactory;
 
     @Before
     public void setUp() throws Exception {
@@ -41,6 +45,13 @@ public class AccountExistsTaskTest {
 
         // Create the accountExistsTask mock text view
         this.mockAccountExistsTextView = mock(TextView.class);
+
+        mockSQRLResponse = mock(SQRLResponse.class);
+        mockSQRLRequest = mock(SQRLQueryRequest.class);
+        mockFactory = mock(SQRLRequestFactory.class);
+        mockCreateAccountDialogFactory = mock(CreateAccountDialogFactory.class);
+        when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
+        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
     }
 
     @Test
@@ -56,24 +67,15 @@ public class AccountExistsTaskTest {
     @Test
     public void shouldDisplayCorrectMessageWhenExceptionIsThrown() throws Exception {
         // Create the factory that throws the exception
-        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
         doThrow(new InvalidServerResponseException("Exception thrown by unit test.")).when(mockSQRLRequest).send();
-        SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
-        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
 
-        createAndRunAccountExistsTaskAndVerifyText(mockFactory, this.something_went_wrong);
+        createAndRunAccountExistsTaskAndVerifyText(this.something_went_wrong);
     }
 
     @Test
     public void shouldDisplayCreateAccountDialogIfAccountDoesNotExist() throws Exception {
         // Create the required mocks
-        SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
         when(mockSQRLResponse.currentAccountExists()).thenReturn(false);
-        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
-        when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
-        SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
-        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
-        CreateAccountDialogFactory mockCreateAccountDialogFactory = mock(CreateAccountDialogFactory.class);
 
         // Create the accountExistsTask and tell it it execute
         AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory);
@@ -89,13 +91,7 @@ public class AccountExistsTaskTest {
     @Test
     public void shouldNotDisplayCreateAccountDialogIfAccountAlreadyExists() throws Exception {
         // Create the required mocks
-        SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
         when(mockSQRLResponse.currentAccountExists()).thenReturn(true);
-        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
-        when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
-        SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
-        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
-        CreateAccountDialogFactory mockCreateAccountDialogFactory = mock(CreateAccountDialogFactory.class);
 
         // Create the accountExistsTask and tell it it execute
         AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory);
@@ -110,17 +106,12 @@ public class AccountExistsTaskTest {
 
     private void accountExistsTestCorrectTextSet(boolean accountExistsResponse, String expectedText) throws Exception {
         // Create the factory that ensures the account does not exist
-        SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
         when(mockSQRLResponse.currentAccountExists()).thenReturn(accountExistsResponse);
-        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
-        when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
-        SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
-        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
 
-        createAndRunAccountExistsTaskAndVerifyText(mockFactory, expectedText);
+        createAndRunAccountExistsTaskAndVerifyText(expectedText);
     }
 
-    private void createAndRunAccountExistsTaskAndVerifyText(SQRLRequestFactory mockFactory, String expectedText) throws Exception {
+    private void createAndRunAccountExistsTaskAndVerifyText(String expectedText) throws Exception {
         // Create the accountExistsTask and tell it it execute
         AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mock(CreateAccountDialogFactory.class));
         accountExistsTask.enableTestMode();
