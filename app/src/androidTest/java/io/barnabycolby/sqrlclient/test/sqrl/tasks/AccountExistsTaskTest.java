@@ -1,12 +1,13 @@
-package io.barnabycolby.sqrlclient.test.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.tasks;
 
 import android.content.res.Resources;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.TextView;
 
+import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.AccountExistsTask;
+import io.barnabycolby.sqrlclient.sqrl.tasks.AccountExistsTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
@@ -63,6 +64,50 @@ public class AccountExistsTaskTest {
         createAndRunAccountExistsTaskAndVerifyText(mockFactory, this.something_went_wrong);
     }
 
+    @Test
+    public void shouldDisplayCreateAccountDialogIfAccountDoesNotExist() throws Exception {
+        // Create the required mocks
+        SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
+        when(mockSQRLResponse.currentAccountExists()).thenReturn(false);
+        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
+        when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
+        SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
+        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
+        CreateAccountDialogFactory mockCreateAccountDialogFactory = mock(CreateAccountDialogFactory.class);
+
+        // Create the accountExistsTask and tell it it execute
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory);
+        accountExistsTask.enableTestMode();
+        accountExistsTask.execute();
+        boolean result = accountExistsTask.await(10, TimeUnit.SECONDS);
+        Assert.assertTrue(result);
+
+        // Verify that the dialog was created
+        verify(mockCreateAccountDialogFactory).create();
+    }
+
+    @Test
+    public void shouldNotDisplayCreateAccountDialogIfAccountAlreadyExists() throws Exception {
+        // Create the required mocks
+        SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
+        when(mockSQRLResponse.currentAccountExists()).thenReturn(true);
+        SQRLQueryRequest mockSQRLRequest = mock(SQRLQueryRequest.class);
+        when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
+        SQRLRequestFactory mockFactory = mock(SQRLRequestFactory.class);
+        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
+        CreateAccountDialogFactory mockCreateAccountDialogFactory = mock(CreateAccountDialogFactory.class);
+
+        // Create the accountExistsTask and tell it it execute
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory);
+        accountExistsTask.enableTestMode();
+        accountExistsTask.execute();
+        boolean result = accountExistsTask.await(10, TimeUnit.SECONDS);
+        Assert.assertTrue(result);
+
+        // Verify that the dialog was created
+        verify(mockCreateAccountDialogFactory, never()).create();
+    }
+
     private void accountExistsTestCorrectTextSet(boolean accountExistsResponse, String expectedText) throws Exception {
         // Create the factory that ensures the account does not exist
         SQRLResponse mockSQRLResponse = mock(SQRLResponse.class);
@@ -77,7 +122,7 @@ public class AccountExistsTaskTest {
 
     private void createAndRunAccountExistsTaskAndVerifyText(SQRLRequestFactory mockFactory, String expectedText) throws Exception {
         // Create the accountExistsTask and tell it it execute
-        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mock(CreateAccountDialogFactory.class));
         accountExistsTask.enableTestMode();
         accountExistsTask.execute();
         boolean result = accountExistsTask.await(10, TimeUnit.SECONDS);

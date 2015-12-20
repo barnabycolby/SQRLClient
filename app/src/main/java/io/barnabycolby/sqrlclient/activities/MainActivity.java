@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
+import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.helpers.AlertDialogListener;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.AccountExistsTask;
+import io.barnabycolby.sqrlclient.sqrl.tasks.AccountExistsTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 
@@ -23,7 +25,7 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
  * If the user proceeds, then text is displayed to indicate whether the account exists.
  * </p>
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AlertDialogListener {
 
     private static final String TAG = MainActivity.class.getName();
     private TextView friendlySiteNameTextView;
@@ -86,7 +88,18 @@ public class MainActivity extends AppCompatActivity {
      */
     public void confirmSite(View view) {
         SQRLRequestFactory factory = new SQRLRequestFactory(this.sqrlUri);
-        AccountExistsTask accountExistsTask = new AccountExistsTask(factory, accountExistsTextView, resources);
+        CreateAccountDialogFactory dialogFactory = new CreateAccountDialogFactory(this, getSupportFragmentManager());
+        AccountExistsTask accountExistsTask = new AccountExistsTask(factory, accountExistsTextView, resources, dialogFactory);
         accountExistsTask.execute();
+    }
+
+    @Override
+    public void onDialogPositiveClick() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void onDialogNegativeClick() {
+        throw new UnsupportedOperationException();
     }
 }

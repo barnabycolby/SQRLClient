@@ -1,14 +1,20 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.sqrl.tasks;
 
+import android.app.DialogFragment;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
+import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
+import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
+import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
 import java.io.IOException;
 
@@ -22,6 +28,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     private SQRLRequestFactory sqrlRequestFactory;
     private TextView accountExistsTextView;
     private Resources resources;
+    private CreateAccountDialogFactory createAccountDialogFactory;
 
     /**
      * Constructs an instance of the AccountExistsTask.
@@ -29,11 +36,13 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      * @param sqrlRequestFactory  The factory used to create the SQRLRequest object used to query the server.
      * @param accountExistsTextView  The text view used to indicate whether the account exists or not.
      * @param resources  The resources used to retrieve the strings used to display the result of the query.
+     * @param createAccountDialogFactory  The factory used to create the create account dialog if needed.
      */
-    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, Resources resources) {
+    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, Resources resources, CreateAccountDialogFactory createAccountDialogFactory) {
         this.sqrlRequestFactory = sqrlRequestFactory;
         this.accountExistsTextView = accountExistsTextView;
         this.resources = resources;
+        this.createAccountDialogFactory = createAccountDialogFactory;
     }
 
     /**
@@ -80,6 +89,14 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
         }
 
         this.accountExistsTextView.setText(textToSet);
+
+        if (result != null) {
+            // Create the dialog based on the result
+            boolean accountExists = result.booleanValue();
+            if (!accountExists) {
+                this.createAccountDialogFactory.create();
+            }
+        }
 
         // Signal that all execution has finished
         this.executionFinished();
