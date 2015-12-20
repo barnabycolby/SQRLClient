@@ -99,6 +99,18 @@ public class AccountExistsTaskTest {
         verify(mockIdentRequestListener).proceedWithIdentRequest();
     }
 
+    @Test
+    public void getResponseShouldReturnTheQueryResponse() throws Exception {
+        // Create the accountExistsTask and tell it it execute
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockCreateAccountDialogFactory, mockIdentRequestListener);
+        accountExistsTask.enableTestMode();
+        accountExistsTask.execute();
+        boolean result = accountExistsTask.await(10, TimeUnit.SECONDS);
+        Assert.assertTrue(result);
+
+        Assert.assertEquals(mockSQRLResponse, accountExistsTask.getResponse());
+    }
+
     private void accountExistsTestCorrectTextSet(boolean accountExistsResponse, String expectedText) throws Exception {
         // Create the factory that ensures the account does not exist
         when(mockSQRLResponse.currentAccountExists()).thenReturn(accountExistsResponse);

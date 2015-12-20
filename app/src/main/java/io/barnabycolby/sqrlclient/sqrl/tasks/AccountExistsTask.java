@@ -30,6 +30,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     private TextView accountExistsTextView;
     private CreateAccountDialogFactory createAccountDialogFactory;
     private IdentRequestListener identRequestListener;
+    private SQRLResponse mResponse;
 
     /**
      * Constructs an instance of the AccountExistsTask.
@@ -64,8 +65,8 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
         try {
             // Perform the query and return the result
             SQRLQueryRequest request = this.sqrlRequestFactory.createQuery();
-            SQRLResponse response = request.send();
-            return Boolean.valueOf(response.currentAccountExists());
+            this.mResponse = request.send();
+            return Boolean.valueOf(mResponse.currentAccountExists());
         } catch (SQRLException | IOException ex) {
             Log.e(TAG, "Account exists task failed: " + ex.getMessage());
             return null;
@@ -103,5 +104,14 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
 
         // Signal that all execution has finished
         this.executionFinished();
+    }
+
+    /**
+     * Gets the response object created from the last server response.
+     *
+     * @return The last response object.
+     */
+    public SQRLResponse getResponse() {
+        return this.mResponse;
     }
 }

@@ -14,6 +14,7 @@ import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
 import io.barnabycolby.sqrlclient.sqrl.tasks.AccountExistsTask;
+import io.barnabycolby.sqrlclient.sqrl.tasks.IdentRequestTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
     private View confirmDenySiteButtons;
     private Resources resources;
     private TextView accountExistsTextView;
+    private AccountExistsTask mAccountExistsTask;
+    private SQRLRequestFactory mRequestFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +90,10 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
      * Called when the confirm site button is clicked.
      */
     public void confirmSite(View view) {
-        SQRLRequestFactory factory = new SQRLRequestFactory(this.sqrlUri);
+        this.mRequestFactory = new SQRLRequestFactory(this.sqrlUri);
         CreateAccountDialogFactory dialogFactory = new CreateAccountDialogFactory(this, getSupportFragmentManager());
-        AccountExistsTask accountExistsTask = new AccountExistsTask(factory, accountExistsTextView, dialogFactory, this);
-        accountExistsTask.execute();
+        this.mAccountExistsTask = new AccountExistsTask(mRequestFactory, accountExistsTextView, dialogFactory, this);
+        mAccountExistsTask.execute();
     }
 
     @Override
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
 
     @Override
     public void proceedWithIdentRequest() {
-        throw new UnsupportedOperationException();
+        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, this.mAccountExistsTask.getResponse());
+        identRequestTask.execute();
     }
 }
