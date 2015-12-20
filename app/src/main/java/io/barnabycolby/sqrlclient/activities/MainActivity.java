@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
 
     @Override
     public void proceedWithIdentRequest() {
-        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, this.mAccountExistsTask.getResponse());
+        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, accountExistsTextView, this.mAccountExistsTask.getResponse());
         identRequestTask.execute();
     }
 }

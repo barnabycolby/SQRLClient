@@ -25,4 +25,6 @@
     <string name="dialog_create_account">Would you like to create an account?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="authorisation_request_failed">Authorisation request failed.</string>
+    <string name="authorisation_request_sent">Authorisation request sent.</string>
 </resources>
