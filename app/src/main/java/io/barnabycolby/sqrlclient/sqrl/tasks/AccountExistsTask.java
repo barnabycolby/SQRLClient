@@ -12,6 +12,7 @@ import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
+import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
 import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
@@ -29,6 +30,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     private TextView accountExistsTextView;
     private Resources resources;
     private CreateAccountDialogFactory createAccountDialogFactory;
+    private IdentRequestListener identRequestListener;
 
     /**
      * Constructs an instance of the AccountExistsTask.
@@ -37,12 +39,14 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      * @param accountExistsTextView  The text view used to indicate whether the account exists or not.
      * @param resources  The resources used to retrieve the strings used to display the result of the query.
      * @param createAccountDialogFactory  The factory used to create the create account dialog if needed.
+     * @param identRequestListener  The listener that should be called when proceeding with the identity request.
      */
-    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, Resources resources, CreateAccountDialogFactory createAccountDialogFactory) {
+    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, Resources resources, CreateAccountDialogFactory createAccountDialogFactory, IdentRequestListener identRequestListener) {
         this.sqrlRequestFactory = sqrlRequestFactory;
         this.accountExistsTextView = accountExistsTextView;
         this.resources = resources;
         this.createAccountDialogFactory = createAccountDialogFactory;
+        this.identRequestListener = identRequestListener;
     }
 
     /**
@@ -93,7 +97,9 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
         if (result != null) {
             // Create the dialog based on the result
             boolean accountExists = result.booleanValue();
-            if (!accountExists) {
+            if (accountExists) {
+                this.identRequestListener.proceedWithIdentRequest();
+            } else {
                 this.createAccountDialogFactory.create();
             }
         }

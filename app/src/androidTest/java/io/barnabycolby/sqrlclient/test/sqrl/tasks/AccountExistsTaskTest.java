@@ -7,6 +7,7 @@ import android.widget.TextView;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
 import io.barnabycolby.sqrlclient.sqrl.tasks.AccountExistsTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
@@ -33,6 +34,7 @@ public class AccountExistsTaskTest {
     private SQRLQueryRequest mockSQRLRequest;
     private SQRLRequestFactory mockFactory;
     private CreateAccountDialogFactory mockCreateAccountDialogFactory;
+    private IdentRequestListener mockIdentRequestListener;
 
     @Before
     public void setUp() throws Exception {
@@ -50,6 +52,7 @@ public class AccountExistsTaskTest {
         mockSQRLRequest = mock(SQRLQueryRequest.class);
         mockFactory = mock(SQRLRequestFactory.class);
         mockCreateAccountDialogFactory = mock(CreateAccountDialogFactory.class);
+        mockIdentRequestListener = mock(IdentRequestListener.class);
         when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
         when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
     }
@@ -78,7 +81,7 @@ public class AccountExistsTaskTest {
         when(mockSQRLResponse.currentAccountExists()).thenReturn(false);
 
         // Create the accountExistsTask and tell it it execute
-        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory, mockIdentRequestListener);
         accountExistsTask.enableTestMode();
         accountExistsTask.execute();
         boolean result = accountExistsTask.await(10, TimeUnit.SECONDS);
@@ -89,19 +92,20 @@ public class AccountExistsTaskTest {
     }
 
     @Test
-    public void shouldNotDisplayCreateAccountDialogIfAccountAlreadyExists() throws Exception {
+    public void shouldNotDisplayDialogAndCallbackProceedIfAccountAlreadyExists() throws Exception {
         // Create the required mocks
         when(mockSQRLResponse.currentAccountExists()).thenReturn(true);
 
         // Create the accountExistsTask and tell it it execute
-        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory, mockIdentRequestListener);
         accountExistsTask.enableTestMode();
         accountExistsTask.execute();
         boolean result = accountExistsTask.await(10, TimeUnit.SECONDS);
         Assert.assertTrue(result);
 
-        // Verify that the dialog was created
+        // Verify that the dialog was not created and proceedWithIdentRequest was called
         verify(mockCreateAccountDialogFactory, never()).create();
+        verify(mockIdentRequestListener).proceedWithIdentRequest();
     }
 
     private void accountExistsTestCorrectTextSet(boolean accountExistsResponse, String expectedText) throws Exception {
@@ -113,7 +117,7 @@ public class AccountExistsTaskTest {
 
     private void createAndRunAccountExistsTaskAndVerifyText(String expectedText) throws Exception {
         // Create the accountExistsTask and tell it it execute
-        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mock(CreateAccountDialogFactory.class));
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mockFactory, mockAccountExistsTextView, mockResources, mockCreateAccountDialogFactory, mockIdentRequestListener);
         accountExistsTask.enableTestMode();
         accountExistsTask.execute();
         boolean result = accountExistsTask.await(10, TimeUnit.SECONDS);
