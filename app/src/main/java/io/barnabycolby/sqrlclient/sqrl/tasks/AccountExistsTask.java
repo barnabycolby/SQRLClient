@@ -1,12 +1,12 @@
 package io.barnabycolby.sqrlclient.sqrl.tasks;
 
 import android.app.DialogFragment;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
@@ -28,7 +28,6 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
 
     private SQRLRequestFactory sqrlRequestFactory;
     private TextView accountExistsTextView;
-    private Resources resources;
     private CreateAccountDialogFactory createAccountDialogFactory;
     private IdentRequestListener identRequestListener;
 
@@ -37,14 +36,12 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      *
      * @param sqrlRequestFactory  The factory used to create the SQRLRequest object used to query the server.
      * @param accountExistsTextView  The text view used to indicate whether the account exists or not.
-     * @param resources  The resources used to retrieve the strings used to display the result of the query.
      * @param createAccountDialogFactory  The factory used to create the create account dialog if needed.
      * @param identRequestListener  The listener that should be called when proceeding with the identity request.
      */
-    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, Resources resources, CreateAccountDialogFactory createAccountDialogFactory, IdentRequestListener identRequestListener) {
+    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, CreateAccountDialogFactory createAccountDialogFactory, IdentRequestListener identRequestListener) {
         this.sqrlRequestFactory = sqrlRequestFactory;
         this.accountExistsTextView = accountExistsTextView;
-        this.resources = resources;
         this.createAccountDialogFactory = createAccountDialogFactory;
         this.identRequestListener = identRequestListener;
     }
@@ -53,7 +50,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      * Sets the initial text of the text view and ensures it's visible.
      */
     protected void onPreExecute() {
-        String contactingServerText = this.resources.getString(R.string.contacting_server);
+        String contactingServerText = App.getApplicationResources().getString(R.string.contacting_server);
         this.accountExistsTextView.setText(contactingServerText);
         this.accountExistsTextView.setVisibility(View.VISIBLE);
     }
@@ -85,11 +82,11 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
         String textToSet;
 
         if (result == null) {
-            textToSet = this.resources.getString(R.string.something_went_wrong);
+            textToSet = App.getApplicationResources().getString(R.string.something_went_wrong);
         } else if (result.booleanValue()) {
-            textToSet = this.resources.getString(R.string.account_exists);
+            textToSet = App.getApplicationResources().getString(R.string.account_exists);
         } else {
-            textToSet = this.resources.getString(R.string.account_does_not_exist);
+            textToSet = App.getApplicationResources().getString(R.string.account_does_not_exist);
         }
 
         this.accountExistsTextView.setText(textToSet);

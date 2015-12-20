@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
     public void confirmSite(View view) {
         SQRLRequestFactory factory = new SQRLRequestFactory(this.sqrlUri);
         CreateAccountDialogFactory dialogFactory = new CreateAccountDialogFactory(this, getSupportFragmentManager());
-        AccountExistsTask accountExistsTask = new AccountExistsTask(factory, accountExistsTextView, resources, dialogFactory, this);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(factory, accountExistsTextView, dialogFactory, this);
         accountExistsTask.execute();
     }
 
