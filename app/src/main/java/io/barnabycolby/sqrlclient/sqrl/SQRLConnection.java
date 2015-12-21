@@ -63,6 +63,10 @@ public class SQRLConnection {
         return this.connection.getOutputStream();
     }
 
+    public void setFixedLengthStreamingMode(int contentLength) {
+        this.connection.setFixedLengthStreamingMode(contentLength);
+    }
+
     /**
      * Gets the SQRLUri object used for communication with the server.
      *

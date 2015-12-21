@@ -156,11 +156,17 @@ public abstract class SQRLRequest {
      * @throws CryptographyException  If the request could not be signed using the SQRL Identity.
      */
     private void generateAndSendRequest(OutputStreamWriter outputStreamWriter, String clientValue, String serverValue) throws IOException, CryptographyException {
+        // Create the request content
         String idsValue = this.sqrlIdentity.signUsingIdentityPrivateKey(clientValue + serverValue);
+        String body = "client=" + clientValue;
+        body += "&server=" + serverValue;
+        body += "&ids=" + idsValue;
 
-        outputStreamWriter.write("client=" + clientValue);
-        outputStreamWriter.write("&server=" + serverValue);
-        outputStreamWriter.write("&ids=" + idsValue);
+        // Calling this should theoretically reduce latency according to documentation
+        this.sqrlConnection.setFixedLengthStreamingMode(body.length());
+
+        // Write the request
+        outputStreamWriter.write(body);
         outputStreamWriter.flush();
     }
 }
