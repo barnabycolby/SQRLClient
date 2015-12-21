@@ -1,7 +1,7 @@
 package io.barnabycolby.sqrlclient.test.sqrl;
 
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
-import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.SQRLConnectionFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 import io.barnabycolby.sqrlclient.sqrl.SQRLRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
@@ -16,7 +16,7 @@ import java.net.MalformedURLException;
  */
 public class SQRLTestRequest extends SQRLRequest {
 
-    private SQRLConnection sqrlConnection;
+    private SQRLConnectionFactory sqrlConnectionFactory;
     private SQRLIdentity sqrlIdentity;
     private SQRLResponseFactory sqrlResponseFactory;
     private HttpURLConnection connection;
@@ -26,27 +26,27 @@ public class SQRLTestRequest extends SQRLRequest {
     /**
      * Constructs a new SQRLRequest object.
      *
-     * @param sqrlConnection  The SQRL connection to send the request over.
+     * @param sqrlConnectionFactory  The factory used to create the SQRL connection to send the request over.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param serverUnlockAndVerifyUnlockKeysRequired  The value that should be returned when areServerUnlockAndVerifyUnlockKeysRequired is called.
      */
-    public SQRLTestRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean serverUnlockAndVerifyUnlockKeysRequired) {
-        super(sqrlConnection, sqrlIdentity, sqrlResponseFactory);
+    public SQRLTestRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean serverUnlockAndVerifyUnlockKeysRequired) throws MalformedURLException, IOException {
+        super(sqrlConnectionFactory, sqrlIdentity, sqrlResponseFactory);
         this.serverUnlockAndVerifyUnlockKeysRequired = serverUnlockAndVerifyUnlockKeysRequired;
     }
 
     /**
      * Constructs a new SQRLRequest object that returns a given command string.
      *
-     * @param sqrlConnection  The SQRL connection to send the request over.
+     * @param sqrlConnectionFactory  The factory used to create the SQRL connection to send the request over.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param serverUnlockAndVerifyUnlockKeysRequired  The value that should be returned when areServerUnlockAndVerifyUnlockKeysRequired is called.
      * @param commandString  The command string that should be returned when getCommandString is called.
      */
-    public SQRLTestRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean serverUnlockAndVerifyUnlockKeysRequired, String commandString) {
-        super(sqrlConnection, sqrlIdentity, sqrlResponseFactory);
+    public SQRLTestRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, boolean serverUnlockAndVerifyUnlockKeysRequired, String commandString) throws MalformedURLException, IOException {
+        super(sqrlConnectionFactory, sqrlIdentity, sqrlResponseFactory);
         this.serverUnlockAndVerifyUnlockKeysRequired = serverUnlockAndVerifyUnlockKeysRequired;
         this.commandString = commandString;
     }
@@ -54,14 +54,14 @@ public class SQRLTestRequest extends SQRLRequest {
     /**
      * Constructs a new SQRLRequest object that returns a given command string.
      *
-     * @param sqrlConnection  The SQRL connection to send the request over.
+     * @param sqrlConnectionFactory  The factory used to create the SQRL connection to send the request over.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param serverUnlockAndVerifyUnlockKeysRequired  The value that should be returned when areServerUnlockAndVerifyUnlockKeysRequired is called.
      * @param previousResponse  The previous response sent by the server.
      */
-    public SQRLTestRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse, boolean serverUnlockAndVerifyUnlockKeysRequired) throws MalformedURLException, NoNutException, IOException {
-        super(sqrlConnection, sqrlIdentity, sqrlResponseFactory, previousResponse);
+    public SQRLTestRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse, boolean serverUnlockAndVerifyUnlockKeysRequired) throws MalformedURLException, NoNutException, IOException {
+        super(sqrlConnectionFactory, sqrlIdentity, sqrlResponseFactory, previousResponse);
         this.serverUnlockAndVerifyUnlockKeysRequired = serverUnlockAndVerifyUnlockKeysRequired;
         this.commandString = commandString;
     }

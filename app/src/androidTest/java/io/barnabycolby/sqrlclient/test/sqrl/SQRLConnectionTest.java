@@ -39,21 +39,6 @@ public class SQRLConnectionTest {
         checkConnectionMethodsAndHeaders();
     }
 
-    @Test
-    public void updatePathAndQueryShouldUpdateConnectionCorrectly() throws Exception {
-        // Call updatePathAndQuery
-        String newPathAndQuery = "/auth?nut=naTXmgQFkkPbxhuxbY8j8g";
-        sqrlConnection.updatePathAndQuery(newPathAndQuery);
-
-        // Refresh our copy of the connection
-        connection = sqrlConnection.getConnection();
-
-        // Check the connection was successfully updated
-        String expected = "https://www.grc.com" + newPathAndQuery;
-        checkConnectionCreatedToTheCorrectURLAllowingIncomingAndOutgoingTraffic(expected);
-        checkConnectionMethodsAndHeaders();
-    }
-
     private void checkConnectionMethodsAndHeaders() throws Exception {
         Assert.assertEquals("POST", connection.getRequestMethod());
         Assert.assertEquals(uri.getHost(), connection.getRequestProperty("Host"));

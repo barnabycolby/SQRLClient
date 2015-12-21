@@ -47,11 +47,13 @@ public class SQRLResponseTest {
     public void constructRequestWithoutExceptionWhenResponseCodeIs200() throws Exception {
         // Create the necessary mocks
         SQRLConnection connectionMock = mock(SQRLConnection.class);
+        HttpURLConnection httpURLConnection = mock(HttpURLConnection.class);
         OutputStream mockOutputStream = mock(OutputStream.class);
-        when(connectionMock.getOutputStream()).thenReturn(mockOutputStream);
-        when(connectionMock.getResponseCode()).thenReturn(200);
+        when(connectionMock.getConnection()).thenReturn(httpURLConnection);
+        when(httpURLConnection.getOutputStream()).thenReturn(mockOutputStream);
+        when(httpURLConnection.getResponseCode()).thenReturn(200);
         String serverResponse = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9MjQNCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
-        when(connectionMock.getInputStream()).thenReturn(new ByteArrayInputStream(serverResponse.getBytes()));
+        when(httpURLConnection.getInputStream()).thenReturn(new ByteArrayInputStream(serverResponse.getBytes()));
 
         SQRLResponse response = new SQRLResponse(connectionMock);
     }
@@ -208,9 +210,11 @@ public class SQRLResponseTest {
     private SQRLResponse instantiateSQRLResponseFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
         SQRLConnection connectionMock = mock(SQRLConnection.class);
-        when(connectionMock.getResponseCode()).thenReturn(200);
+        HttpURLConnection httpURLConnection = mock(HttpURLConnection.class);
+        when(connectionMock.getConnection()).thenReturn(httpURLConnection);
+        when(httpURLConnection.getResponseCode()).thenReturn(200);
         InputStream inputStream = new ByteArrayInputStream(serverResponse.getBytes());
-        when(connectionMock.getInputStream()).thenReturn(inputStream);
+        when(httpURLConnection.getInputStream()).thenReturn(inputStream);
 
         return new SQRLResponse(connectionMock);
     }
@@ -238,9 +242,11 @@ public class SQRLResponseTest {
     private void assertExceptionThrownWhenConnectionReturnsGivenCode(int responseCode) throws Exception {
         // Create the necessary mocks
         SQRLConnection connectionMock = mock(SQRLConnection.class);
+        HttpURLConnection httpURLConnection = mock(HttpURLConnection.class);
         OutputStream mockOutputStream = mock(OutputStream.class);
-        when(connectionMock.getOutputStream()).thenReturn(mockOutputStream);
-        when(connectionMock.getResponseCode()).thenReturn(responseCode);
+        when(connectionMock.getConnection()).thenReturn(httpURLConnection);
+        when(httpURLConnection.getOutputStream()).thenReturn(mockOutputStream);
+        when(httpURLConnection.getResponseCode()).thenReturn(responseCode);
 
         // Verify that send throws an exception
         try {

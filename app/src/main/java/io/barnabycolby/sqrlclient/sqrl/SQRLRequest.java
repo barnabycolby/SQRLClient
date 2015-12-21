@@ -15,6 +15,7 @@ import io.barnabycolby.sqrlclient.exceptions.*;
 public abstract class SQRLRequest {
 
     private SQRLConnection sqrlConnection;
+    private SQRLConnectionFactory sqrlConnectionFactory;
     private SQRLIdentity sqrlIdentity;
     private SQRLResponseFactory sqrlResponseFactory;
     private HttpURLConnection connection;
@@ -23,12 +24,13 @@ public abstract class SQRLRequest {
     /**
      * Constructs a new SQRLRequest object.
      *
-     * @param sqrlConnection  The SQRL connection to send the request over.
+     * @param sqrlConnectionFactory  The factory used to create the SQRL connection to send the request over.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      */
-    public SQRLRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory) {
-        this.sqrlConnection = sqrlConnection;
+    public SQRLRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory) throws MalformedURLException, IOException {
+        this.sqrlConnectionFactory = sqrlConnectionFactory;
+        this.sqrlConnection = sqrlConnectionFactory.create();
         this.sqrlIdentity = sqrlIdentity;
         this.sqrlResponseFactory = sqrlResponseFactory;
     }
@@ -41,14 +43,13 @@ public abstract class SQRLRequest {
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param previousResponse  The previous response sent by the server.
      */
-    public SQRLRequest(SQRLConnection sqrlConnection, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, NoNutException, IOException {
-        this.sqrlConnection = sqrlConnection;
+    public SQRLRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, NoNutException, IOException {
+        this.sqrlConnectionFactory = sqrlConnectionFactory;
+        // The connection needs to be updated using the qry value from the last server response
+        this.sqrlConnection = sqrlConnectionFactory.create(previousResponse.getQry());
         this.sqrlIdentity = sqrlIdentity;
         this.sqrlResponseFactory = sqrlResponseFactory;
         this.previousResponse = previousResponse;
-
-        // The connection needs to be updated using the qry value from the last server response
-        this.sqrlConnection.updatePathAndQuery(this.previousResponse.getQry());
     }
 
     /**
@@ -120,7 +121,7 @@ public abstract class SQRLRequest {
      */
     public SQRLResponse send() throws MalformedURLException, IOException, SQRLException {
         // Get the output stream as a writer to make our life easier
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getOutputStream(), "UTF-8");
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getConnection().getOutputStream(), "UTF-8");
 
         String clientValue = getClientValue();
         generateAndSendRequest(outputStreamWriter, clientValue, getServerValue());
@@ -132,8 +133,9 @@ public abstract class SQRLRequest {
             return response;
         } catch (TransientErrorException ex) {
             // Update the connection to use the new qry value retrieved by the response
-            this.sqrlConnection.updatePathAndQuery(ex.getQry());
-            outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getOutputStream(), "UTF-8");
+            this.sqrlConnection.getSQRLUri().updatePathAndQuery(ex.getQry());
+            this.sqrlConnection = this.sqrlConnectionFactory.create();
+            outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getConnection().getOutputStream(), "UTF-8");
 
             // Store the last server response so that we can access it later
             lastServerResponse = ex.getLastServerResponse();

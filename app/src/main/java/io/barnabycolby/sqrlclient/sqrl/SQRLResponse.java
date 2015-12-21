@@ -31,10 +31,12 @@ public class SQRLResponse {
      * @throws SQRLException  If the servers response resulted in an unrecoverable error.
      * @throws TransientErrorException  If the servers response indicates that a transient error occurs.
      */
-    public SQRLResponse(SQRLConnection connection) throws IOException, SQRLException, TransientErrorException {
+    public SQRLResponse(SQRLConnection sqrlConnection) throws IOException, SQRLException, TransientErrorException {
         // Check the response code
+        HttpURLConnection connection = sqrlConnection.getConnection();
         int responseCode = connection.getResponseCode();
         if (responseCode != 200) {
+            connection.disconnect();
             throw new IOException(App.getApplicationResources().getString(R.string.non_200_response_code, responseCode));
         }
 
@@ -47,6 +49,9 @@ public class SQRLResponse {
 
         // Store the raw server response as a string, it will be required to create subsequent requests
         this.rawServerResponse = new String(encodedServerResponse, Charset.forName("UTF-8"));
+
+        // Make sure to disconnect from the server
+        connection.disconnect();
 
         // Perform response validity checks
         checkThatAllRequiredNameValuePairsArePresent();

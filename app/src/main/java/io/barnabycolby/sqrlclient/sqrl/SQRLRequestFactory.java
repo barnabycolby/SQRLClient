@@ -8,9 +8,9 @@ import java.net.MalformedURLException;
  */
 public class SQRLRequestFactory {
     private SQRLUri mUri;
-    private SQRLConnection mConnection;
     private SQRLIdentity mIdentity;
     private SQRLResponseFactory mResponseFactory;
+    private SQRLConnectionFactory mConnectionFactory;
 
     /**
      * Constructs a new factory using the given uri.
@@ -28,19 +28,19 @@ public class SQRLRequestFactory {
      * @throws IOException  If the connection to the server could not be created.
      */
     public SQRLQueryRequest createQuery() throws MalformedURLException, IOException {
-        return new SQRLQueryRequest(getConnection(), getIdentity(), getResponseFactory());
+        return new SQRLQueryRequest(getConnectionFactory(), getIdentity(), getResponseFactory());
     }
 
     public SQRLIdentRequest createIdent(SQRLResponse previousResponse) throws MalformedURLException, IOException {
-        return new SQRLIdentRequest(getConnection(), getIdentity(), getResponseFactory(), previousResponse);
+        return new SQRLIdentRequest(getConnectionFactory(), getIdentity(), getResponseFactory(), previousResponse);
     }
 
-    private SQRLConnection getConnection() throws MalformedURLException, IOException {
-        if (this.mConnection == null) {
-            this.mConnection = new SQRLConnection(this.mUri);
+    private SQRLConnectionFactory getConnectionFactory() {
+        if (this.mConnectionFactory == null) {
+            this.mConnectionFactory = new SQRLConnectionFactory(this.mUri);
         }
 
-        return this.mConnection;
+        return this.mConnectionFactory;
     }
 
     private SQRLIdentity getIdentity() {

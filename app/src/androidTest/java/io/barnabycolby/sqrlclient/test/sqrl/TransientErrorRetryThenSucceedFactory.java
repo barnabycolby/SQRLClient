@@ -6,6 +6,7 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 
 import static org.mockito.Mockito.*;
 
@@ -27,7 +28,9 @@ public class TransientErrorRetryThenSucceedFactory implements SQRLResponseFactor
             // We restub the SQRLConnection.getOutputStream method, to return a brand new output stream
             // This is so that we can see the data sent AFTER the exception was thrown
             this.spyOutputStream = spy(new ByteArrayOutputStream());
-            when(this.mockConnection.getOutputStream()).thenReturn(spyOutputStream);
+            HttpURLConnection httpURLConnection = mock(HttpURLConnection.class);
+            when(this.mockConnection.getConnection()).thenReturn(httpURLConnection);
+            when(httpURLConnection.getOutputStream()).thenReturn(spyOutputStream);
 
             throw new TransientErrorException(getNut(), getQry(), getLastServerResponse());
         } else {

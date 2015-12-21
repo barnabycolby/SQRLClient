@@ -11,6 +11,9 @@ import java.net.URL;
 
 /**
  * Wraps a HttpURLConnection to make it easier to communicate with a SQRL server.
+ *
+ * Ideally this class would extend HttpURLConnection, but this seems like more pain than it's worth as HttpURLConnection is an abstract class
+ * with no easy to find concrete subclass.
  */
 public class SQRLConnection {
     private HttpURLConnection connection;
@@ -51,22 +54,6 @@ public class SQRLConnection {
         this.connection.setDoInput(true);
     }
 
-    public int getResponseCode() throws IOException {
-        return this.connection.getResponseCode();
-    }
-
-    public InputStream getInputStream() throws IOException {
-        return this.connection.getInputStream();
-    }
-
-    public OutputStream getOutputStream() throws IOException {
-        return this.connection.getOutputStream();
-    }
-
-    public void setFixedLengthStreamingMode(int contentLength) {
-        this.connection.setFixedLengthStreamingMode(contentLength);
-    }
-
     /**
      * Gets the SQRLUri object used for communication with the server.
      *
@@ -81,22 +68,5 @@ public class SQRLConnection {
      */
     public HttpURLConnection getConnection() {
         return this.connection;
-    }
-
-    /**
-     * Updates the SQRLUri object to use the new path and query sent in a server response.
-     *
-     * @param newQuery  The new path and query used to update the internal SQRLUri object.
-     * @throws MalformedURLException  If the path and query are invalid.
-     * @throws NoNutException  If the new path and query does not contain a nut value.
-     * @throws IOException If the internal connection could not be disconnected.
-     */
-    public void updatePathAndQuery(String newQuery) throws MalformedURLException, NoNutException, IOException {
-        // Ask SQRLUri to update itself
-        this.sqrlUri.updatePathAndQuery(newQuery);
-
-        // Now we need to update the connection to use the new SQRLUri
-        this.connection.disconnect();
-        this.initialiseConnection();
     }
 }
