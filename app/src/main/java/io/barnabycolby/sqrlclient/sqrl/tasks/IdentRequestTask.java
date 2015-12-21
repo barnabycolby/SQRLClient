@@ -1,5 +1,6 @@
 package io.barnabycolby.sqrlclient.sqrl.tasks;
 
+import android.util.Log;
 import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.App;
@@ -16,6 +17,8 @@ import java.io.IOException;
  * An AsyncTask that sends an ident request to a SQRL server.
  */
 public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
+    private static final String TAG = IdentRequestTask.class.getName();
+
     private SQRLRequestFactory mRequestFactory;
     private TextView mTextView;
     private SQRLResponse mPreviousResponse;
@@ -43,6 +46,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
             SQRLIdentRequest request = mRequestFactory.createIdent(mPreviousResponse);
             request.send();
         } catch (IOException | SQRLException ex) {
+            Log.e(TAG, "Ident request task failed: " + ex.getMessage());
             return App.getApplicationResources().getString(R.string.authorisation_request_failed);
         }
 
