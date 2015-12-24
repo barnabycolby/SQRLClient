@@ -8,19 +8,13 @@ import io.barnabycolby.sqrlclient.R;
 
 import java.nio.charset.Charset;
 
-import org.abstractj.kalium.*;
+import org.abstractj.kalium.crypto.Util;
+import static org.abstractj.kalium.NaCl.sodium;
 
 /**
  * Wraps a SQRL Identity to provide helper methods for using the identity.
  */
 public class SQRLIdentity {
-    private Sodium sodium;
-
-    public SQRLIdentity() {
-        // Initialise the sodium singleton
-        this.sodium = NaCl.sodium();
-    }
-
     /**
      * Gets the SQRL Identity public key.
      *
@@ -41,25 +35,21 @@ public class SQRLIdentity {
         // Currently this uses a hardcoded private key that matches
         // the public key used above
         String privateKey = "A3vucIkohGpHGFx7fzTTBi3BWNzeaL8EW4HeyGB22akApwMIKG4XDPIejaCbXh9u4WaLbswiNSZwRcnHilZ0ug";
-
-        // Prepare the data so that we can pass it to the signing message
-        // The signature is 512 bits, so we need to prefer a 64 byte buffer
-        byte[] signedMessage = new byte[64];
-        int[] signedMessageLength = new int[1];
-        byte[] messageAsByteArray = message.getBytes(Charset.forName("UTF-8"));
-        int messageLength = messageAsByteArray.length;
         byte[] privateKeyAsByteArray = Base64.decode(privateKey, Base64.URL_SAFE);
 
-        // Actually sign the message
-        int result = sodium.crypto_sign_ed25519(signedMessage, signedMessageLength, messageAsByteArray, messageLength, privateKeyAsByteArray);
+        // Sign the message
+        byte[] messageAsByteArray = message.getBytes(Charset.forName("UTF-8"));
+        byte[] signature = Util.prependZeros(64, messageAsByteArray);
+        int[] bufferLen = new int[1];
+        int result = sodium().crypto_sign_ed25519(signature, bufferLen, messageAsByteArray, messageAsByteArray.length, privateKeyAsByteArray);
 
         // Check for errors
         if (result < 0) {
             throw new CryptographyException(App.getApplicationResources().getString(R.string.identity_signature_failed));
         }
 
-        String signedMessageAsString = Base64.encodeToString(signedMessage, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
-        return signedMessageAsString;
+        signature = Util.slice(signature, 0, 64);
+        return Base64.encodeToString(signature, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
     }
 
     /**
