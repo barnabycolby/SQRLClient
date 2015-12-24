@@ -7,6 +7,8 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
+import io.barnabycolby.sqrlclient.exceptions.NoNutException;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 
