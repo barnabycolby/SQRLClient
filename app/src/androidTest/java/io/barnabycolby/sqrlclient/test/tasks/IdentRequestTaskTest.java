@@ -21,40 +21,32 @@ import static org.mockito.Mockito.*;
 @RunWith(AndroidJUnit4.class)
 public class IdentRequestTaskTest {
     private SQRLRequestFactory mRequestFactory;
-    private SQRLIdentRequest mIdentRequest;
-    private SQRLResponse mResponse;
     private TextView mTextView;
 
     @Before
     public void setUp() throws Exception {
         // Create the mocks
         mRequestFactory = mock(SQRLRequestFactory.class);
-        mIdentRequest = mock(SQRLIdentRequest.class);
-        mResponse = mock(SQRLResponse.class);
         mTextView = mock(TextView.class);
-
-        // Define the behaviour of the mocks
-        when(mRequestFactory.createIdent(mResponse)).thenReturn(mIdentRequest);
     }
 
     @Test
     public void shouldCreateAndSendAnIdentRequest() throws Exception {
         // Execute the ident request
-        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView, mResponse);
+        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView);
         identRequestTask.enableTestMode();
         identRequestTask.execute();
         boolean result = identRequestTask.await(10, TimeUnit.SECONDS);
         Assert.assertTrue(result);
 
         // Verify the behaviour of the task
-        verify(mRequestFactory).createIdent(mResponse);
-        verify(mIdentRequest).send();
+        verify(mRequestFactory).createAndSendIdent();
     }
 
     @Test
     public void shouldSetSuccessTextWhenNoException() throws Exception {
         // Execute the ident request
-        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView, mResponse);
+        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView);
         identRequestTask.enableTestMode();
         identRequestTask.execute();
         boolean result = identRequestTask.await(10, TimeUnit.SECONDS);
@@ -68,10 +60,10 @@ public class IdentRequestTaskTest {
     @Test
     public void shouldSetFailedTextWhenSendThrowsException() throws Exception {
         // Mock the request to throw an exception on send
-        doThrow(new InvalidServerResponseException("Thrown from a unit test.")).when(mIdentRequest).send();
+        doThrow(new InvalidServerResponseException("Thrown from a unit test.")).when(mRequestFactory).createAndSendIdent();
 
         // Execute the ident request
-        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView, mResponse);
+        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView);
         identRequestTask.enableTestMode();
         identRequestTask.execute();
         boolean result = identRequestTask.await(10, TimeUnit.SECONDS);

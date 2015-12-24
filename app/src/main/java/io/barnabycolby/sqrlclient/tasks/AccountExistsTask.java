@@ -13,7 +13,6 @@ import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
-import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
@@ -64,8 +63,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         try {
             // Perform the query and return the result
-            SQRLQueryRequest request = this.sqrlRequestFactory.createQuery();
-            this.mResponse = request.send();
+            this.mResponse = this.sqrlRequestFactory.createAndSendQuery();
             return Boolean.valueOf(mResponse.currentAccountExists());
         } catch (SQRLException | IOException ex) {
             Log.e(TAG, "Account exists task failed: " + ex.getMessage());

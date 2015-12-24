@@ -7,7 +7,6 @@ import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
@@ -21,19 +20,16 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
 
     private SQRLRequestFactory mRequestFactory;
     private TextView mTextView;
-    private SQRLResponse mPreviousResponse;
 
     /**
      * Constructs a new instance of the IdentRequestTask.
      *
      * @param requestFactory  The request factory used to generate the ident reqeust.
      * @param textView  This text view will be used to indicate progress and the results of the ident request.
-     * @param previousResponse  The last response sent, required for the creation of the IdentRequest.
      */
-    public IdentRequestTask(SQRLRequestFactory requestFactory, TextView textView, SQRLResponse previousResponse) {
+    public IdentRequestTask(SQRLRequestFactory requestFactory, TextView textView) {
         this.mRequestFactory = requestFactory;
         this.mTextView = textView;
-        this.mPreviousResponse = previousResponse;
     }
 
     protected void onPreExecute() {
@@ -43,8 +39,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
 
     protected String doInBackground(Void... params) {
         try {
-            SQRLIdentRequest request = mRequestFactory.createIdent(mPreviousResponse);
-            request.send();
+            mRequestFactory.createAndSendIdent();
         } catch (IOException | SQRLException ex) {
             Log.e(TAG, "Ident request task failed: " + ex.getMessage());
             return App.getApplicationResources().getString(R.string.authorisation_request_failed);

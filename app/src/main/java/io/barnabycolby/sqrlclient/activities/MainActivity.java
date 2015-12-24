@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
     private View confirmDenySiteButtons;
     private Resources resources;
     private TextView accountExistsTextView;
-    private AccountExistsTask mAccountExistsTask;
     private SQRLRequestFactory mRequestFactory;
 
     @Override
@@ -86,8 +85,8 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
     public void confirmSite(View view) {
         this.mRequestFactory = new SQRLRequestFactory(this.sqrlUri);
         CreateAccountDialogFactory dialogFactory = new CreateAccountDialogFactory(this, getSupportFragmentManager());
-        this.mAccountExistsTask = new AccountExistsTask(mRequestFactory, accountExistsTextView, dialogFactory, this);
-        mAccountExistsTask.execute();
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mRequestFactory, accountExistsTextView, dialogFactory, this);
+        accountExistsTask.execute();
     }
 
     @Override
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
 
     @Override
     public void proceedWithIdentRequest() {
-        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, accountExistsTextView, this.mAccountExistsTask.getResponse());
+        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, accountExistsTextView);
         identRequestTask.execute();
     }
 }

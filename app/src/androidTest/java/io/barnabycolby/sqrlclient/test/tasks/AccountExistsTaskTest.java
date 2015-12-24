@@ -26,7 +26,6 @@ public class AccountExistsTaskTest {
     // We use strings that do not look like real strings
     // So that we can verify the code isn't using hardcoded strings
     private SQRLResponse mockSQRLResponse;
-    private SQRLQueryRequest mockSQRLRequest;
     private SQRLRequestFactory mockFactory;
     private CreateAccountDialogFactory mockCreateAccountDialogFactory;
     private IdentRequestListener mockIdentRequestListener;
@@ -37,12 +36,10 @@ public class AccountExistsTaskTest {
         this.mockAccountExistsTextView = mock(TextView.class);
 
         mockSQRLResponse = mock(SQRLResponse.class);
-        mockSQRLRequest = mock(SQRLQueryRequest.class);
         mockFactory = mock(SQRLRequestFactory.class);
         mockCreateAccountDialogFactory = mock(CreateAccountDialogFactory.class);
         mockIdentRequestListener = mock(IdentRequestListener.class);
-        when(mockSQRLRequest.send()).thenReturn(mockSQRLResponse);
-        when(mockFactory.createQuery()).thenReturn(mockSQRLRequest);
+        when(mockFactory.createAndSendQuery()).thenReturn(mockSQRLResponse);
     }
 
     @Test
@@ -60,7 +57,7 @@ public class AccountExistsTaskTest {
     @Test
     public void shouldDisplayCorrectMessageWhenExceptionIsThrown() throws Exception {
         // Create the factory that throws the exception
-        doThrow(new InvalidServerResponseException("Exception thrown by unit test.")).when(mockSQRLRequest).send();
+        doThrow(new InvalidServerResponseException("Exception thrown by unit test.")).when(mockFactory).createAndSendQuery();
 
         String expectedText = App.getApplicationResources().getString(R.string.something_went_wrong);
         createAndRunAccountExistsTaskAndVerifyText(expectedText);
