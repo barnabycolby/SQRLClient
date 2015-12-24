@@ -19,6 +19,9 @@ import static org.mockito.Mockito.*;
 @RunWith(AndroidJUnit4.class)
 public class SQRLQueryRequestTest {
 
+    private SQRLConnectionFactory mConnectionFactory;
+    private SQRLIdentity mIdentity;
+
     /**
      * Create a subclass of SQRLQueryRequest so that we can verify it's protected methods.
      */
@@ -38,14 +41,16 @@ public class SQRLQueryRequestTest {
         }
     }
 
+    @Before
+    public void setUp() throws Exception {
+        this.mConnectionFactory = mock(SQRLConnectionFactory.class);
+        this.mIdentity = mock(SQRLIdentity.class);
+    }
+
     @Test
     public void commandStringShouldBeQry() throws Exception {
-        // Create the required mock objects
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        SQRLIdentity sqrlIdentity = mock(SQRLIdentity.class);
-
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLQueryRequestPublic request = new SQRLQueryRequestPublic(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory());
+        SQRLQueryRequestPublic request = new SQRLQueryRequestPublic(mConnectionFactory, mIdentity, new MockSQRLResponseFactory());
 
         // Assert the command string
         Assert.assertEquals("query", request.getCommandString());
@@ -53,12 +58,8 @@ public class SQRLQueryRequestTest {
 
     @Test
     public void areServerUnlockAndVerifyUnlockKeysRequiredShouldReturnFalse() throws Exception {
-        // Create the required mock objects
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        SQRLIdentity sqrlIdentity = mock(SQRLIdentity.class);
-
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLQueryRequestPublic request = new SQRLQueryRequestPublic(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory());
+        SQRLQueryRequestPublic request = new SQRLQueryRequestPublic(mConnectionFactory, mIdentity, new MockSQRLResponseFactory());
 
         // Assert the result of areServerUnlockAndVerifyUnlockKeysRequired
         Assert.assertFalse(request.areServerUnlockAndVerifyUnlockKeysRequired());

@@ -20,6 +20,10 @@ import static org.mockito.Mockito.*;
 @RunWith(AndroidJUnit4.class)
 public class SQRLIdentRequestTest {
 
+    private SQRLConnectionFactory mConnectionFactory;
+    private SQRLIdentity mIdentity;
+    private SQRLResponse mPreviousResponse;
+
     /**
      * Create a subclass of SQRLIdentRequest so that we can verify it's protected methods.
      */
@@ -39,15 +43,17 @@ public class SQRLIdentRequestTest {
         }
     }
 
+    @Before
+    public void setUp() throws Exception {
+        this.mConnectionFactory = mock(SQRLConnectionFactory.class);
+        this.mIdentity = mock(SQRLIdentity.class);
+        this.mPreviousResponse = mock(SQRLResponse.class);
+    }
+
     @Test
     public void commandStringShouldBeIdent() throws Exception {
-        // Create the required mock objects
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        SQRLIdentity sqrlIdentity = mock(SQRLIdentity.class);
-        SQRLResponse previousResponse = mock(SQRLResponse.class);
-
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse);
+        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(mConnectionFactory, mIdentity, new MockSQRLResponseFactory(), mPreviousResponse);
 
         // Assert the command string
         Assert.assertEquals("ident", request.getCommandString());
@@ -56,13 +62,10 @@ public class SQRLIdentRequestTest {
     @Test
     public void areServerUnlockAndVerifyUnlockKeysRequiredShouldReturnFalseIfAccountExists() throws Exception {
         // Create the required mock objects
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        SQRLIdentity sqrlIdentity = mock(SQRLIdentity.class);
-        SQRLResponse previousResponse = mock(SQRLResponse.class);
-        when(previousResponse.currentAccountExists()).thenReturn(true);
+        when(mPreviousResponse.currentAccountExists()).thenReturn(true);
 
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse);
+        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(mConnectionFactory, mIdentity, new MockSQRLResponseFactory(), mPreviousResponse);
 
         // Assert the result of areServerUnlockAndVerifyUnlockKeysRequired
         Assert.assertFalse(request.areServerUnlockAndVerifyUnlockKeysRequired());
@@ -71,13 +74,10 @@ public class SQRLIdentRequestTest {
     @Test
     public void areServerUnlockAndVerifyUnlockKeysRequiredShouldReturnTrueIfAccountDoesNotExist() throws Exception {
         // Create the required mock objects
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        SQRLIdentity sqrlIdentity = mock(SQRLIdentity.class);
-        SQRLResponse previousResponse = mock(SQRLResponse.class);
-        when(previousResponse.currentAccountExists()).thenReturn(false);
+        when(mPreviousResponse.currentAccountExists()).thenReturn(false);
 
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse);
+        SQRLIdentRequestPublic request = new SQRLIdentRequestPublic(mConnectionFactory, mIdentity, new MockSQRLResponseFactory(), mPreviousResponse);
 
         // Assert the result of areServerUnlockAndVerifyUnlockKeysRequired
         Assert.assertTrue(request.areServerUnlockAndVerifyUnlockKeysRequired());

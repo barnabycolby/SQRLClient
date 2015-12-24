@@ -31,12 +31,30 @@ public class SQRLRequestTest {
      */
     private static String expectedTransientServerValue = "dmVyPTENCm51dD1zcVlOVmJPM19PVktOdE5ENDJ3ZF9BDQp0aWY9NjANCnFyeT0vc3FybD9udXQ9c3FZTlZiTzNfT1ZLTnRORDQyd2RfQQ0Kc2ZuPUdSQw0K";
     private static String signatureOfExpectedTransientData = "h9hvfEq0u21TD2QkxsBiYwyPWw9VBjCd9WfB5oOpJy0CSODIvEMjYlNu5cJRHyQqb5sq0bDaGWutzjFxBXjnDA";
+    private SQRLConnection mConnection;
+    private SQRLConnectionFactory mConnectionFactory;
+    private HttpURLConnection mHttpURLConnection;
 
     @Before
     public void setUp() throws Exception {
         // Create the SQRL URI
         uri = Uri.parse("sqrl://www.grc.com/sqrl?nut=P2Kr_4GB49GrwAF_kpDuJA&sfn=R1JD");
         sqrlUri = spy(new SQRLUri(uri));
+
+        // Create the required mocks
+        this.mConnection = mock(SQRLConnection.class);
+        this.mConnectionFactory = mock(SQRLConnectionFactory.class);
+        this.mHttpURLConnection = mock(HttpURLConnection.class);
+        when(mConnectionFactory.create()).thenReturn(mConnection);
+        when(mConnectionFactory.create(any(String.class))).thenReturn(mConnection);
+        when(mConnection.getConnection()).thenReturn(mHttpURLConnection);
+        when(mConnection.getSQRLUri()).thenReturn(sqrlUri);
+        
+        // We create a partial mock so that we can verify the final message (by calling to string)
+        // without having to specify how the message should be constructed
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream spyOutputStream = spy(outputStream);
+        when(mHttpURLConnection.getOutputStream()).thenReturn(spyOutputStream);
     }
 
     //region TESTS
@@ -44,20 +62,16 @@ public class SQRLRequestTest {
     @Test
     public void shouldResendRequestUsingNewNutAndQryIfTransientErrorOccurs() throws Exception {
         // Create the required mocks
-        SQRLConnection connection = getMockSQRLConnection(this.sqrlUri);
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        when(connectionFactory.create()).thenReturn(connection);
-        when(connectionFactory.create(any(String.class))).thenReturn(connection);
         SQRLIdentity sqrlIdentity = getMockTransientSQRLIdentity();
 
         // Create the TransientErrorRetryThenSucceedFactory that allows us to mock SQRLResponse behaviour
-        TransientErrorRetryThenSucceedFactory sqrlResponseFactory = new TransientErrorRetryThenSucceedFactory(connection, expectedTransientServerValue);
+        TransientErrorRetryThenSucceedFactory sqrlResponseFactory = new TransientErrorRetryThenSucceedFactory(mConnection, expectedTransientServerValue);
 
-        SQRLTestRequest request = new SQRLTestRequest(connectionFactory, sqrlIdentity, sqrlResponseFactory, false);
+        SQRLTestRequest request = new SQRLTestRequest(mConnectionFactory, sqrlIdentity, sqrlResponseFactory, false);
         request.send();
 
         // Verify that the connection uses the new URL
-        verify(connectionFactory).create(sqrlResponseFactory.getQry());
+        verify(mConnectionFactory).create(sqrlResponseFactory.getQry());
 
         // Verify that the second message used the servers last reply for the server parameter
         String expectedData = "client=" + defaultExpectedClientValue;
@@ -69,20 +83,13 @@ public class SQRLRequestTest {
     @Test
     public void shouldThrowTransientErrorExceptionIfItOccursTwice() throws Exception {
         // Create the required mocks
-        SQRLConnection connection = mock(SQRLConnection.class);
-        HttpURLConnection httpURLConnection = mock(HttpURLConnection.class);
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        when(connectionFactory.create()).thenReturn(connection);
-        when(connectionFactory.create(any(String.class))).thenReturn(connection);
-        when(connection.getConnection()).thenReturn(httpURLConnection);
-        when(httpURLConnection.getOutputStream()).thenReturn(mock(ByteArrayOutputStream.class));
+        when(mHttpURLConnection.getOutputStream()).thenReturn(mock(ByteArrayOutputStream.class));
         SQRLIdentity sqrlIdentity = getMockTransientSQRLIdentity();
-        when(connection.getSQRLUri()).thenReturn(sqrlUri);
 
         // Create the TransientErrorRetryThenSucceedFactory that allows us to mock SQRLResponse behaviour
         TransientErrorEveryTimeFactory sqrlResponseFactory = new TransientErrorEveryTimeFactory(defaultExpectedServerValue);
 
-        SQRLTestRequest request = new SQRLTestRequest(connectionFactory, sqrlIdentity, sqrlResponseFactory, false);
+        SQRLTestRequest request = new SQRLTestRequest(mConnectionFactory, sqrlIdentity, sqrlResponseFactory, false);
 
         try {
             request.send();
@@ -96,13 +103,10 @@ public class SQRLRequestTest {
     @Test
     public void shouldNotSendUnlockRequestKeysAndSignatureIfAreServerUnlockAndVerifyUnlockKeysRequiredReturnsFalse() throws Exception {
         // First, we need to create the mocks
-        SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        when(connectionFactory.create()).thenReturn(connection);
         SQRLIdentity sqrlIdentity = SQRLRequestTest.getMockSQRLIdentity();
 
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLTestRequest request = new SQRLTestRequest(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), false);
+        SQRLTestRequest request = new SQRLTestRequest(mConnectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), false);
 
         // Calculate what the expected data should be
         String expectedData = "client=" + defaultExpectedClientValue;
@@ -111,7 +115,7 @@ public class SQRLRequestTest {
 
         // Ask the request object to send the data, and then verify it
         request.send();
-        String dataSent = connection.getConnection().getOutputStream().toString();
+        String dataSent = mConnection.getConnection().getOutputStream().toString();
         Assert.assertEquals(expectedData, dataSent);
     }
 
@@ -125,15 +129,12 @@ public class SQRLRequestTest {
         String identitySignature = "vw3vpeICTgbdAiBekuE3ozifBDcT47jQuq8bEU8Ettf7Tdof2bDApkexCUvtjEEmPSqQ54o3rPycUmeK2BMsBg";
 
         // First, we need to create the mocks
-        SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
         SQRLIdentity sqrlIdentity = SQRLRequestTest.getMockSQRLIdentity(expectedClientValue, expectedServerValue, identitySignature);
-        when(connectionFactory.create()).thenReturn(connection);
         when(sqrlIdentity.getServerUnlockKey()).thenReturn(serverUnlockKey);
         when(sqrlIdentity.getVerifyUnlockKey()).thenReturn(verifyUnlockKey);
 
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLTestRequest request = new SQRLTestRequest(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), true);
+        SQRLTestRequest request = new SQRLTestRequest(mConnectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), true);
 
         // Calculate what the expected data should be
         String expectedData = "client=" + expectedClientValue;
@@ -142,7 +143,7 @@ public class SQRLRequestTest {
 
         // Ask the request object to send the data, and then verify it
         request.send();
-        String dataSent = connection.getConnection().getOutputStream().toString();
+        String dataSent = mConnection.getConnection().getOutputStream().toString();
         Assert.assertEquals(expectedData, dataSent);
     }
 
@@ -155,13 +156,10 @@ public class SQRLRequestTest {
         String identitySignature = "jXIbDT2_7zycMGLDViWHfu9ABymsLNuTILnAdRYUaLo_HCFHrjDM4uLM8hVs7sC6SpMN0AOiqxtKc8h9JEnUCw";
 
         // First, we need to create the mocks
-        SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
         SQRLIdentity sqrlIdentity = SQRLRequestTest.getMockSQRLIdentity(expectedClientValue, expectedServerValue, identitySignature);
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
-        when(connectionFactory.create()).thenReturn(connection);
 
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLTestRequest request = new SQRLTestRequest(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), false, "sausages");
+        SQRLTestRequest request = new SQRLTestRequest(mConnectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), false, "sausages");
 
         // Calculate what the expected data should be
         String expectedData = "client=" + expectedClientValue;
@@ -170,7 +168,7 @@ public class SQRLRequestTest {
 
         // Ask the request object to send the data, and then verify it
         request.send();
-        String dataSent = connection.getConnection().getOutputStream().toString();
+        String dataSent = mConnection.getConnection().getOutputStream().toString();
         Assert.assertEquals(expectedData, dataSent);
     }
 
@@ -185,19 +183,16 @@ public class SQRLRequestTest {
         String identitySignature = "qIDJavPfsjVOHhslKwdF0K404b0xrHuTFERftMY1bzMUVNN3LYu0eQ2ddQ6TPwx4YKV8MQGwNEjnc_5ZPUdACg";
 
         // First, we need to create the mocks
-        SQRLConnection connection = SQRLRequestTest.getMockSQRLConnection(this.sqrlUri);
         SQRLIdentity sqrlIdentity = SQRLRequestTest.getMockSQRLIdentity(expectedClientValue, expectedServerValue, identitySignature);
         SQRLResponse previousResponse = mock(SQRLResponse.class);
-        SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
         when(previousResponse.toString()).thenReturn(lastServerRawResponse);
         when(previousResponse.getQry()).thenReturn(previousResponseQry);
-        when(connectionFactory.create(any(String.class))).thenReturn(connection);
 
         // Next, instantiate a SQRLRequest object with the mocked objects
-        SQRLTestRequest request = new SQRLTestRequest(connectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse, false);
+        SQRLTestRequest request = new SQRLTestRequest(mConnectionFactory, sqrlIdentity, new MockSQRLResponseFactory(), previousResponse, false);
 
         // Verify that updatePathAndQuery was called
-        verify(connectionFactory).create(previousResponseQry);
+        verify(mConnectionFactory).create(previousResponseQry);
 
         // Calculate what the expected data should be
         String expectedData = "client=" + expectedClientValue;
@@ -206,25 +201,11 @@ public class SQRLRequestTest {
 
         // Ask the request object to send the data, and then verify it
         request.send();
-        String dataSent = connection.getConnection().getOutputStream().toString();
+        String dataSent = mConnection.getConnection().getOutputStream().toString();
         Assert.assertEquals(expectedData, dataSent);
     }
 
     //endregion
-
-    public static SQRLConnection getMockSQRLConnection(SQRLUri sqrlUri) throws Exception {
-        // Create the SQRLConnection mock
-        // We create a partial mock so that we can verify the final message (by calling to string)
-        // without having to specify how the message should be constructed
-        SQRLConnection connection = mock(SQRLConnection.class);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream spyOutputStream = spy(outputStream);
-        when(connection.getSQRLUri()).thenReturn(sqrlUri);
-        HttpURLConnection httpURLConnection = mock(HttpURLConnection.class);
-        when(connection.getConnection()).thenReturn(httpURLConnection);
-        when(httpURLConnection.getOutputStream()).thenReturn(spyOutputStream);
-        return connection;
-    }
 
     /**
      * Returns identity where second server value is the last server response.
