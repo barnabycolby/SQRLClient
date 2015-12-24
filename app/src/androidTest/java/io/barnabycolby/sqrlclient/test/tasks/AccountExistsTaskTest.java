@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.test.sqrl.tasks;
+package io.barnabycolby.sqrlclient.test.tasks;
 
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.TextView;
@@ -7,10 +7,10 @@ import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
-import io.barnabycolby.sqrlclient.sqrl.tasks.AccountExistsTask;
+import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
+import io.barnabycolby.sqrlclient.tasks.AccountExistsTask;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
 import java.util.concurrent.TimeUnit;

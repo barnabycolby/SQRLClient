@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.sqrl.tasks;
+package io.barnabycolby.sqrlclient.tasks;
 
 import android.app.DialogFragment;
 import android.util.Log;
@@ -12,9 +12,9 @@ import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
-import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
+import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
 import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
 import java.io.IOException;

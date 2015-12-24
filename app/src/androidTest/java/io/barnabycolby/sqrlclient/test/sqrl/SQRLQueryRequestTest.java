@@ -2,11 +2,11 @@ package io.barnabycolby.sqrlclient.test.sqrl;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import io.barnabycolby.sqrlclient.sqrl.SQRLConnectionFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponseFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

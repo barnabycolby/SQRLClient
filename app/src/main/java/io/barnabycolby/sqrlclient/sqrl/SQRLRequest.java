@@ -8,6 +8,8 @@ import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
 
 /**
  * Implements common functionality of SQRL requests, allowing easy implementation of new SQRL requests.

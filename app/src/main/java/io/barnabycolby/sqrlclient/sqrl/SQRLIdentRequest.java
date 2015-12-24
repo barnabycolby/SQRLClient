@@ -5,6 +5,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
 
 /**
  * Creates and sends an identity assertion request to the SQRL server.

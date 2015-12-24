@@ -13,6 +13,7 @@ import static org.mockito.Mockito.*;
 
 import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
 import io.barnabycolby.sqrlclient.sqrl.*;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
 
 @RunWith(AndroidJUnit4.class)
 public class SQRLRequestTest {

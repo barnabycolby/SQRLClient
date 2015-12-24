@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.sqrl.factories;
 
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;

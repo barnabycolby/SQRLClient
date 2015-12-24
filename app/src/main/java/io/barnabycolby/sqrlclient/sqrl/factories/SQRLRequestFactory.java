@@ -1,6 +1,11 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.sqrl.factories;
 
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
+import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
+import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

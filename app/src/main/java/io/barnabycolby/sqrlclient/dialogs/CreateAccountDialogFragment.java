@@ -6,7 +6,7 @@ import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
+import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
 import io.barnabycolby.sqrlclient.R;
 
 /**

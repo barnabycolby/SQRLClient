@@ -12,11 +12,11 @@ import android.widget.*;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
-import io.barnabycolby.sqrlclient.sqrl.tasks.AccountExistsTask;
-import io.barnabycolby.sqrlclient.sqrl.tasks.IdentRequestTask;
+import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
+import io.barnabycolby.sqrlclient.tasks.AccountExistsTask;
+import io.barnabycolby.sqrlclient.tasks.IdentRequestTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
-import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 
 /**
  * Activity takes a SQRL URI and provides the user with the ability to query the server to display whether an account exists or not.

@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.tasks;
 
 /**
  * A listener for alert dialogs with two possible outcomes.

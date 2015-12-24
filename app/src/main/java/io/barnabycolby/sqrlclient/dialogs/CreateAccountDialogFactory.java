@@ -2,7 +2,7 @@ package io.barnabycolby.sqrlclient.dialogs;
 
 import android.support.v4.app.FragmentManager;
 
-import io.barnabycolby.sqrlclient.sqrl.IdentRequestListener;
+import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
 
 /**
  * Creates and displays a dialog that asks the user whether or not a new account should be created.

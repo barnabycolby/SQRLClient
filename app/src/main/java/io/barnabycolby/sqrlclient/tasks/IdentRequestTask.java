@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.sqrl.tasks;
+package io.barnabycolby.sqrlclient.tasks;
 
 import android.util.Log;
 import android.widget.TextView;
@@ -8,7 +8,7 @@ import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLRequestFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
 import java.io.IOException;

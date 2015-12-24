@@ -1,5 +1,8 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
+import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
