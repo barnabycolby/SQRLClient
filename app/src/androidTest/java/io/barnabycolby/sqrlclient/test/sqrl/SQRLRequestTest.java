@@ -47,6 +47,7 @@ public class SQRLRequestTest {
         SQRLConnection connection = getMockSQRLConnection(this.sqrlUri);
         SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
         when(connectionFactory.create()).thenReturn(connection);
+        when(connectionFactory.create(any(String.class))).thenReturn(connection);
         SQRLIdentity sqrlIdentity = getMockTransientSQRLIdentity();
 
         // Create the TransientErrorRetryThenSucceedFactory that allows us to mock SQRLResponse behaviour
@@ -56,7 +57,7 @@ public class SQRLRequestTest {
         request.send();
 
         // Verify that the connection uses the new URL
-        verify(sqrlUri).updatePathAndQuery(sqrlResponseFactory.getQry());
+        verify(connectionFactory).create(sqrlResponseFactory.getQry());
 
         // Verify that the second message used the servers last reply for the server parameter
         String expectedData = "client=" + defaultExpectedClientValue;
@@ -72,6 +73,7 @@ public class SQRLRequestTest {
         HttpURLConnection httpURLConnection = mock(HttpURLConnection.class);
         SQRLConnectionFactory connectionFactory = mock(SQRLConnectionFactory.class);
         when(connectionFactory.create()).thenReturn(connection);
+        when(connectionFactory.create(any(String.class))).thenReturn(connection);
         when(connection.getConnection()).thenReturn(httpURLConnection);
         when(httpURLConnection.getOutputStream()).thenReturn(mock(ByteArrayOutputStream.class));
         SQRLIdentity sqrlIdentity = getMockTransientSQRLIdentity();

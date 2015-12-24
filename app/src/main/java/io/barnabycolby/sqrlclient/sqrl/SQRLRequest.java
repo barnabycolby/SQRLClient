@@ -133,8 +133,7 @@ public abstract class SQRLRequest {
             return response;
         } catch (TransientErrorException ex) {
             // Update the connection to use the new qry value retrieved by the response
-            this.sqrlConnection.getSQRLUri().updatePathAndQuery(ex.getQry());
-            this.sqrlConnection = this.sqrlConnectionFactory.create();
+            this.sqrlConnection = this.sqrlConnectionFactory.create(ex.getQry());
             outputStreamWriter = new OutputStreamWriter(this.sqrlConnection.getConnection().getOutputStream(), "UTF-8");
 
             // Store the last server response so that we can access it later
