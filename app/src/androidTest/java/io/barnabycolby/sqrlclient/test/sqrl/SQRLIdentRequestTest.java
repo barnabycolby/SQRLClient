@@ -2,6 +2,7 @@ package io.barnabycolby.sqrlclient.test.sqrl;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLConnectionFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
@@ -23,7 +24,7 @@ public class SQRLIdentRequestTest {
      * Create a subclass of SQRLIdentRequest so that we can verify it's protected methods.
      */
     private class SQRLIdentRequestPublic extends SQRLIdentRequest {
-        public SQRLIdentRequestPublic(SQRLConnectionFactory connectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, IOException {
+        public SQRLIdentRequestPublic(SQRLConnectionFactory connectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, IOException, NoNutException {
             super(connectionFactory, sqrlIdentity, sqrlResponseFactory, previousResponse);
         }
 

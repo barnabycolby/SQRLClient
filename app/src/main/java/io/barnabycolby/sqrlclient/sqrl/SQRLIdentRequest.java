@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 
+import io.barnabycolby.sqrlclient.exceptions.NoNutException;
+
 /**
  * Creates and sends an identity assertion request to the SQRL server.
  */
@@ -23,8 +25,8 @@ public class SQRLIdentRequest extends SQRLRequest {
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param previousResponse  The last response sent by the server, this is required in order to determine whether the account exists.
      */
-    public SQRLIdentRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, IOException {
-        super(sqrlConnectionFactory, sqrlIdentity, sqrlResponseFactory);
+    public SQRLIdentRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, IOException, NoNutException {
+        super(sqrlConnectionFactory, sqrlIdentity, sqrlResponseFactory, previousResponse);
         this.previousResponse = previousResponse;
     }
 

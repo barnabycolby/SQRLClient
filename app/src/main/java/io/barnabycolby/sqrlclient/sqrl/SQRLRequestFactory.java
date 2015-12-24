@@ -1,5 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import io.barnabycolby.sqrlclient.exceptions.NoNutException;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -31,7 +33,7 @@ public class SQRLRequestFactory {
         return new SQRLQueryRequest(getConnectionFactory(), getIdentity(), getResponseFactory());
     }
 
-    public SQRLIdentRequest createIdent(SQRLResponse previousResponse) throws MalformedURLException, IOException {
+    public SQRLIdentRequest createIdent(SQRLResponse previousResponse) throws MalformedURLException, IOException, NoNutException {
         return new SQRLIdentRequest(getConnectionFactory(), getIdentity(), getResponseFactory(), previousResponse);
     }
 
