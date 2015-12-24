@@ -77,13 +77,7 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
      * Called when the deny site button is clicked.
      */
     public void denySite(View view) {
-        // Set the text view to show the 'tap to proceed' message
-        String noUriMessage = getResources().getString(R.string.no_uri);
-        friendlySiteNameTextView.setText(noUriMessage);
-
-        // Hide the unnecessary UI elements
-        confirmDenySiteButtons.setVisibility(View.GONE);
-        accountExistsTextView.setVisibility(View.GONE);
+        abortIdentRequest();
     }
 
     /**
@@ -98,7 +92,13 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
 
     @Override
     public void abortIdentRequest() {
-        throw new UnsupportedOperationException();
+        // Set the text view to show the 'tap to proceed' message
+        String noUriMessage = getResources().getString(R.string.no_uri);
+        friendlySiteNameTextView.setText(noUriMessage);
+
+        // Hide the unnecessary UI elements
+        confirmDenySiteButtons.setVisibility(View.GONE);
+        accountExistsTextView.setVisibility(View.GONE);
     }
 
     @Override
