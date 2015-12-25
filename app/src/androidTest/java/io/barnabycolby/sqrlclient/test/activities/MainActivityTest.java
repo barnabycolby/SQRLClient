@@ -36,7 +36,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         Resources resources = mainActivity.getResources();
         String expected = resources.getString(R.string.invalid_link);
 
-        assertThatFriendlySiteNameMatchesString(mainActivity, expected);
+        assertThatTapToProceedTextViewMatchesString(mainActivity, expected);
     }
 
     public void testShowErrorMessageIfURIHasNoNut() {
@@ -48,7 +48,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         Resources resources = mainActivity.getResources();
         String expected = resources.getString(R.string.invalid_link);
 
-        assertThatFriendlySiteNameMatchesString(mainActivity, expected);
+        assertThatTapToProceedTextViewMatchesString(mainActivity, expected);
     }
 
     public void testShowHostnameForValidURIWithoutFriendlyName() {
@@ -106,6 +106,15 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         TextView friendlySiteNameTextView = (TextView)mainActivity.findViewById(R.id.FriendlySiteNameTextView);
         assertNotNull("FriendlySiteNameTextView is null", friendlySiteNameTextView);
         assertEquals(expected, friendlySiteNameTextView.getText());
+        assertEquals(View.VISIBLE, friendlySiteNameTextView.getVisibility());
+    }
+
+    public void assertThatTapToProceedTextViewMatchesString(MainActivity mainActivity, String expected) {
+        // Get the URI text box and verify the uri matches
+        TextView tapToProceedTextView = (TextView)mainActivity.findViewById(R.id.TapToProceedTextView);
+        assertNotNull("TapToProceedTextView is null", tapToProceedTextView);
+        assertEquals(expected, tapToProceedTextView.getText());
+        assertEquals(View.VISIBLE, tapToProceedTextView.getVisibility());
     }
 
     private void assertThatConfirmDenySiteButtonsAreVisible(MainActivity mainActivity, boolean assertVisible) {
@@ -120,10 +129,14 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     private void assertTapToProceedMessageShownAndConfirmDenyButtonsNotVisible(MainActivity mainActivity) {
-        // Obtain the tap to proceed message and assert that it is displayed
+        // Check the tap to proceed message
         Resources resources = mainActivity.getResources();
-        String tapToProceed = resources.getString(R.string.no_uri);
-        assertThatFriendlySiteNameMatchesString(mainActivity, tapToProceed);
+        String noUri = resources.getString(R.string.no_uri);
+        assertThatTapToProceedTextViewMatchesString(mainActivity, noUri);
+
+        // Check that the friendly site name text view is not visible
+        TextView friendlySiteNameTextView = (TextView)mainActivity.findViewById(R.id.FriendlySiteNameTextView);
+        assertEquals(View.GONE, friendlySiteNameTextView.getVisibility());
 
         // Check that the confirm/deny buttons are hidden
         assertThatConfirmDenySiteButtonsAreVisible(mainActivity, false);

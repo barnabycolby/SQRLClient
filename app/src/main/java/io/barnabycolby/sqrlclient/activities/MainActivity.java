@@ -29,6 +29,7 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 public class MainActivity extends AppCompatActivity implements IdentRequestListener {
 
     private static final String TAG = MainActivity.class.getName();
+    private TextView tapToProceedTextView;
     private TextView friendlySiteNameTextView;
     private SQRLUri sqrlUri;
     private View confirmDenySiteButtons;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
         // Get the uri from the data and the uri text box
         Intent intent = getIntent();
         Uri uri = intent.getData();
-        friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
+        tapToProceedTextView = (TextView)findViewById(R.id.TapToProceedTextView);
         if (uri == null) {
             Log.e(TAG, "Uri passed via intent was null.");
             return;
@@ -57,13 +58,16 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
             sqrlUri = new SQRLUri(uri);
         } catch (SQRLException ex) {
             String errorMessage = resources.getString(R.string.invalid_link);
-            friendlySiteNameTextView.setText(errorMessage);
+            tapToProceedTextView.setText(errorMessage);
             Log.e(TAG, "Could not create SQRLUri: " + ex.getMessage());
             return;
         }
 
         // Set the textview to display the URI
+        this.friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
         friendlySiteNameTextView.setText(sqrlUri.getDisplayName());
+        tapToProceedTextView.setVisibility(View.GONE);
+        friendlySiteNameTextView.setVisibility(View.VISIBLE);
 
         // Show the confirm/deny site buttons
         confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
@@ -93,11 +97,13 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
     public void abortIdentRequest() {
         // Set the text view to show the 'tap to proceed' message
         String noUriMessage = getResources().getString(R.string.no_uri);
-        friendlySiteNameTextView.setText(noUriMessage);
+        tapToProceedTextView.setText(noUriMessage);
 
-        // Hide the unnecessary UI elements
+        // Hide and show the appropriate UI elements
         confirmDenySiteButtons.setVisibility(View.GONE);
         accountExistsTextView.setVisibility(View.GONE);
+        friendlySiteNameTextView.setVisibility(View.GONE);
+        tapToProceedTextView.setVisibility(View.VISIBLE);
     }
 
     @Override
