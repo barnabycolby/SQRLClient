@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
         // Set the textview to display the URI
         this.friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
         friendlySiteNameTextView.setText(sqrlUri.getDisplayName());
-        tapToProceedTextView.setVisibility(View.GONE);
+        tapToProceedTextView.setVisibility(View.INVISIBLE);
         friendlySiteNameTextView.setVisibility(View.VISIBLE);
 
         // Show the confirm/deny site buttons
@@ -100,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements IdentRequestListe
         tapToProceedTextView.setText(noUriMessage);
 
         // Hide and show the appropriate UI elements
-        confirmDenySiteButtons.setVisibility(View.GONE);
-        accountExistsTextView.setVisibility(View.GONE);
-        friendlySiteNameTextView.setVisibility(View.GONE);
+        confirmDenySiteButtons.setVisibility(View.INVISIBLE);
+        accountExistsTextView.setVisibility(View.INVISIBLE);
+        friendlySiteNameTextView.setVisibility(View.INVISIBLE);
         tapToProceedTextView.setVisibility(View.VISIBLE);
     }
 

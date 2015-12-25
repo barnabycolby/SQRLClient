@@ -6,50 +6,66 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        >
+
     <TextView
         android:id="@+id/TapToProceedTextView"
-        android:text="@string/no_uri"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/no_uri"
+        android:layout_centerInParent="true"
         />
 
     <TextView
         android:id="@+id/FriendlySiteNameTextView"
-        android:text=""
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_below="@id/TapToProceedTextView"
-        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text=""
+        android:textColor="#1EBE39"
+        android:textSize="25sp"
+        android:visibility="invisible"
         />
 
     <LinearLayout
         android:id="@+id/ConfirmDenySiteButtons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/FriendlySiteNameTextView"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:visibility="invisible"
         >
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/confirm_site_name"
             android:onClick="confirmSite"
+            android:text="@string/confirm_site_name"
         />
         <Button
             android:id="@+id/DenySiteButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/incorrect_site_name"
             android:onClick="denySite"
+            android:text="@string/incorrect_site_name"
         />
     </LinearLayout>
 
     <TextView
         android:id="@+id/AccountExistsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_below="@id/ConfirmDenySiteButtons"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:visibility="invisible"
         />
+
+    </RelativeLayout>
 
 </RelativeLayout>
