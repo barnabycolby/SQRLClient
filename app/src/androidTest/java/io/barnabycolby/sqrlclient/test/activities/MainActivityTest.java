@@ -136,7 +136,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         // Check that the friendly site name text view is not visible
         TextView friendlySiteNameTextView = (TextView)mainActivity.findViewById(R.id.FriendlySiteNameTextView);
-        assertEquals(View.GONE, friendlySiteNameTextView.getVisibility());
+        assertEquals(View.INVISIBLE, friendlySiteNameTextView.getVisibility());
 
         // Check that the confirm/deny buttons are hidden
         assertThatConfirmDenySiteButtonsAreVisible(mainActivity, false);
