@@ -41,7 +41,7 @@ public class ConfirmSiteNameActivity extends AppCompatActivity implements IdentR
     protected void onCreate(Bundle savedInstanceState) {
         // Standard Android stuff
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_confirm_site_name);
 
         // Get the uri from the data and the uri text box
         Intent intent = getIntent();
