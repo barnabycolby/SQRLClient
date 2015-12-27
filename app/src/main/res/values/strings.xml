@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SQRLClient</string>
-    <string name="no_uri">Please tap a SQRL login QR image to proceed.</string>
+    <string name="login_choices_message">Scan a QR code using the button below or tap a QR code on this device to login or create an account.</string>
     <string name="invalid_link">The link was not valid.</string>
     <string name="confirm_site_name">Confirm</string>
     <string name="incorrect_site_name">This is not the right site</string>
@@ -28,4 +28,6 @@
     <string name="authorisation_request_failed">Authorisation request failed.</string>
     <string name="authorisation_request_sent">Authorisation request sent.</string>
     <string name="confirm_site_name_activity_label">Confirm site name</string>
+    <string name="login_choices_activity_label">Login choices</string>
+    <string name="scan_qr">Scan QR</string>
 </resources>

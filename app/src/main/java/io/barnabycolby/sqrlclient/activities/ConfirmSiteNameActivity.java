@@ -29,12 +29,11 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 public class ConfirmSiteNameActivity extends AppCompatActivity implements IdentRequestListener {
 
     private static final String TAG = ConfirmSiteNameActivity.class.getName();
-    private TextView tapToProceedTextView;
+    private TextView informationTextView;
     private TextView friendlySiteNameTextView;
     private SQRLUri sqrlUri;
     private View confirmDenySiteButtons;
     private Resources resources;
-    private TextView accountExistsTextView;
     private SQRLRequestFactory mRequestFactory;
 
     @Override
@@ -46,7 +45,6 @@ public class ConfirmSiteNameActivity extends AppCompatActivity implements IdentR
         // Get the uri from the data and the uri text box
         Intent intent = getIntent();
         Uri uri = intent.getData();
-        tapToProceedTextView = (TextView)findViewById(R.id.TapToProceedTextView);
         if (uri == null) {
             Log.e(TAG, "Uri passed via intent was null.");
             return;
@@ -54,11 +52,13 @@ public class ConfirmSiteNameActivity extends AppCompatActivity implements IdentR
 
         // Store the uri in a SQRLUri so that we can query it more easily
         this.resources = getResources();
+        this.informationTextView = (TextView)findViewById(R.id.InformationTextView);
+        this.informationTextView.setText("");
         try {
             sqrlUri = new SQRLUri(uri);
         } catch (SQRLException ex) {
             String errorMessage = resources.getString(R.string.invalid_link);
-            tapToProceedTextView.setText(errorMessage);
+            informationTextView.setText(errorMessage);
             Log.e(TAG, "Could not create SQRLUri: " + ex.getMessage());
             return;
         }
@@ -66,14 +66,11 @@ public class ConfirmSiteNameActivity extends AppCompatActivity implements IdentR
         // Set the textview to display the URI
         this.friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
         friendlySiteNameTextView.setText(sqrlUri.getDisplayName());
-        tapToProceedTextView.setVisibility(View.INVISIBLE);
         friendlySiteNameTextView.setVisibility(View.VISIBLE);
 
         // Show the confirm/deny site buttons
         confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
         confirmDenySiteButtons.setVisibility(View.VISIBLE);
-
-        this.accountExistsTextView = (TextView)findViewById(R.id.AccountExistsTextView);
     }
 
     /**
@@ -89,26 +86,19 @@ public class ConfirmSiteNameActivity extends AppCompatActivity implements IdentR
     public void confirmSite(View view) {
         this.mRequestFactory = new SQRLRequestFactory(this.sqrlUri);
         CreateAccountDialogFactory dialogFactory = new CreateAccountDialogFactory(this, getSupportFragmentManager());
-        AccountExistsTask accountExistsTask = new AccountExistsTask(mRequestFactory, accountExistsTextView, dialogFactory, this);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mRequestFactory, informationTextView, dialogFactory, this);
         accountExistsTask.execute();
     }
 
     @Override
     public void abortIdentRequest() {
-        // Set the text view to show the 'tap to proceed' message
-        String noUriMessage = getResources().getString(R.string.no_uri);
-        tapToProceedTextView.setText(noUriMessage);
-
-        // Hide and show the appropriate UI elements
-        confirmDenySiteButtons.setVisibility(View.INVISIBLE);
-        accountExistsTextView.setVisibility(View.INVISIBLE);
-        friendlySiteNameTextView.setVisibility(View.INVISIBLE);
-        tapToProceedTextView.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, LoginChoicesActivity.class);
+        startActivity(intent);
     }
 
     @Override
     public void proceedWithIdentRequest() {
-        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, accountExistsTextView);
+        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, informationTextView);
         identRequestTask.execute();
     }
 }

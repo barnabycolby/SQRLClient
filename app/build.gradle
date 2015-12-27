@@ -24,6 +24,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile files('libs/kalium-jni-1.0.0-SNAPSHOT.jar')
+    compile 'com.google.zxing:android-integration:3.2.+'
 
     testCompile 'junit:junit:4.+'
 

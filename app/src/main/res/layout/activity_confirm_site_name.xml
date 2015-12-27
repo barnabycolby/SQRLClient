@@ -13,16 +13,7 @@
         >
 
         <TextView
-            android:id="@+id/TapToProceedTextView"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/no_uri"
-            android:layout_centerInParent="true"
-            />
-
-        <TextView
             android:id="@+id/FriendlySiteNameTextView"
-            android:layout_below="@id/TapToProceedTextView"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
@@ -57,13 +48,12 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/AccountExistsTextView"
+            android:id="@+id/InformationTextView"
             android:layout_below="@id/ConfirmDenySiteButtons"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
-            android:visibility="invisible"
             />
 
     </RelativeLayout>

@@ -21,12 +21,6 @@
             android:name=".activities.ConfirmSiteNameActivity"
             android:label="@string/confirm_site_name_activity_label"
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
             <!-- SQRL and QRL URI schemes -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -39,6 +33,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="sqrl" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activities.LoginChoicesActivity"
+            android:label="@string/login_choices_activity_label"
+            >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
