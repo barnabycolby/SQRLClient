@@ -19,16 +19,16 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 
 /**
- * Activity takes a SQRL URI and provides the user with the ability to query the server to display whether an account exists or not.
+ * Takes a SQRL URI as input and asks the user to confirm whether this is the site they wish to login to.
  * <p>
  * SQRL Uri is passed to this activity by clicking on a sqrl:// or qrl:// hyperlink (normally a QR code) in a browser.
- * The sites friendly name is displayed to the user with the choice of sending or not sending the query request to the site.
- * If the user proceeds, then text is displayed to indicate whether the account exists.
+ * The sites friendly name is displayed to the user with the choice of continuing with login or aborting.
+ * If an account does not already exist, the user is asked whether they would like to create an account or not.
  * </p>
  */
-public class MainActivity extends AppCompatActivity implements IdentRequestListener {
+public class ConfirmSiteNameActivity extends AppCompatActivity implements IdentRequestListener {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = ConfirmSiteNameActivity.class.getName();
     private TextView tapToProceedTextView;
     private TextView friendlySiteNameTextView;
     private SQRLUri sqrlUri;

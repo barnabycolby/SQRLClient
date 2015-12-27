@@ -27,5 +27,5 @@
     <string name="no">No</string>
     <string name="authorisation_request_failed">Authorisation request failed.</string>
     <string name="authorisation_request_sent">Authorisation request sent.</string>
-    <string name="main_activity_label">Confirm site name</string>
+    <string name="confirm_site_name_activity_label">Confirm site name</string>
 </resources>

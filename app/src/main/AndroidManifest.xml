@@ -18,8 +18,8 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/main_activity_label"
+            android:name=".activities.ConfirmSiteNameActivity"
+            android:label="@string/confirm_site_name_activity_label"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
