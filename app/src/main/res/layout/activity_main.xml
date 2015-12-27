@@ -12,59 +12,59 @@
         android:layout_width="wrap_content"
         >
 
-    <TextView
-        android:id="@+id/TapToProceedTextView"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="@string/no_uri"
-        android:layout_centerInParent="true"
-        />
-
-    <TextView
-        android:id="@+id/FriendlySiteNameTextView"
-        android:layout_below="@id/TapToProceedTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text=""
-        android:textColor="#1EBE39"
-        android:textSize="25sp"
-        android:visibility="invisible"
-        />
-
-    <LinearLayout
-        android:id="@+id/ConfirmDenySiteButtons"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/FriendlySiteNameTextView"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        >
-        <Button
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/TapToProceedTextView"
             android:layout_height="wrap_content"
-            android:onClick="confirmSite"
-            android:text="@string/confirm_site_name"
-        />
-        <Button
-            android:id="@+id/DenySiteButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:onClick="denySite"
-            android:text="@string/incorrect_site_name"
-        />
-    </LinearLayout>
+            android:layout_width="wrap_content"
+            android:text="@string/no_uri"
+            android:layout_centerInParent="true"
+            />
 
-    <TextView
-        android:id="@+id/AccountExistsTextView"
-        android:layout_below="@id/ConfirmDenySiteButtons"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_width="wrap_content"
-        android:visibility="invisible"
-        />
+        <TextView
+            android:id="@+id/FriendlySiteNameTextView"
+            android:layout_below="@id/TapToProceedTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:textColor="#1EBE39"
+            android:textSize="25sp"
+            android:visibility="invisible"
+            />
+
+        <LinearLayout
+            android:id="@+id/ConfirmDenySiteButtons"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/FriendlySiteNameTextView"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            >
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="confirmSite"
+                android:text="@string/confirm_site_name"
+            />
+            <Button
+                android:id="@+id/DenySiteButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:onClick="denySite"
+                android:text="@string/incorrect_site_name"
+            />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/AccountExistsTextView"
+            android:layout_below="@id/ConfirmDenySiteButtons"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_width="wrap_content"
+            android:visibility="invisible"
+            />
 
     </RelativeLayout>
 
