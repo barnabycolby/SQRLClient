@@ -1,11 +1,11 @@
 package io.barnabycolby.sqrlclient.test.tasks;
 
 import android.support.test.runner.AndroidJUnit4;
-import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
+import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
 import io.barnabycolby.sqrlclient.tasks.AccountExistsTask;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(AndroidJUnit4.class)
 public class AccountExistsTaskTest {
-    private TextView mockAccountExistsTextView;
+    private SwappableTextView mockAccountExistsTextView;
     // We use strings that do not look like real strings
     // So that we can verify the code isn't using hardcoded strings
     private SQRLResponse mockSQRLResponse;
@@ -33,7 +33,7 @@ public class AccountExistsTaskTest {
     @Before
     public void setUp() throws Exception {
         // Create the accountExistsTask mock text view
-        this.mockAccountExistsTextView = mock(TextView.class);
+        this.mockAccountExistsTextView = mock(SwappableTextView.class);
 
         mockSQRLResponse = mock(SQRLResponse.class);
         mockFactory = mock(SQRLRequestFactory.class);

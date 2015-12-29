@@ -1,10 +1,10 @@
 package io.barnabycolby.sqrlclient.test.tasks;
 
 import android.support.test.runner.AndroidJUnit4;
-import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
+import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
@@ -21,13 +21,13 @@ import static org.mockito.Mockito.*;
 @RunWith(AndroidJUnit4.class)
 public class IdentRequestTaskTest {
     private SQRLRequestFactory mRequestFactory;
-    private TextView mTextView;
+    private SwappableTextView mTextView;
 
     @Before
     public void setUp() throws Exception {
         // Create the mocks
         mRequestFactory = mock(SQRLRequestFactory.class);
-        mTextView = mock(TextView.class);
+        mTextView = mock(SwappableTextView.class);
     }
 
     @Test

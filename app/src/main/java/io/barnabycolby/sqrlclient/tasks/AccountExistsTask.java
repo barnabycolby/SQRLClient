@@ -3,11 +3,11 @@ package io.barnabycolby.sqrlclient.tasks;
 import android.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
+import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
@@ -26,7 +26,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     private static final String TAG = AccountExistsTask.class.getName();
 
     private SQRLRequestFactory sqrlRequestFactory;
-    private TextView accountExistsTextView;
+    private SwappableTextView accountExistsTextView;
     private CreateAccountDialogFactory createAccountDialogFactory;
     private IdentRequestListener identRequestListener;
     private SQRLResponse mResponse;
@@ -39,7 +39,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      * @param createAccountDialogFactory  The factory used to create the create account dialog if needed.
      * @param identRequestListener  The listener that should be called when proceeding with the identity request.
      */
-    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, TextView accountExistsTextView, CreateAccountDialogFactory createAccountDialogFactory, IdentRequestListener identRequestListener) {
+    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, SwappableTextView accountExistsTextView, CreateAccountDialogFactory createAccountDialogFactory, IdentRequestListener identRequestListener) {
         this.sqrlRequestFactory = sqrlRequestFactory;
         this.accountExistsTextView = accountExistsTextView;
         this.createAccountDialogFactory = createAccountDialogFactory;

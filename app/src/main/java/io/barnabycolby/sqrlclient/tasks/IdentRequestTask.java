@@ -1,10 +1,10 @@
 package io.barnabycolby.sqrlclient.tasks;
 
 import android.util.Log;
-import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
+import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
@@ -19,7 +19,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
     private static final String TAG = IdentRequestTask.class.getName();
 
     private SQRLRequestFactory mRequestFactory;
-    private TextView mTextView;
+    private SwappableTextView mTextView;
 
     /**
      * Constructs a new instance of the IdentRequestTask.
@@ -27,7 +27,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
      * @param requestFactory  The request factory used to generate the ident reqeust.
      * @param textView  This text view will be used to indicate progress and the results of the ident request.
      */
-    public IdentRequestTask(SQRLRequestFactory requestFactory, TextView textView) {
+    public IdentRequestTask(SQRLRequestFactory requestFactory, SwappableTextView textView) {
         this.mRequestFactory = requestFactory;
         this.mTextView = textView;
     }
