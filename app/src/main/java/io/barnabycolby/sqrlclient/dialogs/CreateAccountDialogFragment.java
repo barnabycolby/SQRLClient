@@ -22,6 +22,7 @@ public class CreateAccountDialogFragment extends DialogFragment {
      */
     public CreateAccountDialogFragment(IdentRequestListener listener) {
         this.mListener = listener;
+        this.setRetainInstance(true);
     }
 
     @Override
@@ -40,5 +41,17 @@ public class CreateAccountDialogFragment extends DialogFragment {
                 }
             });
         return builder.create();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Dialog dialog = getDialog();
+
+        // Workaround for bug: http://code.google.com/p/android/issues/detail?id=17423
+        if ((dialog != null) && getRetainInstance()) {
+            dialog.setDismissMessage(null);
+        }
+
+        super.onDestroyView();
     }
 }
