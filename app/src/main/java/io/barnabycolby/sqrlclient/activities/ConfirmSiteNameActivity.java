@@ -126,8 +126,10 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        this.mStateFragment.getAccountExistsDetachableListener().detach();
-        this.mStateFragment.getDialogDetachableListener().detach();
+        if (this.mStateFragment != null) {
+            this.mStateFragment.getAccountExistsDetachableListener().detach();
+            this.mStateFragment.getDialogDetachableListener().detach();
+        }
     }
 
     /**
