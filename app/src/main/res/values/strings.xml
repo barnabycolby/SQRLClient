@@ -30,4 +30,5 @@
     <string name="confirm_site_name_activity_label">Confirm site name</string>
     <string name="login_choices_activity_label">Login choices</string>
     <string name="scan_qr">Scan QR</string>
+    <string name="login">Login</string>
 </resources>
