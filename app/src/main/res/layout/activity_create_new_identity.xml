@@ -20,6 +20,18 @@
             android:text="@string/create_new_identity_explanation"
             />
 
+        <ProgressBar
+            android:id="@+id/EntropyHarvesterProgressBar"
+            android:layout_below="@id/CreateNewIdentityExplanationTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_width="fill_parent"
+            android:progress="50"
+            android:progressDrawable="@drawable/green_progress_bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            />
+
     </RelativeLayout>
 
 </RelativeLayout>

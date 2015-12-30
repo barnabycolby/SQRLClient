@@ -3,6 +3,7 @@ package io.barnabycolby.sqrlclient.test.activities;
 import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
@@ -25,5 +26,15 @@ public class CreateNewIdentityActivityTest extends ActivityInstrumentationTestCa
         TextView explanationTextView = (TextView)activity.findViewById(R.id.CreateNewIdentityExplanationTextView);
         assertEquals(expected, explanationTextView.getText());
         assertEquals(View.VISIBLE, explanationTextView.getVisibility());
+    }
+
+    public void testProgressBarIsDisplayed() {
+        // Get the activity
+        CreateNewIdentityActivity activity = getActivity();
+
+        // Find the progress bar and make sure it's visible
+        ProgressBar progressBar = (ProgressBar)activity.findViewById(R.id.EntropyHarvesterProgressBar);
+        assertNotNull(progressBar);
+        assertEquals(View.VISIBLE, progressBar.getVisibility());
     }
 }
