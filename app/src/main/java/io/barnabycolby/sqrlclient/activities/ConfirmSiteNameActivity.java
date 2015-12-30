@@ -66,7 +66,7 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
 
         // Set the textview to display the URI
         this.friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
-        friendlySiteNameTextView.setText(sqrlUri.getDisplayName());
+        friendlySiteNameTextView.setText(this.mStateFragment.getDisplayName());
         friendlySiteNameTextView.setVisibility(View.VISIBLE);
 
         // Show the confirm/deny site buttons
@@ -98,8 +98,11 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
         // Create the SQRLRequestFactory used to generate requests
         SQRLRequestFactory requestFactory = new SQRLRequestFactory(this.sqrlUri);
 
+        // Retrieve the friendly name
+        String displayName = sqrlUri.getDisplayName();
+
         // Create the state fragment to store the state
-        this.mStateFragment = new ConfirmSiteNameStateFragment(this.informationTextView, this.sqrlUri, requestFactory, this.getAccountExistsListener(), this.getDialogListener());
+        this.mStateFragment = new ConfirmSiteNameStateFragment(this.informationTextView, this.sqrlUri, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
         this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.sStateFragmentTag).commit();
 
         return true;

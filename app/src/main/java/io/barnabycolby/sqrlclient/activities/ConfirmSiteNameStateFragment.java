@@ -21,6 +21,7 @@ public class ConfirmSiteNameStateFragment extends Fragment {
     private SQRLRequestFactory mRequestFactory;
     private ProceedAbortDetachableListener mAccountExistsDetachableListener;
     private ProceedAbortDetachableListener mDialogDetachableListener;
+    private String mDisplayName;
 
     /**
      * Constructs a new instance using the given objects.
@@ -30,13 +31,15 @@ public class ConfirmSiteNameStateFragment extends Fragment {
      * @param requestFactory  The SQRLRequestFactory object to retain.
      * @param accountExistsListener  The listener object used for account exists callbacks.
      * @param dialogListener  The listener object used for create account dialog callbacks.
+     * @param displayName  The servers display name.
      */
-    public ConfirmSiteNameStateFragment(SwappableTextView informationTextView, SQRLUri sqrlUri, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener) {
+    public ConfirmSiteNameStateFragment(SwappableTextView informationTextView, SQRLUri sqrlUri, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener, String displayName) {
         this.mInformationTextView = informationTextView;
         this.mSQRLUri = sqrlUri;
         this.mRequestFactory = requestFactory;
         this.mAccountExistsDetachableListener = new ProceedAbortDetachableListener(accountExistsListener);
         this.mDialogDetachableListener = new ProceedAbortDetachableListener(dialogListener);
+        this.mDisplayName = displayName;
     }
 
     @Override
@@ -94,4 +97,11 @@ public class ConfirmSiteNameStateFragment extends Fragment {
     public SQRLRequestFactory getRequestFactory() {
         return this.mRequestFactory;
     }
+
+    /**
+     * Gets the retained server display name.
+     */
+    public String getDisplayName() {
+        return this.mDisplayName;
+    } 
 }
