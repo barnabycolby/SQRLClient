@@ -7,10 +7,10 @@ import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
+import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.tasks.AccountExistsTaskListener;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
@@ -25,7 +25,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
 
     private SQRLRequestFactory sqrlRequestFactory;
     private SwappableTextView accountExistsTextView;
-    private AccountExistsTaskListener accountExistsTaskListener;
+    private ProceedAbortListener proceedAbortListener;
     private SQRLResponse mResponse;
 
     /**
@@ -33,12 +33,12 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      *
      * @param sqrlRequestFactory  The factory used to create the SQRLRequest object used to query the server.
      * @param accountExistsTextView  The text view used to indicate whether the account exists or not.
-     * @param accountExistsTaskListener  The listener that should be called when the result is known.
+     * @param proceedAbortListener  The listener that should be called when the result is known.
      */
-    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, SwappableTextView accountExistsTextView, AccountExistsTaskListener accountExistsTaskListener) {
+    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, SwappableTextView accountExistsTextView, ProceedAbortListener proceedAbortListener) {
         this.sqrlRequestFactory = sqrlRequestFactory;
         this.accountExistsTextView = accountExistsTextView;
-        this.accountExistsTaskListener = accountExistsTaskListener;
+        this.proceedAbortListener = proceedAbortListener;
     }
 
     /**
@@ -89,9 +89,9 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
             // Create the dialog based on the result
             boolean accountExists = result.booleanValue();
             if (accountExists) {
-                this.accountExistsTaskListener.onAccountAlreadyExists();
+                this.proceedAbortListener.proceed();
             } else {
-                this.accountExistsTaskListener.onAccountDoesNotAlreadyExist();
+                this.proceedAbortListener.abort();
             }
         }
 

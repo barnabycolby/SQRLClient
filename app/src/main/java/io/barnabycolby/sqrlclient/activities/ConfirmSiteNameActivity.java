@@ -14,11 +14,10 @@ import android.widget.*;
 import io.barnabycolby.sqrlclient.activities.ConfirmSiteNameStateFragment;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.tasks.AccountExistsTaskListener;
 import io.barnabycolby.sqrlclient.tasks.AccountExistsTask;
-import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
 import io.barnabycolby.sqrlclient.tasks.IdentRequestTask;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
@@ -31,7 +30,7 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
  * If an account does not already exist, the user is asked whether they would like to create an account or not.
  * </p>
  */
-public class ConfirmSiteNameActivity extends AppCompatActivity implements AccountExistsTaskListener, IdentRequestListener {
+public class ConfirmSiteNameActivity extends AppCompatActivity {
 
     private static final String TAG = ConfirmSiteNameActivity.class.getName();
     private SwappableTextView informationTextView;
@@ -125,29 +124,53 @@ public class ConfirmSiteNameActivity extends AppCompatActivity implements Accoun
      */
     public void confirmSite(View view) {
         this.mRequestFactory = new SQRLRequestFactory(this.sqrlUri);
-        AccountExistsTask accountExistsTask = new AccountExistsTask(mRequestFactory, informationTextView, this);
+        AccountExistsTask accountExistsTask = new AccountExistsTask(mRequestFactory, informationTextView, getAccountExistsListener());
         accountExistsTask.execute();
     }
 
-    @Override
+    private ProceedAbortListener getAccountExistsListener() {
+        return new ProceedAbortListener() {
+            @Override
+            public void proceed() {
+                onAccountAlreadyExists();
+            }
+
+            @Override
+            public void abort() {
+                onAccountDoesNotAlreadyExist();
+            }
+        };
+    }
+
     public void onAccountAlreadyExists() {
         proceedWithIdentRequest();
     }
 
-    @Override
     public void onAccountDoesNotAlreadyExist() {
         // We need to ask the user if they would like to create an account or not
-        CreateAccountDialogFragment dialog = new CreateAccountDialogFragment(this);
+        CreateAccountDialogFragment dialog = new CreateAccountDialogFragment(getDialogListener());
         dialog.show(this.getSupportFragmentManager(), "createAccount");
     }
 
-    @Override
+    private ProceedAbortListener getDialogListener() {
+        return new ProceedAbortListener() {
+            @Override
+            public void proceed() {
+                proceedWithIdentRequest();
+            }
+
+            @Override
+            public void abort() {
+                abortIdentRequest();
+            }
+        };
+    }
+
     public void abortIdentRequest() {
         Intent intent = new Intent(this, LoginChoicesActivity.class);
         startActivity(intent);
     }
 
-    @Override
     public void proceedWithIdentRequest() {
         IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, informationTextView);
         identRequestTask.execute();
