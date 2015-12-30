@@ -38,8 +38,8 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
     private SQRLUri sqrlUri;
     private View confirmDenySiteButtons;
     private Resources resources;
-    private SQRLRequestFactory mRequestFactory;
     private static String sStateFragmentTag = "stateFragment";
+    private ConfirmSiteNameStateFragment mStateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +60,8 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
             if (!(stateFragmentBeforeCast instanceof ConfirmSiteNameStateFragment)) {
                 throw new IllegalStateException("stateFragment was not of type ConfirmSiteNameStateFragment");
             }
-            ConfirmSiteNameStateFragment stateFragment = (ConfirmSiteNameStateFragment)stateFragmentBeforeCast;
-            restore(stateFragment);
+            this.mStateFragment = (ConfirmSiteNameStateFragment)stateFragmentBeforeCast;
+            restore();
         }
 
         // Set the textview to display the URI
@@ -95,21 +95,36 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
             return false;
         }
 
+        // Create the SQRLRequestFactory used to generate requests
+        SQRLRequestFactory requestFactory = new SQRLRequestFactory(this.sqrlUri);
+
         // Create the state fragment to store the state
-        ConfirmSiteNameStateFragment stateFragment = new ConfirmSiteNameStateFragment(this.informationTextView, this.sqrlUri);
-        this.getFragmentManager().beginTransaction().add(stateFragment, sStateFragmentTag).commit();
+        this.mStateFragment = new ConfirmSiteNameStateFragment(this.informationTextView, this.sqrlUri, requestFactory, this.getAccountExistsListener(), this.getDialogListener());
+        this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.sStateFragmentTag).commit();
 
         return true;
     }
 
-    private void restore(ConfirmSiteNameStateFragment stateFragment) {
+    private void restore() {
         // Update the swappable text views underlying text view
         TextView rawInformationTextView = (TextView)findViewById(R.id.InformationTextView);
-        this.informationTextView = stateFragment.getInformationTextView();
+        this.informationTextView = this.mStateFragment.getInformationTextView();
         this.informationTextView.setTextView(rawInformationTextView);
 
         // Retrieve the SQRL Uri
-        this.sqrlUri = stateFragment.getSQRLUri();
+        this.sqrlUri = this.mStateFragment.getSQRLUri();
+
+        // Reattach the listeners used for callbacks
+        this.mStateFragment.getAccountExistsDetachableListener().attach(this.getAccountExistsListener());
+        this.mStateFragment.getDialogDetachableListener().attach(this.getDialogListener());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        this.mStateFragment.getAccountExistsDetachableListener().detach();
+        this.mStateFragment.getDialogDetachableListener().detach();
     }
 
     /**
@@ -123,8 +138,7 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
      * Called when the confirm site button is clicked.
      */
     public void confirmSite(View view) {
-        this.mRequestFactory = new SQRLRequestFactory(this.sqrlUri);
-        AccountExistsTask accountExistsTask = new AccountExistsTask(mRequestFactory, informationTextView, getAccountExistsListener());
+        AccountExistsTask accountExistsTask = new AccountExistsTask(this.mStateFragment.getRequestFactory(), informationTextView, this.mStateFragment.getAccountExistsDetachableListener());
         accountExistsTask.execute();
     }
 
@@ -148,7 +162,7 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
 
     public void onAccountDoesNotAlreadyExist() {
         // We need to ask the user if they would like to create an account or not
-        CreateAccountDialogFragment dialog = new CreateAccountDialogFragment(getDialogListener());
+        CreateAccountDialogFragment dialog = new CreateAccountDialogFragment(this.mStateFragment.getDialogDetachableListener());
         dialog.show(this.getSupportFragmentManager(), "createAccount");
     }
 
@@ -172,7 +186,7 @@ public class ConfirmSiteNameActivity extends AppCompatActivity {
     }
 
     public void proceedWithIdentRequest() {
-        IdentRequestTask identRequestTask = new IdentRequestTask(this.mRequestFactory, informationTextView);
+        IdentRequestTask identRequestTask = new IdentRequestTask(this.mStateFragment.getRequestFactory(), informationTextView);
         identRequestTask.execute();
     }
 }
