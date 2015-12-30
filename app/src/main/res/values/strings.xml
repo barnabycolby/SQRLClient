@@ -32,4 +32,5 @@
     <string name="scan_qr">Scan QR</string>
     <string name="login">Login</string>
     <string name="create_new_identity">Create New Identity</string>
+    <string name="create_new_identity_explanation">To make sure the identity created is secure, shake the camera and wave it as many different things as possible until the bar turns green.</string>
 </resources>

@@ -12,6 +12,14 @@
         android:layout_width="wrap_content"
         >
 
+        <TextView
+            android:id="@+id/CreateNewIdentityExplanationTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/create_new_identity_explanation"
+            />
+
     </RelativeLayout>
 
 </RelativeLayout>
