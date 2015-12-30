@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.R;
 
@@ -24,6 +25,14 @@ public class MainActivity extends AppCompatActivity {
      */
     public void login(View view) {
         Intent intent = new Intent(this, LoginChoicesActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Called when the create new identity button is pressed.
+     */
+    public void createNewIdentity(View view) {
+        Intent intent = new Intent(this, CreateNewIdentityActivity.class);
         startActivity(intent);
     }
 }

@@ -31,4 +31,5 @@
     <string name="login_choices_activity_label">Login choices</string>
     <string name="scan_qr">Scan QR</string>
     <string name="login">Login</string>
+    <string name="create_new_identity">Create New Identity</string>
 </resources>
