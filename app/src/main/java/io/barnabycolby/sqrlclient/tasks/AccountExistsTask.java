@@ -10,9 +10,7 @@ import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFactory;
-import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
-import io.barnabycolby.sqrlclient.tasks.IdentRequestListener;
+import io.barnabycolby.sqrlclient.tasks.AccountExistsTaskListener;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 
@@ -27,8 +25,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
 
     private SQRLRequestFactory sqrlRequestFactory;
     private SwappableTextView accountExistsTextView;
-    private CreateAccountDialogFactory createAccountDialogFactory;
-    private IdentRequestListener identRequestListener;
+    private AccountExistsTaskListener accountExistsTaskListener;
     private SQRLResponse mResponse;
 
     /**
@@ -36,14 +33,12 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      *
      * @param sqrlRequestFactory  The factory used to create the SQRLRequest object used to query the server.
      * @param accountExistsTextView  The text view used to indicate whether the account exists or not.
-     * @param createAccountDialogFactory  The factory used to create the create account dialog if needed.
-     * @param identRequestListener  The listener that should be called when proceeding with the identity request.
+     * @param accountExistsTaskListener  The listener that should be called when the result is known.
      */
-    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, SwappableTextView accountExistsTextView, CreateAccountDialogFactory createAccountDialogFactory, IdentRequestListener identRequestListener) {
+    public AccountExistsTask(SQRLRequestFactory sqrlRequestFactory, SwappableTextView accountExistsTextView, AccountExistsTaskListener accountExistsTaskListener) {
         this.sqrlRequestFactory = sqrlRequestFactory;
         this.accountExistsTextView = accountExistsTextView;
-        this.createAccountDialogFactory = createAccountDialogFactory;
-        this.identRequestListener = identRequestListener;
+        this.accountExistsTaskListener = accountExistsTaskListener;
     }
 
     /**
@@ -94,9 +89,9 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
             // Create the dialog based on the result
             boolean accountExists = result.booleanValue();
             if (accountExists) {
-                this.identRequestListener.proceedWithIdentRequest();
+                this.accountExistsTaskListener.onAccountAlreadyExists();
             } else {
-                this.createAccountDialogFactory.create();
+                this.accountExistsTaskListener.onAccountDoesNotAlreadyExist();
             }
         }
 
