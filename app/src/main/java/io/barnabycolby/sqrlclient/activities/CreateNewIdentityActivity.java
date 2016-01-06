@@ -217,6 +217,27 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (this.mCameraSession != null) {
+            try {
+                this.mCameraSession.stopRepeating();
+            } catch (CameraAccessException ex) {
+                // An exception may occur here if the camera is disconnected or has encountered a fatal error
+                // In this scenario, we deal with the error when the app resumes
+                // We do this to ensure that onPause remains lightweight
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startCameraCapture();
+    }
+
     private void startCameraCapture() {
         if (mCameraSession != null && mCaptureRequest != null) {
             try {
