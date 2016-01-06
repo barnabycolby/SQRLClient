@@ -33,4 +33,6 @@
     <string name="login">Login</string>
     <string name="create_new_identity">Create New Identity</string>
     <string name="create_new_identity_explanation">To make sure the identity created is secure, shake the camera and wave it as many different things as possible until the bar turns green.</string>
+    <string name="camera_service_not_supported">The camera service is not supported by this system.</string>
+    <string name="no_cameras">There are no available cameras.</string>
 </resources>
