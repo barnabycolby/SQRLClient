@@ -47,6 +47,14 @@
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 />
 
+            <TextureView
+                android:id="@+id/CameraPreview"
+                android:layout_below="@id/EntropyHarvesterProgressBar"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                />
+
         </RelativeLayout>
 
         <TextView

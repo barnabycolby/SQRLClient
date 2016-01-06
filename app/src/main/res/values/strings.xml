@@ -36,4 +36,7 @@
     <string name="camera_service_not_supported">The camera service is not supported by this system.</string>
     <string name="no_cameras">There are no available cameras.</string>
     <string name="camera_permission_not_granted">Permission to use the camera has not been granted.</string>
+    <string name="camera_disconnected">The camera is no longer available for use.</string>
+    <string name="camera_error_occurred">An error occurred whilst trying to open the camera.</string>
+    <string name="camera_configuration_failed">The camera configuration failed.</string>
 </resources>

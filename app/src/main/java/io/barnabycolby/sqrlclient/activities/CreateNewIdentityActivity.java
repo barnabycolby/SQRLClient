@@ -2,18 +2,26 @@ package io.barnabycolby.sqrlclient.activities;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CaptureRequest;
 import android.Manifest;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.R;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Activity used to allow the user to create a new SQRL identity.
@@ -28,6 +36,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     private boolean mUnrecoverableErrorOccurred = false;
     private CameraManager mCameraManager;
     private String[] mCameraIds;
+    private CaptureRequest mCaptureRequest;
+    private CameraCaptureSession mCameraSession;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +74,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
             }
 
             // Check for, and possibly request, permission to use the camera
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                cameraPermissionGranted();
+            } else {
                 ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
             }
         } catch (CameraAccessException ex) {
@@ -121,5 +133,98 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     }
 
     private void cameraPermissionGranted() {
+        try {
+            // Attempt to open a camera
+            mCameraManager.openCamera(mCameraIds[0], new CameraDevice.StateCallback() {
+                @Override
+                public void onDisconnected(CameraDevice camera) {
+                    displayErrorMessage(R.string.camera_disconnected);
+                }
+
+                @Override
+                public void onError(CameraDevice camera, int error) {
+                    displayErrorMessage(R.string.camera_error_occurred);
+                }
+
+                @Override
+                public void onOpened(CameraDevice camera) {
+                    cameraOpened(camera);
+                }
+            }, null);
+        } catch (CameraAccessException ex) {
+            displayErrorMessage(ex.getMessage());
+            return;
+        }
+    }
+
+    private void cameraOpened(final CameraDevice camera) {
+        TextureView cameraPreview = (TextureView)findViewById(R.id.CameraPreview);
+        cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+                surfaceTextureAvailable(camera, surfaceTexture);
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+                return true;
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {}
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {}
+        });
+    }
+
+    private void surfaceTextureAvailable(final CameraDevice camera, SurfaceTexture surfaceTexture) {
+        final Surface surface = new Surface(surfaceTexture);
+        List<Surface> surfaces = Arrays.asList(surface);
+
+        try {
+            camera.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
+                @Override
+                public void onConfigureFailed(CameraCaptureSession session) {
+                    displayErrorMessage(R.string.camera_configuration_failed);
+                }
+
+                @Override
+                public void onConfigured(CameraCaptureSession session) {
+                    mCameraSession = session;
+                    cameraSessionCreated(camera, surface);
+                }
+            }, null);
+        } catch (CameraAccessException ex) {
+            displayErrorMessage(ex.getMessage());
+            return;
+        }
+    }
+
+    private void cameraSessionCreated(CameraDevice camera, Surface surface) {
+        try {
+            // Build the capture request
+            CaptureRequest.Builder captureRequestBuilder;
+            captureRequestBuilder = camera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            captureRequestBuilder.addTarget(surface);
+            this.mCaptureRequest = captureRequestBuilder.build();
+
+            // Perform the capture
+            startCameraCapture();
+        } catch (CameraAccessException ex) {
+            displayErrorMessage(ex.getMessage());
+            return;
+        }
+    }
+
+    private void startCameraCapture() {
+        if (mCameraSession != null && mCaptureRequest != null) {
+            try {
+                mCameraSession.setRepeatingRequest(mCaptureRequest, null, null);
+            } catch (CameraAccessException ex) {
+                displayErrorMessage(ex.getMessage());
+                return;
+            }
+        }
     }
 }
