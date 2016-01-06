@@ -36,6 +36,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     private boolean mUnrecoverableErrorOccurred = false;
     private CameraManager mCameraManager;
     private String[] mCameraIds;
+    private CameraDevice mCamera;
     private CaptureRequest mCaptureRequest;
     private CameraCaptureSession mCameraSession;
 
@@ -65,6 +66,10 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
             return;
         }
 
+        initialiseCameraPreview();
+    }
+    
+    private void initialiseCameraPreview() {
         try {
             // Check if the system has any cameras
             mCameraIds = mCameraManager.getCameraIdList();
@@ -148,7 +153,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
 
                 @Override
                 public void onOpened(CameraDevice camera) {
-                    cameraOpened(camera);
+                    mCamera = camera;
+                    cameraOpened();
                 }
             }, null);
         } catch (CameraAccessException ex) {
@@ -157,12 +163,12 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         }
     }
 
-    private void cameraOpened(final CameraDevice camera) {
+    private void cameraOpened() {
         TextureView cameraPreview = (TextureView)findViewById(R.id.CameraPreview);
         cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-                surfaceTextureAvailable(camera, surfaceTexture);
+                surfaceTextureAvailable(surfaceTexture);
             }
 
             @Override
@@ -178,12 +184,12 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         });
     }
 
-    private void surfaceTextureAvailable(final CameraDevice camera, SurfaceTexture surfaceTexture) {
+    private void surfaceTextureAvailable(SurfaceTexture surfaceTexture) {
         final Surface surface = new Surface(surfaceTexture);
         List<Surface> surfaces = Arrays.asList(surface);
 
         try {
-            camera.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
+            this.mCamera.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigureFailed(CameraCaptureSession session) {
                     displayErrorMessage(R.string.camera_configuration_failed);
@@ -192,7 +198,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
                     mCameraSession = session;
-                    cameraSessionCreated(camera, surface);
+                    cameraSessionCreated(surface);
                 }
             }, null);
         } catch (CameraAccessException ex) {
@@ -201,11 +207,11 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         }
     }
 
-    private void cameraSessionCreated(CameraDevice camera, Surface surface) {
+    private void cameraSessionCreated(Surface surface) {
         try {
             // Build the capture request
             CaptureRequest.Builder captureRequestBuilder;
-            captureRequestBuilder = camera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            captureRequestBuilder = this.mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
             this.mCaptureRequest = captureRequestBuilder.build();
 
@@ -247,5 +253,26 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mCameraSession != null) {
+            mCameraSession.close();
+            mCameraSession = null;
+        }
+
+        if (mCamera != null) {
+            mCamera.close();
+            mCamera = null;
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        initialiseCameraPreview();
     }
 }
