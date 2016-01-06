@@ -3,6 +3,7 @@ package io.barnabycolby.sqrlclient.test.activities;
 import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -39,5 +40,12 @@ public class CreateNewIdentityActivityTest extends ActivityInstrumentationTestCa
         ProgressBar progressBar = (ProgressBar)mActivity.findViewById(R.id.EntropyHarvesterProgressBar);
         assertNotNull(progressBar);
         assertEquals(View.VISIBLE, progressBar.getVisibility());
+    }
+
+    public void testIdentityNameEditTextIsDisplayed() {
+        // Find the textbox and make sure it's visible
+        EditText identityNameEditText = (EditText)mActivity.findViewById(R.id.IdentityNameEditText); 
+        assertNotNull(identityNameEditText);
+        assertEquals(View.VISIBLE, identityNameEditText.getVisibility());
     }
 }

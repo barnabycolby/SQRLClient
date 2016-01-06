@@ -12,8 +12,15 @@
         android:layout_width="wrap_content"
         >
 
+        <EditText
+            android:id="@+id/IdentityNameEditText"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            />
+
         <TextView
             android:id="@+id/CreateNewIdentityExplanationTextView"
+            android:layout_below="@id/IdentityNameEditText"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
