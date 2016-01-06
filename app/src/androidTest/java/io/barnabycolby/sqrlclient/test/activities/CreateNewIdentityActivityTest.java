@@ -21,6 +21,11 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -36,6 +41,20 @@ public class CreateNewIdentityActivityTest {
     public void setUp() throws Exception {
         this.mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.mActivity = mActivityTestRule.getActivity();
+    }
+
+    @Test
+    public void testErrorMessageDisplayedWhenPermissionsDenied() throws Exception {
+        // Click the deny button
+        UiObject denyButton = mDevice.findObject(new UiSelector()
+                .text("Deny")
+                .className("android.widget.Button"));
+        denyButton.click();
+
+        // Verify that the text is displayed
+        Resources resources = mActivity.getResources();
+        String expected = resources.getString(R.string.camera_permission_not_granted);
+        onView(withId(R.id.ErrorTextView)).check(matches(withText(expected)));
     }
 
     @Test
