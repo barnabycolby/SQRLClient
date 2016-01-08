@@ -161,35 +161,6 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
      * Called when permission to use the camera has been granted.
      */
     private void onCameraPermissionGranted() {
-        try {
-            // Attempt to open a camera
-            mCameraManager.openCamera(mCameraIds[0], new CameraDevice.StateCallback() {
-                @Override
-                public void onDisconnected(CameraDevice camera) {
-                    displayErrorMessage(R.string.camera_disconnected);
-                }
-
-                @Override
-                public void onError(CameraDevice camera, int error) {
-                    displayErrorMessage(R.string.camera_error_occurred);
-                }
-
-                @Override
-                public void onOpened(CameraDevice camera) {
-                    mCamera = camera;
-                    onCameraOpened();
-                }
-            }, null);
-        } catch (CameraAccessException ex) {
-            displayErrorMessage(ex.getMessage());
-            return;
-        }
-    }
-
-    /**
-     * Called when a camera device has been opened successfully.
-     */
-    private void onCameraOpened() {
         TextureView cameraPreview = (TextureView)findViewById(R.id.CameraPreview);
         cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
@@ -210,7 +181,39 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         });
     }
 
-    private void surfaceTextureAvailable(SurfaceTexture surfaceTexture) {
+    /**
+     * Called when a surface texture is available.
+     */
+    private void surfaceTextureAvailable(final SurfaceTexture surfaceTexture) {
+        try {
+            // Attempt to open a camera
+            mCameraManager.openCamera(mCameraIds[0], new CameraDevice.StateCallback() {
+                @Override
+                public void onDisconnected(CameraDevice camera) {
+                    displayErrorMessage(R.string.camera_disconnected);
+                }
+
+                @Override
+                public void onError(CameraDevice camera, int error) {
+                    displayErrorMessage(R.string.camera_error_occurred);
+                }
+
+                @Override
+                public void onOpened(CameraDevice camera) {
+                    mCamera = camera;
+                    onCameraOpened(surfaceTexture);
+                }
+            }, null);
+        } catch (CameraAccessException ex) {
+            displayErrorMessage(ex.getMessage());
+            return;
+        }
+    }
+
+    /**
+     * Called when a camera device has been opened successfully.
+     */
+    private void onCameraOpened(SurfaceTexture surfaceTexture) {
         CameraCharacteristics characteristics;
         try {
             characteristics = this.mCameraManager.getCameraCharacteristics(this.mCamera.getId());
