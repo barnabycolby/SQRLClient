@@ -1,24 +1,31 @@
 package io.barnabycolby.sqrlclient.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.params.StreamConfigurationMap;;
 import android.Manifest;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
+import io.barnabycolby.sqrlclient.sqrl.EntropyCollector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,12 +46,25 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     private CameraDevice mCamera;
     private CaptureRequest mCaptureRequest;
     private CameraCaptureSession mCameraSession;
+    private CreateNewIdentityStateFragment mStateFragment;
+    private String mStateFragmentTag = "stateFragment";
+    private Surface mPreviewSurface;
+    private Surface mEntropySurface;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // Standard Android stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_identity);
+
+        FragmentManager fragmentManager = this.getFragmentManager();
+        Fragment stateFragmentBeforeCast = fragmentManager.findFragmentByTag(mStateFragmentTag);
+        if (stateFragmentBeforeCast == null) {
+            this.mStateFragment = new CreateNewIdentityStateFragment();
+            this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.mStateFragmentTag).commit();
+        } else {
+            this.mStateFragment = (CreateNewIdentityStateFragment)stateFragmentBeforeCast;
+        }
 
         // Restore the value of mUnrecoverableErrorOccurred if it exists
         if (savedInstanceState != null) {
@@ -185,8 +205,23 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     }
 
     private void surfaceTextureAvailable(SurfaceTexture surfaceTexture) {
-        final Surface surface = new Surface(surfaceTexture);
-        List<Surface> surfaces = Arrays.asList(surface);
+        CameraCharacteristics characteristics;
+        try {
+            characteristics = this.mCameraManager.getCameraCharacteristics(this.mCamera.getId());
+            this.mStateFragment.setEntropyCollector(new EntropyCollector(characteristics));
+        } catch (CameraAccessException | RawUnsupportedException ex) {
+            displayErrorMessage(ex.getMessage());
+            return;
+        }
+
+        // Set the texture buffer size so that the image capture is more performant
+        StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+        Size[] sizes = map.getOutputSizes(surfaceTexture.getClass());
+        surfaceTexture.setDefaultBufferSize(sizes[0].getWidth(), sizes[0].getHeight());
+
+        this.mPreviewSurface = new Surface(surfaceTexture);
+        this.mEntropySurface = this.mStateFragment.getEntropyCollector().getSurface();
+        List<Surface> surfaces = Arrays.asList(this.mPreviewSurface, this.mEntropySurface);
 
         try {
             this.mCamera.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
@@ -198,7 +233,12 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
                     mCameraSession = session;
-                    cameraSessionCreated(surface);
+                    cameraSessionCreated();
+                }
+
+                @Override
+                public void onSurfacePrepared(CameraCaptureSession session, Surface surface) {
+                    cameraSessionPrepared();
                 }
             }, null);
         } catch (CameraAccessException ex) {
@@ -207,12 +247,23 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         }
     }
 
-    private void cameraSessionCreated(Surface surface) {
+    private void cameraSessionCreated() {
+        try {
+            // Prepare the session buffers for use with the preview surface
+            this.mCameraSession.prepare(mPreviewSurface);
+        } catch (CameraAccessException ex) {
+            displayErrorMessage(ex.getMessage());
+            return;
+        }
+    }
+
+    private void cameraSessionPrepared() {
         try {
             // Build the capture request
             CaptureRequest.Builder captureRequestBuilder;
             captureRequestBuilder = this.mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-            captureRequestBuilder.addTarget(surface);
+            captureRequestBuilder.addTarget(mPreviewSurface);
+            captureRequestBuilder.addTarget(mEntropySurface);
             this.mCaptureRequest = captureRequestBuilder.build();
 
             // Perform the capture

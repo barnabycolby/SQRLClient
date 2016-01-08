@@ -17,8 +17,10 @@ import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.R;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.junit.Test;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -30,6 +32,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CreateNewIdentityActivityTest {
     private Activity mActivity;
     private UiDevice mDevice;
@@ -44,7 +47,7 @@ public class CreateNewIdentityActivityTest {
     }
 
     @Test
-    public void testErrorMessageDisplayedWhenPermissionsDenied() throws Exception {
+    public void testAErrorMessageDisplayedWhenPermissionsDenied() throws Exception {
         // Click the deny button
         UiObject denyButton = mDevice.findObject(new UiSelector()
                 .text("Deny")
@@ -58,7 +61,7 @@ public class CreateNewIdentityActivityTest {
     }
 
     @Test
-    public void testExplanationTextIsDisplayed() throws Exception {
+    public void testBExplanationTextIsDisplayed() throws Exception {
         allowCameraPermissions();
 
         // Get the expected explanation text
@@ -72,7 +75,7 @@ public class CreateNewIdentityActivityTest {
     }
 
     @Test
-    public void testProgressBarIsDisplayed() throws Exception {
+    public void testBProgressBarIsDisplayed() throws Exception {
         allowCameraPermissions();
 
         // Find the progress bar and make sure it's visible
@@ -82,7 +85,7 @@ public class CreateNewIdentityActivityTest {
     }
 
     @Test
-    public void testIdentityNameEditTextIsDisplayed() throws Exception {
+    public void testBIdentityNameEditTextIsDisplayed() throws Exception {
         allowCameraPermissions();
 
         // Find the textbox and make sure it's visible
