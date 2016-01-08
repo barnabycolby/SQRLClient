@@ -100,7 +100,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
 
             // Check for, and possibly request, permission to use the camera
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                cameraPermissionGranted();
+                onCameraPermissionGranted();
             } else {
                 ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
             }
@@ -150,14 +150,17 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            cameraPermissionGranted();
+            onCameraPermissionGranted();
         } else {
             displayErrorMessage(R.string.camera_permission_not_granted);
             return;
         }
     }
 
-    private void cameraPermissionGranted() {
+    /**
+     * Called when permission to use the camera has been granted.
+     */
+    private void onCameraPermissionGranted() {
         try {
             // Attempt to open a camera
             mCameraManager.openCamera(mCameraIds[0], new CameraDevice.StateCallback() {
@@ -174,7 +177,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
                 @Override
                 public void onOpened(CameraDevice camera) {
                     mCamera = camera;
-                    cameraOpened();
+                    onCameraOpened();
                 }
             }, null);
         } catch (CameraAccessException ex) {
@@ -183,7 +186,10 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         }
     }
 
-    private void cameraOpened() {
+    /**
+     * Called when a camera device has been opened successfully.
+     */
+    private void onCameraOpened() {
         TextureView cameraPreview = (TextureView)findViewById(R.id.CameraPreview);
         cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
@@ -233,12 +239,12 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
                     mCameraSession = session;
-                    cameraSessionCreated();
+                    onCameraSessionCreated();
                 }
 
                 @Override
                 public void onSurfacePrepared(CameraCaptureSession session, Surface surface) {
-                    cameraSessionPrepared();
+                    onCameraSessionPrepared();
                 }
             }, null);
         } catch (CameraAccessException ex) {
@@ -247,7 +253,10 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         }
     }
 
-    private void cameraSessionCreated() {
+    /**
+     * Called once a camera session has been successfully created.
+     */
+    private void onCameraSessionCreated() {
         try {
             // Prepare the session buffers for use with the preview surface
             this.mCameraSession.prepare(mPreviewSurface);
@@ -257,7 +266,10 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         }
     }
 
-    private void cameraSessionPrepared() {
+    /**
+     * Called once the camera session has been created and prepared.
+     */
+    private void onCameraSessionPrepared() {
         try {
             // Build the capture request
             CaptureRequest.Builder captureRequestBuilder;
