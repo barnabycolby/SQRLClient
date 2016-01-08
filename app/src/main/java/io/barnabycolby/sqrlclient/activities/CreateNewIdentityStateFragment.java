@@ -40,6 +40,8 @@ public class CreateNewIdentityStateFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        this.mEntropyCollector.close();
+        if (this.mEntropyCollector != null) {
+            this.mEntropyCollector.close();
+        }
     }
 }
