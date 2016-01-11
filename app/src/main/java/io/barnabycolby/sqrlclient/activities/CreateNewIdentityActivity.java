@@ -50,6 +50,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     private String mStateFragmentTag = "stateFragment";
     private Surface mPreviewSurface;
     private Surface mEntropySurface;
+    private int mNextCameraIdIndex = 0;
+    private SurfaceTexture mSurfaceTexture;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -165,7 +167,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-                surfaceTextureAvailable(surfaceTexture);
+                mSurfaceTexture = surfaceTexture;
+                tryNextCamera();
             }
 
             @Override
@@ -182,53 +185,78 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     }
 
     /**
-     * Called when a surface texture is available.
+     * Tries to use the next available camera to instantiate the preview and entropy collector.
+     *
+     * @return True if the next camera was tried, false if there are no more cameras available.
      */
-    private void surfaceTextureAvailable(final SurfaceTexture surfaceTexture) {
+    private boolean tryNextCamera() {
+        // Make sure that there is another camera available
+        if (mNextCameraIdIndex >= mCameraIds.length) {
+            return false;
+        }
+
+        // We need to make sure that any existing camera resources are cleaned up as we are only allowed to use one at once
+        cleanupCameraResources();
+
+        // Retrieve the camera id and increment the next camera id index
+        // We do this before the loop just in case tryNextCamera is called before we reach the end of this function
+        String cameraId = mCameraIds[mNextCameraIdIndex];
+        mNextCameraIdIndex += 1;
+
+        // Attempt to open the next camera
         try {
-            // Attempt to open a camera
-            mCameraManager.openCamera(mCameraIds[0], new CameraDevice.StateCallback() {
+            mCameraManager.openCamera(cameraId, new CameraDevice.StateCallback() {
                 @Override
                 public void onDisconnected(CameraDevice camera) {
-                    displayErrorMessage(R.string.camera_disconnected);
+                    if (!tryNextCamera()) {
+                        displayErrorMessage(R.string.camera_disconnected);
+                    }
                 }
 
                 @Override
                 public void onError(CameraDevice camera, int error) {
-                    displayErrorMessage(R.string.camera_error_occurred);
+                    if (!tryNextCamera()) {
+                        displayErrorMessage(R.string.camera_error_occurred);
+                    }
                 }
 
                 @Override
                 public void onOpened(CameraDevice camera) {
                     mCamera = camera;
-                    onCameraOpened(surfaceTexture);
+                    onCameraOpened();
                 }
             }, null);
         } catch (CameraAccessException ex) {
-            displayErrorMessage(ex.getMessage());
-            return;
+            if (!tryNextCamera()) {
+                displayErrorMessage(ex.getMessage());
+            }
         }
+
+        // We successfully tried a camera so we return true (even if the attempt eventually failed)
+        return true;
     }
 
     /**
      * Called when a camera device has been opened successfully.
      */
-    private void onCameraOpened(SurfaceTexture surfaceTexture) {
+    private void onCameraOpened() {
         CameraCharacteristics characteristics;
         try {
             characteristics = this.mCameraManager.getCameraCharacteristics(this.mCamera.getId());
             this.mStateFragment.setEntropyCollector(new EntropyCollector(characteristics));
         } catch (CameraAccessException | RawUnsupportedException ex) {
-            displayErrorMessage(ex.getMessage());
+            if (!tryNextCamera()) {
+                displayErrorMessage(ex.getMessage());
+            }
             return;
         }
 
         // Set the texture buffer size so that the image capture is more performant
         StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-        Size[] sizes = map.getOutputSizes(surfaceTexture.getClass());
-        surfaceTexture.setDefaultBufferSize(sizes[0].getWidth(), sizes[0].getHeight());
+        Size[] sizes = map.getOutputSizes(mSurfaceTexture.getClass());
+        mSurfaceTexture.setDefaultBufferSize(sizes[0].getWidth(), sizes[0].getHeight());
 
-        this.mPreviewSurface = new Surface(surfaceTexture);
+        this.mPreviewSurface = new Surface(mSurfaceTexture);
         this.mEntropySurface = this.mStateFragment.getEntropyCollector().getSurface();
         List<Surface> surfaces = Arrays.asList(this.mPreviewSurface, this.mEntropySurface);
 
@@ -236,7 +264,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
             this.mCamera.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigureFailed(CameraCaptureSession session) {
-                    displayErrorMessage(R.string.camera_configuration_failed);
+                    if (!tryNextCamera()) {
+                        displayErrorMessage(R.string.camera_configuration_failed);
+                    }
                 }
 
                 @Override
@@ -251,7 +281,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
                 }
             }, null);
         } catch (CameraAccessException ex) {
-            displayErrorMessage(ex.getMessage());
+            if (!tryNextCamera()) {
+                displayErrorMessage(ex.getMessage());
+            }
             return;
         }
     }
@@ -264,7 +296,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
             // Prepare the session buffers for use with the preview surface
             this.mCameraSession.prepare(mPreviewSurface);
         } catch (CameraAccessException ex) {
-            displayErrorMessage(ex.getMessage());
+            if (!tryNextCamera()) {
+                displayErrorMessage(ex.getMessage());
+            }
             return;
         }
     }
@@ -284,7 +318,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
             // Perform the capture
             startCameraCapture();
         } catch (CameraAccessException ex) {
-            displayErrorMessage(ex.getMessage());
+            if (!tryNextCamera()) {
+                displayErrorMessage(ex.getMessage());
+            }
             return;
         }
     }
@@ -315,7 +351,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
             try {
                 mCameraSession.setRepeatingRequest(mCaptureRequest, null, null);
             } catch (CameraAccessException ex) {
-                displayErrorMessage(ex.getMessage());
+                if (!tryNextCamera()) {
+                    displayErrorMessage(ex.getMessage());
+                }
                 return;
             }
         }
@@ -324,7 +362,10 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        cleanupCameraResources();
+    }
 
+    private void cleanupCameraResources() {
         if (mCameraSession != null) {
             mCameraSession.close();
             mCameraSession = null;
