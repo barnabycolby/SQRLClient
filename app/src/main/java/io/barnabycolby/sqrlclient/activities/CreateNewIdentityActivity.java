@@ -389,6 +389,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     @Override
     protected void onRestart() {
         super.onRestart();
+        // Reset the camera ID value, otherwise we won't be able to use the last camera we used
+        mNextCameraIdIndex = 0;
         initialiseCameraPreview();
     }
 
