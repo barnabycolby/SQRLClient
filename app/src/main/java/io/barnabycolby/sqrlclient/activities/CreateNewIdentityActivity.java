@@ -249,9 +249,14 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
         CameraCharacteristics characteristics;
         try {
             characteristics = this.mCameraManager.getCameraCharacteristics(this.mCamera.getId());
-            EntropyCollector entropyCollector = new EntropyCollector(characteristics);
+            EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
+            if (entropyCollector == null) {
+                this.mStateFragment.setEntropyCollector(new EntropyCollector(characteristics));
+                entropyCollector = this.mStateFragment.getEntropyCollector();
+            } else {
+                entropyCollector.reinitialise(characteristics);
+            }
             entropyCollector.setProgressListener(this);
-            this.mStateFragment.setEntropyCollector(entropyCollector);
         } catch (CameraAccessException | RawUnsupportedException ex) {
             if (!tryNextCamera()) {
                 displayErrorMessage(ex.getMessage());

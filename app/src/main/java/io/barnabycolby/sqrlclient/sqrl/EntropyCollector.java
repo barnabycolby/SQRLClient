@@ -35,6 +35,16 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
      * @throws RawUnsupportedException  If the raw format is unsupported by the given camera.
      */
     public EntropyCollector(CameraCharacteristics cameraCharacteristics) throws RawUnsupportedException {
+        initialise(cameraCharacteristics);
+    }
+
+    /**
+     * Initialises this object using the characteristics of the camera that will be used to collect entropy.
+     *
+     * @param cameraCharacteristics  The characteristics of the camera that will be used to collect entropy.
+     * @throws RawUnsupportedException  If the raw format is unsupported by the given camera.
+     */
+    private void initialise(CameraCharacteristics cameraCharacteristics) throws RawUnsupportedException {
         // First we need to check that the camera supports the raw capability
         int[] availableCapabilities = cameraCharacteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
         int rawCapability = CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_RAW;
@@ -49,6 +59,17 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
         // Instantiate the image reader
         this.mImageReader = ImageReader.newInstance(largestRawSize.getWidth(), largestRawSize.getHeight(), ImageFormat.RAW_SENSOR, /*maxImages*/ 5);
         this.mImageReader.setOnImageAvailableListener(this, null);
+    }
+
+    /**
+     * Reinitialises this object with a new set of characteristics to describe a potentially different camera, which will be used to collect entropy.
+     * 
+     * @param cameraCharacteristics  The characteristics of the camera.
+     * @throws RawUnsupportedException  If the raw format is unsupported by the given camera.
+     */
+    public void reinitialise(CameraCharacteristics cameraCharacteristics) throws RawUnsupportedException {
+        this.mImageReader.close();
+        initialise(cameraCharacteristics);
     }
 
     /**
