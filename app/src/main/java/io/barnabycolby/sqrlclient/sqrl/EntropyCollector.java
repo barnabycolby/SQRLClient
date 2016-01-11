@@ -25,6 +25,8 @@ import java.util.Comparator;
  */
 public class EntropyCollector implements ImageReader.OnImageAvailableListener, AutoCloseable {
     private ImageReader mImageReader;
+    private int mProgress = 0;
+    private ProgressListener mProgressListener;
 
     /**
      * Constructs an instance of the class using the characteristics of the camera that will be used.
@@ -64,6 +66,8 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
         if (image != null) {
             image.close();
         }
+
+        updateProgressValue(this.mProgress + 5);
     }
 
     @Override
@@ -101,5 +105,81 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
             }
         }
         return false;
+    }
+
+    /**
+     * Updates the internal progress value to the given value, informing any progress listeners if necessary.
+     *
+     * TODO: Invoke the listener callbacks on the threads looper.
+     *
+     * @param newProgressValue  The new progress value.
+     */
+    private void updateProgressValue(int newProgressValue) {
+        int oldProgressValue = this.mProgress;
+        this.mProgress = newProgressValue;
+        
+        if (this.mProgressListener != null) {
+            this.mProgressListener.onEntropyCollectionProgressUpdate(newProgressValue);
+
+            if (oldProgressValue < 100 && newProgressValue >= 100) {
+                this.mProgressListener.onEntropyCollectionFinished();
+            }
+        }
+    }
+
+    /**
+     * Listener interface used to retrieve entropy collection progress updates.
+     */
+    public interface ProgressListener {
+        /**
+         * Called when an update is available for the entropy collection progress.
+         *
+         * <p>
+         * Note that the progress value may actually be &gt;100 as the entropy collection continues if more images are available.
+         * It continues as the more entropy we collect the better.
+         * </p>
+         *
+         * @param progress The updated progress value as a percentage value (0-100)
+         */
+        public void onEntropyCollectionProgressUpdate(int progress);
+
+        /**
+         * Called when the entropy collection has finished.
+         *
+         * <p>
+         * This function is called when the entropy collection value reaches 100. Note that the entropy collection never actually finishes,
+         * it continues as long as images are available for processing.
+         * </p>
+         */
+        public void onEntropyCollectionFinished();
+    }
+
+    /**
+     * Sets a new listener to receive updates about the progress of the entropy collection.
+     *
+     * @param newListener  The new progress listener.
+     */
+    public void setProgressListener(ProgressListener newListener) {
+        this.mProgressListener = newListener;
+    }
+
+    /**
+     * Detaches the current progress listener, preventing it from receiving future updates.
+     */
+    public void detachProgressListener() {
+        this.mProgressListener = null;
+    }
+
+    /**
+     * Gets the latest entropy collection progress value.
+     *
+     * <p>
+     * Note that the entropy collection value may be &gt; than 100 as entropy collection continues as long as more images are available.
+     * </p>
+     *
+     * @return The current progress value (0-100).
+     */
+    public int getProgress() {
+        return this.mProgress;
     }
 }

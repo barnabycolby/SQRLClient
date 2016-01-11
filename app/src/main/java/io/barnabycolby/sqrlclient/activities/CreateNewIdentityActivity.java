@@ -21,6 +21,7 @@ import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.R;
@@ -35,7 +36,7 @@ import java.util.List;
  *
  * The activity harvests entropy from the camera and uses it to create a new SQRL identity.
  */
-public class CreateNewIdentityActivity extends AppCompatActivity {
+public class CreateNewIdentityActivity extends AppCompatActivity implements EntropyCollector.ProgressListener {
     private int CAMERA_PERMISSION_REQUEST = 0;
 
     private String mUnrecoverableErrorKey = "error";
@@ -52,6 +53,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     private Surface mEntropySurface;
     private int mNextCameraIdIndex = 0;
     private SurfaceTexture mSurfaceTexture;
+    private ProgressBar mProgressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_identity);
 
+        // Retrieve the state fragment
         FragmentManager fragmentManager = this.getFragmentManager();
         Fragment stateFragmentBeforeCast = fragmentManager.findFragmentByTag(mStateFragmentTag);
         if (stateFragmentBeforeCast == null) {
@@ -67,6 +70,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         } else {
             this.mStateFragment = (CreateNewIdentityStateFragment)stateFragmentBeforeCast;
         }
+
+        // Store a reference to the progress bar
+        this.mProgressBar = (ProgressBar)findViewById(R.id.EntropyHarvesterProgressBar);
 
         // Restore the value of mUnrecoverableErrorOccurred if it exists
         if (savedInstanceState != null) {
@@ -243,7 +249,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
         CameraCharacteristics characteristics;
         try {
             characteristics = this.mCameraManager.getCameraCharacteristics(this.mCamera.getId());
-            this.mStateFragment.setEntropyCollector(new EntropyCollector(characteristics));
+            EntropyCollector entropyCollector = new EntropyCollector(characteristics);
+            entropyCollector.setProgressListener(this);
+            this.mStateFragment.setEntropyCollector(entropyCollector);
         } catch (CameraAccessException | RawUnsupportedException ex) {
             if (!tryNextCamera()) {
                 displayErrorMessage(ex.getMessage());
@@ -363,6 +371,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         cleanupCameraResources();
+        this.mStateFragment.getEntropyCollector().detachProgressListener();
     }
 
     private void cleanupCameraResources() {
@@ -381,5 +390,19 @@ public class CreateNewIdentityActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         initialiseCameraPreview();
+    }
+
+    @Override
+    public void onEntropyCollectionProgressUpdate(int progress) {
+        if (progress <= 100) {
+            this.mProgressBar.setProgress(progress);
+        } else {
+            this.mProgressBar.setProgress(100);
+        }
+    }
+
+    @Override
+    public void onEntropyCollectionFinished() {
+        // TODO: Implement this
     }
 }
