@@ -376,7 +376,13 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     protected void onStop() {
         super.onStop();
         cleanupCameraResources();
-        this.mStateFragment.getEntropyCollector().detachProgressListener();
+
+        // Detach this activity from the entropy collector
+        // We need to check for null as the camera may not have been successfully opened
+        EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
+        if (entropyCollector != null) {
+            entropyCollector.detachProgressListener();
+        }
     }
 
     private void cleanupCameraResources() {
