@@ -10,9 +10,13 @@ import android.view.Surface;
 
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.abstractj.kalium.NaCl.sodium;
 
 /**
  * Collects images from the camera in order to harvest the entropy, which is used to generate a random value.
@@ -24,9 +28,15 @@ import java.util.Comparator;
  * https://github.com/googlesamples/android-Camera2Raw/blob/master/Application/src/main/java/com/example/android/camera2raw/Camera2RawFragment.java
  */
 public class EntropyCollector implements ImageReader.OnImageAvailableListener, AutoCloseable {
+    // The more entropy the better, in practice, this target seems to be a good trade-off between collection time and amount of entropy
+    private long TARGET_ENTROPY_IN_BITS = 50 * 1024 * 1024;
+
     private ImageReader mImageReader;
     private int mProgress = 0;
     private ProgressListener mProgressListener;
+    private byte[] mCumulativeHash;
+    private long mEntropyBitsCollected = 0;
+    private AtomicBoolean mReadyToProcessNextImage = new AtomicBoolean(true);
 
     /**
      * Constructs an instance of the class using the characteristics of the camera that will be used.
@@ -83,12 +93,72 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
 
     @Override
     public void onImageAvailable(ImageReader reader) {
-        Image image = reader.acquireLatestImage();
-        if (image != null) {
-            image.close();
+        // Get the image
+        final Image image = reader.acquireLatestImage();
+        if (image == null) {
+            return;
         }
 
-        updateProgressValue(this.mProgress + 5);
+        if (mReadyToProcessNextImage.get()) {
+            mReadyToProcessNextImage.set(false);
+            Thread cumulativeHashUpdateThread = new Thread(new Runnable() {
+                @Override
+                public void run () {
+                    // Add the image data to the hash
+                    Image.Plane[] imagePlanes = image.getPlanes();
+                    for (Image.Plane plane : imagePlanes) {
+                        byte[] planeData;
+                        ByteBuffer byteBuffer = plane.getBuffer();
+                        if (byteBuffer.hasArray()) {
+                            planeData = plane.getBuffer().array();
+                        } else {
+                            // Manually convert ByteBuffer to byte[]
+                            planeData = new byte[byteBuffer.remaining()];
+                            byteBuffer.get(planeData);
+                        }
+                        addEntropyToCumulativeHash(planeData);
+                    }
+
+                    mReadyToProcessNextImage.set(true);
+                    
+                    // Make sure we close the image to avoid running out of memory
+                    image.close();
+                }
+            });
+            cumulativeHashUpdateThread.start();
+        } else {
+            // As we're not ready to process the next image, we don't need to do anything
+        }
+    }
+
+    /**
+     * Uses the given data as entropy, which is mixed into the existing cumulative hash to generate a new cumulative value.
+     *
+     * This method also notifies any listeners of the progress.
+     *
+     * @param data  A byte array representing the data that should be added to the hash.
+     */
+    private void addEntropyToCumulativeHash(byte[] data) {
+        byte[] dataToHash;
+        if (this.mCumulativeHash == null) {
+            dataToHash = data;
+        } else {
+            // Create a byte array containing the new data and the existing cumulative hash
+            // This ensures that the entropy from the old hash is preserved in the result
+            dataToHash = new byte[data.length + this.mCumulativeHash.length];
+            System.arraycopy(data, 0, dataToHash, 0, data.length);
+            System.arraycopy(this.mCumulativeHash, 0, dataToHash, data.length, this.mCumulativeHash.length);
+        }
+
+        // Update the cumulative hash
+        byte[] newCumulativeHash = new byte[32];
+        sodium().crypto_hash_sha256(newCumulativeHash, dataToHash, dataToHash.length);
+        this.mCumulativeHash = newCumulativeHash;
+
+        // Update the progress
+        this.mEntropyBitsCollected = this.mEntropyBitsCollected + (data.length * 8);
+        int newProgressValue = (int)((double)this.mEntropyBitsCollected / (double)this.TARGET_ENTROPY_IN_BITS);
+        updateProgressValue(newProgressValue);
     }
 
     @Override
