@@ -94,7 +94,30 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
             return;
         }
 
-        initialiseCameraPreview();
+        initialiseTextureView();
+    }
+
+    private void initialiseTextureView() {
+        // Initialise the camera preview view
+        TextureView cameraPreview = (TextureView)findViewById(R.id.CameraPreview);
+        cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+                mSurfaceTexture = surfaceTexture;
+                initialiseCameraPreview();
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+                return true;
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {}
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {}
+        });
     }
     
     private void initialiseCameraPreview() {
@@ -169,25 +192,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
      * Called when permission to use the camera has been granted.
      */
     private void onCameraPermissionGranted() {
-        TextureView cameraPreview = (TextureView)findViewById(R.id.CameraPreview);
-        cameraPreview.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-            @Override
-            public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-                mSurfaceTexture = surfaceTexture;
-                tryNextCamera();
-            }
-
-            @Override
-            public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-                return true;
-            }
-
-            @Override
-            public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {}
-
-            @Override
-            public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {}
-        });
+        tryNextCamera();
     }
 
     /**
@@ -402,7 +407,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
         super.onRestart();
         // Reset the camera ID value, otherwise we won't be able to use the last camera we used
         mNextCameraIdIndex = 0;
-        initialiseCameraPreview();
+        initialiseTextureView();
     }
 
     @Override
