@@ -107,30 +107,34 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
                     // Add the image data to the hash
                     Image.Plane[] imagePlanes = image.getPlanes();
                     for (Image.Plane plane : imagePlanes) {
-                        byte[] planeData;
                         ByteBuffer byteBuffer = plane.getBuffer();
                         if (byteBuffer.hasArray()) {
-                            planeData = plane.getBuffer().array();
+                            byte[] planeData = byteBuffer.array();
+                            addEntropyToCumulativeHash(planeData);
                         } else {
-                            // Manually convert ByteBuffer to byte[]
-                            planeData = new byte[byteBuffer.remaining()];
-                            byteBuffer.get(planeData);
+                            // Because the data contained in the buffer will likely be very large, we add it in smaller pieces
+                            int bufferSize = 1024;
+                            byte[] buffer = new byte[bufferSize];
+                            while (byteBuffer.hasRemaining()) {
+                                if (byteBuffer.remaining() < bufferSize) {
+                                    buffer = new byte[byteBuffer.remaining()];
+                                }
+                                byteBuffer.get(buffer);
+                                addEntropyToCumulativeHash(buffer);
+                            }
                         }
-                        addEntropyToCumulativeHash(planeData);
                     }
 
-                    mReadyToProcessNextImage.set(true);
-                    
                     // Make sure we close the image to avoid running out of memory
                     image.close();
+
+                    mReadyToProcessNextImage.set(true);
                 }
             });
             cumulativeHashUpdateThread.start();
-        } else {
-            // As we're not ready to process the next image, we don't need to do anything
         }
     }
-
+    
     /**
      * Uses the given data as entropy, which is mixed into the existing cumulative hash to generate a new cumulative value.
      *
