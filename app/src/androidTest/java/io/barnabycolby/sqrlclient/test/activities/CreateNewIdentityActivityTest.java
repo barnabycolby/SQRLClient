@@ -38,7 +38,7 @@ public class CreateNewIdentityActivityTest {
     private UiDevice mDevice;
 
     @Rule
-    public ActivityTestRule mActivityTestRule = new ActivityTestRule(CreateNewIdentityActivity.class);
+    public ActivityTestRule<CreateNewIdentityActivity> mActivityTestRule = new ActivityTestRule<CreateNewIdentityActivity>(CreateNewIdentityActivity.class);
 
     @Before
     public void setUp() throws Exception {
