@@ -37,6 +37,8 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
     private byte[] mCumulativeHash;
     private long mEntropyBitsCollected = 0;
     private AtomicBoolean mReadyToProcessNextImage = new AtomicBoolean(true);
+    private boolean mCloseCalled = false;
+    private Thread mCumulativeHashUpdateThread;
 
     /**
      * Constructs an instance of the class using the characteristics of the camera that will be used.
@@ -73,12 +75,14 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
 
     /**
      * Reinitialises this object with a new set of characteristics to describe a potentially different camera, which will be used to collect entropy.
+     *
+     * This method assumes that EntropyCollector.close() has been called prior to this.
      * 
      * @param cameraCharacteristics  The characteristics of the camera.
      * @throws RawUnsupportedException  If the raw format is unsupported by the given camera.
      */
     public void reinitialise(CameraCharacteristics cameraCharacteristics) throws RawUnsupportedException {
-        this.mImageReader.close();
+        this.mCloseCalled = false;
         initialise(cameraCharacteristics);
     }
 
@@ -99,9 +103,9 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
             return;
         }
 
-        if (mReadyToProcessNextImage.get()) {
+        if (!mCloseCalled && mReadyToProcessNextImage.get()) {
             mReadyToProcessNextImage.set(false);
-            Thread cumulativeHashUpdateThread = new Thread(new Runnable() {
+            this.mCumulativeHashUpdateThread = new Thread(new Runnable() {
                 @Override
                 public void run () {
                     // Add the image data to the hash
@@ -131,7 +135,10 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
                     mReadyToProcessNextImage.set(true);
                 }
             });
-            cumulativeHashUpdateThread.start();
+            this.mCumulativeHashUpdateThread.start();
+        } else {
+            // Make sure we close the image to avoid running out of memory
+            image.close();
         }
     }
     
@@ -165,8 +172,29 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
         updateProgressValue(newProgressValue);
     }
 
+    /**
+     * Closes the resources associated with this class, and in particular, should be called before closing any camera resources associated with this instance.
+     *
+     * Note that unlike a standard use of close(), the call may be reverted by calling reinitialise(), preventing the need to create a new instance of this class.
+     */
     @Override
     public void close() {
+        // Stop new cumulative hash update threads from being created
+        this.mCloseCalled = true;
+
+        // Wait for the cumulative hash update thread to exit (if it exists)
+        if (this.mCumulativeHashUpdateThread != null) {
+            boolean joinInterrupted = true;
+            while (joinInterrupted) {
+                try {
+                    this.mCumulativeHashUpdateThread.join();
+                } catch (InterruptedException ex) {
+                    continue;
+                }
+                joinInterrupted = false;
+            }
+        }
+
         this.mImageReader.close();
     }
 
