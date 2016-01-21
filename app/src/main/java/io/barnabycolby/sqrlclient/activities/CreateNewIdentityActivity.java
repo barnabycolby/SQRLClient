@@ -80,7 +80,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
         }
 
         if (this.mUnrecoverableErrorOccurred) {
-            restore(savedInstanceState);
+            redisplayErrorMessage(savedInstanceState);
         } else {
             initialise();
         }
@@ -141,7 +141,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
         }
     }
 
-    private void restore(Bundle savedInstanceState) {
+    private void redisplayErrorMessage(Bundle savedInstanceState) {
         String errorMessage = savedInstanceState.getString(this.mErrorStringKey);
         displayErrorMessage(errorMessage);
     }
