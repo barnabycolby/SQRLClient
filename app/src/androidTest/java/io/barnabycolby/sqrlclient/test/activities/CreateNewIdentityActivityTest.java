@@ -2,6 +2,7 @@ package io.barnabycolby.sqrlclient.test.activities;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -25,8 +26,11 @@ import org.junit.Test;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.not;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CreateNewIdentityActivityTest {
-    private Activity mActivity;
+    private CreateNewIdentityActivity mActivity;
     private UiDevice mDevice;
 
     @Rule
@@ -75,13 +79,19 @@ public class CreateNewIdentityActivityTest {
     }
 
     @Test
-    public void testBProgressBarIsDisplayed() throws Exception {
+    public void testBProgressBarReplacedByCreateButtonAfterEntropyCollectionFinished() throws Exception {
         allowCameraPermissions();
 
-        // Find the progress bar and make sure it's visible
-        ProgressBar progressBar = (ProgressBar)mActivity.findViewById(R.id.EntropyHarvesterProgressBar);
-        assertNotNull(progressBar);
-        assertEquals(View.VISIBLE, progressBar.getVisibility());
+        // Check button is not displayed initially
+        ViewInteraction progressBar = onView(withId(R.id.EntropyHarvesterProgressBar));
+        ViewInteraction createButton = onView(withId(R.id.CreateNewIdentityButton));
+        progressBar.check(matches(isDisplayed()));
+        createButton.check(matches(not(isDisplayed())));
+
+        // Check that button is displayed after the entropy collection has finished
+        this.mActivity.onEntropyCollectionFinished();
+        progressBar.check(matches(not(isDisplayed())));
+        createButton.check(matches(isDisplayed()));
     }
 
     @Test

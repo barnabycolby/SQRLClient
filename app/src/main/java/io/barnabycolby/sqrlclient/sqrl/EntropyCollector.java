@@ -29,7 +29,7 @@ import static org.abstractj.kalium.NaCl.sodium;
  */
 public class EntropyCollector implements ImageReader.OnImageAvailableListener, AutoCloseable {
     // The more entropy the better, in practice, this target seems to be a good trade-off between collection time and amount of entropy
-    private long TARGET_ENTROPY_IN_BITS = 50 * 1024 * 1024;
+    private long TARGET_ENTROPY_IN_BITS = 5 * 1024 * 1024;
 
     private ImageReader mImageReader;
     private int mProgress = 0;
@@ -233,7 +233,7 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
     /**
      * Updates the internal progress value to the given value, informing any progress listeners if necessary.
      *
-     * TODO: Invoke the listener callbacks on the threads looper.
+     * Note that this method will not callback on the UI thread.
      *
      * @param newProgressValue  The new progress value.
      */

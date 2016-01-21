@@ -425,6 +425,21 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
     @Override
     public void onEntropyCollectionFinished() {
-        // TODO: Implement this
+        if (android.os.Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            showHideViewsOnEntropyCollectionFinish();
+        } else {
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showHideViewsOnEntropyCollectionFinish();
+                }
+            });
+        }
+    }
+
+    private void showHideViewsOnEntropyCollectionFinish() {
+        this.mProgressBar.setVisibility(View.GONE);
+        View createButton = findViewById(R.id.CreateNewIdentityButton);
+        createButton.setVisibility(View.VISIBLE);
     }
 }

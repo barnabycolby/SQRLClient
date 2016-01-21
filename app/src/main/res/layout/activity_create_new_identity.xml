@@ -35,24 +35,41 @@
                 android:text="@string/create_new_identity_explanation"
                 />
 
-            <ProgressBar
-                android:id="@+id/EntropyHarvesterProgressBar"
+            <RelativeLayout
+                android:id="@+id/ProgressBarAndCreateButton"
                 android:layout_below="@id/CreateNewIdentityExplanationTextView"
-                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_width="fill_parent"
-                android:progress="0"
-                android:progressDrawable="@drawable/green_progress_bar"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                />
+                >
+                <ProgressBar
+                    android:id="@+id/EntropyHarvesterProgressBar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_separate_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_separate_margin"
+                    android:layout_width="fill_parent"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/green_progress_bar"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    />
+
+                <Button
+                    android:id="@+id/CreateNewIdentityButton"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:text="@string/create"
+                    android:visibility="gone"
+                    />
+            </RelativeLayout>
 
             <TextureView
                 android:id="@+id/CameraPreview"
-                android:layout_below="@id/EntropyHarvesterProgressBar"
+                android:layout_below="@id/ProgressBarAndCreateButton"
                 android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_separate_margin"
                 android:layout_width="wrap_content"
                 />
 
