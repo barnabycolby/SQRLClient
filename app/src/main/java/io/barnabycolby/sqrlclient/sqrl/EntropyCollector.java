@@ -305,4 +305,13 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
     public int getProgress() {
         return this.mProgress;
     }
+
+    /**
+     * Indicated whether the entropy collection has finished or not.
+     *
+     * @return True if the progress value is &gt;= 100, otherwise false.
+     */
+    public boolean hasFinished() {
+        return this.getProgress() >= 100;
+    }
 }

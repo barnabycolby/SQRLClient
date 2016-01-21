@@ -87,6 +87,12 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     }
 
     private void initialise() {
+        // Has the entropy collection finished? If so, then we need to display the create button instead of the progress bar
+        EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
+        if (entropyCollector != null && entropyCollector.hasFinished()) {
+            showHideViewsOnEntropyCollectionFinish();
+        }
+
         // Get the camera manager
         this.mCameraManager = (CameraManager)this.getSystemService(Context.CAMERA_SERVICE);
         if (mCameraManager == null) {

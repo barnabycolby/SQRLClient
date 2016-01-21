@@ -1,6 +1,7 @@
 package io.barnabycolby.sqrlclient.test.activities;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.InstrumentationRegistry;
