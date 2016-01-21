@@ -295,7 +295,11 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
                 @Override
                 public void onSurfacePrepared(CameraCaptureSession session, Surface surface) {
-                    onCameraSessionPrepared();
+                    // This callback may be a leftover event from the last activity instance
+                    // So we need to double check that the camera has been sent (as this would cause problems)
+                    if (mCamera != null) {
+                        onCameraSessionPrepared();
+                    }
                 }
             }, null);
         } catch (CameraAccessException ex) {
