@@ -43,6 +43,7 @@ public class CreateNewIdentityActivityTest {
     private UiDevice mDevice;
     private ViewInteraction mProgressBar;
     private ViewInteraction mCreateButton;
+    private ViewInteraction mIdentityNameEditText;
 
     @Rule
     public ActivityTestRule<CreateNewIdentityActivity> mActivityTestRule = new ActivityTestRule<CreateNewIdentityActivity>(CreateNewIdentityActivity.class);
@@ -54,6 +55,7 @@ public class CreateNewIdentityActivityTest {
 
         this.mProgressBar = onView(withId(R.id.EntropyHarvesterProgressBar));
         this.mCreateButton = onView(withId(R.id.CreateNewIdentityButton));
+        this.mIdentityNameEditText = onView(withId(R.id.IdentityNameEditText));
     }
 
     @Test
@@ -103,9 +105,7 @@ public class CreateNewIdentityActivityTest {
         allowCameraPermissions();
 
         // Find the textbox and make sure it's visible
-        EditText identityNameEditText = (EditText)mActivity.findViewById(R.id.IdentityNameEditText); 
-        assertNotNull(identityNameEditText);
-        assertEquals(View.VISIBLE, identityNameEditText.getVisibility());
+        mIdentityNameEditText.check(matches(isDisplayed()));
     }
 
     private void allowCameraPermissions() throws Exception {
