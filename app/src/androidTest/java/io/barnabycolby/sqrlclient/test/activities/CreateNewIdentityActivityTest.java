@@ -95,7 +95,7 @@ public class CreateNewIdentityActivityTest {
         mCreateButton.check(matches(not(isDisplayed())));
 
         // Check that button is displayed after the entropy collection has finished
-        this.mActivity.onEntropyCollectionFinished();
+        waitForEntropyCollectionToFinish();
         mProgressBar.check(matches(not(isDisplayed())));
         mCreateButton.check(matches(isDisplayed()));
     }
@@ -115,5 +115,13 @@ public class CreateNewIdentityActivityTest {
         if (allowButton.exists()) {
             allowButton.click();
         }
+    }
+
+    /**
+     * TODO: Come up with a more reliable and quicker way to detect when entropy collection has finished.
+     *       One possibility is to call mActivity.onEntropyCollectionFinished but this proved problematic.
+     */
+    private void waitForEntropyCollectionToFinish() throws Exception {
+        Thread.sleep(10 * 1000);
     }
 }
