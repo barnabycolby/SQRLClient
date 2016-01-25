@@ -41,6 +41,8 @@ import static org.junit.Assert.assertNotNull;
 public class CreateNewIdentityActivityTest {
     private CreateNewIdentityActivity mActivity;
     private UiDevice mDevice;
+    private ViewInteraction mProgressBar;
+    private ViewInteraction mCreateButton;
 
     @Rule
     public ActivityTestRule<CreateNewIdentityActivity> mActivityTestRule = new ActivityTestRule<CreateNewIdentityActivity>(CreateNewIdentityActivity.class);
@@ -49,6 +51,9 @@ public class CreateNewIdentityActivityTest {
     public void setUp() throws Exception {
         this.mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.mActivity = mActivityTestRule.getActivity();
+
+        this.mProgressBar = onView(withId(R.id.EntropyHarvesterProgressBar));
+        this.mCreateButton = onView(withId(R.id.CreateNewIdentityButton));
     }
 
     @Test
@@ -84,15 +89,13 @@ public class CreateNewIdentityActivityTest {
         allowCameraPermissions();
 
         // Check button is not displayed initially
-        ViewInteraction progressBar = onView(withId(R.id.EntropyHarvesterProgressBar));
-        ViewInteraction createButton = onView(withId(R.id.CreateNewIdentityButton));
-        progressBar.check(matches(isDisplayed()));
-        createButton.check(matches(not(isDisplayed())));
+        mProgressBar.check(matches(isDisplayed()));
+        mCreateButton.check(matches(not(isDisplayed())));
 
         // Check that button is displayed after the entropy collection has finished
         this.mActivity.onEntropyCollectionFinished();
-        progressBar.check(matches(not(isDisplayed())));
-        createButton.check(matches(isDisplayed()));
+        mProgressBar.check(matches(not(isDisplayed())));
+        mCreateButton.check(matches(isDisplayed()));
     }
 
     @Test
