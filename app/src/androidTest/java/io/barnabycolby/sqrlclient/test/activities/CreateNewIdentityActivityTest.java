@@ -28,6 +28,7 @@ import org.junit.Test;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -106,6 +107,15 @@ public class CreateNewIdentityActivityTest {
 
         // Find the textbox and make sure it's visible
         mIdentityNameEditText.check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testBCreateButtonDisabledIfIdentityNameBlank() throws Exception {
+        allowCameraPermissions();
+
+        waitForEntropyCollectionToFinish();
+        mIdentityNameEditText.check(matches(withText("")));
+        mCreateButton.check(matches(not(isEnabled())));
     }
 
     private void allowCameraPermissions() throws Exception {
