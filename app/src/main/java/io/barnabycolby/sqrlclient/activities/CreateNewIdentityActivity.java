@@ -17,10 +17,13 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,7 +39,7 @@ import java.util.List;
  *
  * The activity harvests entropy from the camera and uses it to create a new SQRL identity.
  */
-public class CreateNewIdentityActivity extends AppCompatActivity implements EntropyCollector.ProgressListener {
+public class CreateNewIdentityActivity extends AppCompatActivity implements EntropyCollector.ProgressListener, TextWatcher {
     private int CAMERA_PERMISSION_REQUEST = 0;
 
     private String mUnrecoverableErrorKey = "error";
@@ -54,6 +57,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     private int mNextCameraIdIndex = 0;
     private SurfaceTexture mSurfaceTexture;
     private ProgressBar mProgressBar;
+    private EditText mIdentityNameEditText;
+    private View mCreateButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +76,13 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
             this.mStateFragment = (CreateNewIdentityStateFragment)stateFragmentBeforeCast;
         }
 
-        // Store a reference to the progress bar
+        // Store a reference to any required UI elements
         this.mProgressBar = (ProgressBar)findViewById(R.id.EntropyHarvesterProgressBar);
+        this.mCreateButton = findViewById(R.id.CreateNewIdentityButton);
+
+        // Store a reference to the identity name edit text and ask it to notify this class of text changes
+        this.mIdentityNameEditText = (EditText)findViewById(R.id.IdentityNameEditText);
+        this.mIdentityNameEditText.addTextChangedListener(this);
 
         // Restore the value of mUnrecoverableErrorOccurred if it exists
         if (savedInstanceState != null) {
@@ -449,7 +459,17 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
     private void showHideViewsOnEntropyCollectionFinish() {
         this.mProgressBar.setVisibility(View.GONE);
-        View createButton = findViewById(R.id.CreateNewIdentityButton);
-        createButton.setVisibility(View.VISIBLE);
+        this.mCreateButton.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        this.mCreateButton.setEnabled(!s.toString().isEmpty());
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {}
 }

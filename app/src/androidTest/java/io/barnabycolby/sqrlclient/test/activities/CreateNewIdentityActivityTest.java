@@ -26,6 +26,8 @@ import org.junit.runners.MethodSorters;
 import org.junit.Test;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -110,11 +112,15 @@ public class CreateNewIdentityActivityTest {
     }
 
     @Test
-    public void testBCreateButtonDisabledIfIdentityNameBlank() throws Exception {
+    public void testBCreateButtonEnabledOrDisabledBasedOnIdentityNameText() throws Exception {
         allowCameraPermissions();
 
         waitForEntropyCollectionToFinish();
         mIdentityNameEditText.check(matches(withText("")));
+        mCreateButton.check(matches(not(isEnabled())));
+        mIdentityNameEditText.perform(typeText("Rupert"));
+        mCreateButton.check(matches(isEnabled()));
+        mIdentityNameEditText.perform(clearText());
         mCreateButton.check(matches(not(isEnabled())));
     }
 
