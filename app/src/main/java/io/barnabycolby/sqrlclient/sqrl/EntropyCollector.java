@@ -314,4 +314,13 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
     public boolean hasFinished() {
         return this.getProgress() >= 100;
     }
+
+    /**
+     * Gets the current value of the cumulative hash.
+     *
+     * @return The cumulative hash.
+     */
+    public byte[] getCumulativeHash() {
+        return this.mCumulativeHash;
+    }
 }

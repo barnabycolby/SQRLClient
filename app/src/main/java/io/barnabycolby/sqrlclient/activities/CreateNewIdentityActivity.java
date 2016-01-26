@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
@@ -26,10 +27,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
 import io.barnabycolby.sqrlclient.sqrl.EntropyCollector;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,8 +43,9 @@ import java.util.List;
  * The activity harvests entropy from the camera and uses it to create a new SQRL identity.
  */
 public class CreateNewIdentityActivity extends AppCompatActivity implements EntropyCollector.ProgressListener, TextWatcher {
-    private int CAMERA_PERMISSION_REQUEST = 0;
+    private static final String TAG = CreateNewIdentityActivity.class.getName();
 
+    private int CAMERA_PERMISSION_REQUEST = 0;
     private String mUnrecoverableErrorKey = "error";
     private String mErrorStringKey = "errorString";
     private boolean mUnrecoverableErrorOccurred = false;
@@ -472,4 +476,18 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+    public void onCreateNewIdentityButtonClicked(View view) {
+        String identityName = this.mIdentityNameEditText.getText().toString();
+        EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
+        if (entropyCollector == null) {
+            Log.e(TAG, "EntropyCollector instance was null in onCreateNewIdentityButtonClicked");
+            String errorMessage = this.getResources().getString(R.string.something_went_wrong);
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+            return;
+        }
+        byte[] masterKey = entropyCollector.getCumulativeHash();
+        SQRLIdentity.save(identityName, masterKey);
+        this.finish();
+    }
 }

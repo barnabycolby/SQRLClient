@@ -79,4 +79,8 @@ public class SQRLIdentity {
     public String getVerifyUnlockKey() {
         return "17jqvZdMX6Ykcg-TNWQQdVnGyH_SGy3pwhiIrCVBdiY";
     }
+
+    public static void save(String identityName, byte[] masterKey) {
+        throw new UnsupportedOperationException();
+    }
 }

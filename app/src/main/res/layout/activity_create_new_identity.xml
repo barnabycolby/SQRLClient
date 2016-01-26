@@ -63,6 +63,7 @@
                     android:text="@string/create"
                     android:visibility="gone"
                     android:enabled="false"
+                    android:onClick="onCreateNewIdentityButtonClicked"
                     />
             </RelativeLayout>
 
