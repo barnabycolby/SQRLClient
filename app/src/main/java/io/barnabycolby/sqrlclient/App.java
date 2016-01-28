@@ -8,7 +8,7 @@ import android.content.res.Resources;
  * This class allows static global access to the application resources.
  */
 public class App extends Application {
-    private static Context mContext;
+    private static Context sContext;
 
     /**
      * Gets the application resources.
@@ -16,11 +16,20 @@ public class App extends Application {
      * @return The application resources.
      */
     public static Resources getApplicationResources() {
-        return mContext.getResources();
+        return sContext.getResources();
+    }
+
+    /**
+     * Gets the application context.
+     *
+     * @return The application context.
+     */
+    public static Context getContext() {
+        return sContext;
     }
 
     public void onCreate() {
         super.onCreate();
-        mContext = getApplicationContext();
+        sContext = getApplicationContext();
     }
 }
