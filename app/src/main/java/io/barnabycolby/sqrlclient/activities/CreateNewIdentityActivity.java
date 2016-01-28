@@ -30,9 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
 import io.barnabycolby.sqrlclient.sqrl.EntropyCollector;
-import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -478,6 +479,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
     public void onCreateNewIdentityButtonClicked(View view) {
+        // Retrieve the identity name and master key
         String identityName = this.mIdentityNameEditText.getText().toString();
         EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
         if (entropyCollector == null) {
@@ -487,7 +489,18 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
             return;
         }
         byte[] masterKey = entropyCollector.getCumulativeHash();
-        SQRLIdentity.save(identityName, masterKey);
+
+        // Attempt to save the new identity, displaying a dialog if it already exists
+        try {
+            SQRLIdentityManager.save(identityName, masterKey);
+        } catch (IdentityAlreadyExistsException ex) {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+
+            // We only finish the activity if an identity has been successfully created
+            // Otherwise the user would have to regenerate the entropy
+            return;
+        }
+
         this.finish();
     }
 }

@@ -41,4 +41,5 @@
     <string name="camera_configuration_failed">The camera configuration failed.</string>
     <string name="raw_unsupported">The raw image format is not supported by the given camera.</string>
     <string name="create">Create</string>
+    <string name="identity_already_exists">An identity with this name already exists.</string>
 </resources>
