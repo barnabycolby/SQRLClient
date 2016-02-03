@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 
+import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
 
 /**
@@ -36,7 +37,7 @@ public class App extends Application {
      *
      * If an instance does not already exist, it will be created.
      */
-    public static SQRLIdentityManager getSQRLIdentityManager() {
+    public static SQRLIdentityManager getSQRLIdentityManager() throws IdentitiesCouldNotBeLoadedException {
         if (sIdentityManager == null) {
             sIdentityManager = new SQRLIdentityManager();
         }

@@ -25,6 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile files('libs/kalium-jni-1.0.0-SNAPSHOT.jar')
     compile 'com.google.zxing:android-integration:3.2.+'
+    compile 'commons-io:commons-io:2.4'
 
     testCompile 'junit:junit:4.+'
 
