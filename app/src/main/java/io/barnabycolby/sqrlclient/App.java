@@ -4,11 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
+
 /**
  * This class allows static global access to the application resources.
  */
 public class App extends Application {
     private static Context sContext;
+    private static SQRLIdentityManager sIdentityManager;
 
     /**
      * Gets the application resources.
@@ -26,6 +29,19 @@ public class App extends Application {
      */
     public static Context getContext() {
         return sContext;
+    }
+
+    /**
+     * Gets the SQRLIdentityManager associated with this application instance.
+     *
+     * If an instance does not already exist, it will be created.
+     */
+    public static SQRLIdentityManager getSQRLIdentityManager() {
+        if (sIdentityManager == null) {
+            sIdentityManager = new SQRLIdentityManager();
+        }
+
+        return sIdentityManager;
     }
 
     public void onCreate() {

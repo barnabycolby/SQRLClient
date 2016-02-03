@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
@@ -492,7 +493,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
         // Attempt to save the new identity, displaying a dialog if it already exists
         try {
-            SQRLIdentityManager.save(identityName, masterKey);
+            App.getSQRLIdentityManager().save(identityName, masterKey);
         } catch (IdentityAlreadyExistsException ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
 
