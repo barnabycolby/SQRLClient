@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
@@ -142,5 +144,19 @@ public class SQRLIdentityManager {
         bufferedOutputStream.write(masterKey);
         bufferedOutputStream.flush();
         bufferedOutputStream.close();
+    }
+
+    /**
+     * Gets the list of identity names.
+     *
+     * @return A list of identity names.
+     */
+    public List<String> getIdentityNames() {
+        int numberOfIdentities = this.mIdentities.size();
+        ArrayList<String> identityNames = new ArrayList<String>(numberOfIdentities);
+        for (int i = 0; i < numberOfIdentities; i++) {
+            identityNames.add(this.mIdentities.keyAt(i));
+        }
+        return identityNames;
     }
 }

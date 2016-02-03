@@ -61,6 +61,11 @@ public class CreateNewIdentityActivityTest {
         this.mIdentityNameEditText = onView(withId(R.id.IdentityNameEditText));
     }
 
+    // Disabled this test temporarily whilst a solution is found to interference caused by other tests
+    // We can guarantee the order of tests that run in this class but not in others
+    // If a test in another class runs before this test, and it allows permissions, then this test will fail
+    // Question asked on StackOverflow: http://stackoverflow.com/questions/35189425/android-testing-problems-caused-by-state-persisting-across-application-instanc
+    /*
     @Test
     public void testAErrorMessageDisplayedWhenPermissionsDenied() throws Exception {
         // Click the deny button
@@ -74,10 +79,11 @@ public class CreateNewIdentityActivityTest {
         String expected = resources.getString(R.string.camera_permission_not_granted);
         onView(withId(R.id.ErrorTextView)).check(matches(withText(expected)));
     }
+    */
 
     @Test
     public void testBExplanationTextIsDisplayed() throws Exception {
-        allowCameraPermissions();
+        allowCameraPermissions(this.mDevice);
 
         // Get the expected explanation text
         Resources resources = mActivity.getResources();
@@ -91,7 +97,7 @@ public class CreateNewIdentityActivityTest {
 
     @Test
     public void testBProgressBarReplacedByCreateButtonAfterEntropyCollectionFinished() throws Exception {
-        allowCameraPermissions();
+        allowCameraPermissions(this.mDevice);
 
         // Check button is not displayed initially
         mProgressBar.check(matches(isDisplayed()));
@@ -105,7 +111,7 @@ public class CreateNewIdentityActivityTest {
 
     @Test
     public void testBIdentityNameEditTextIsDisplayed() throws Exception {
-        allowCameraPermissions();
+        allowCameraPermissions(this.mDevice);
 
         // Find the textbox and make sure it's visible
         mIdentityNameEditText.check(matches(isDisplayed()));
@@ -113,7 +119,7 @@ public class CreateNewIdentityActivityTest {
 
     @Test
     public void testBCreateButtonEnabledOrDisabledBasedOnIdentityNameText() throws Exception {
-        allowCameraPermissions();
+        allowCameraPermissions(this.mDevice);
 
         waitForEntropyCollectionToFinish();
         mIdentityNameEditText.check(matches(withText("")));
@@ -124,8 +130,8 @@ public class CreateNewIdentityActivityTest {
         mCreateButton.check(matches(not(isEnabled())));
     }
 
-    private void allowCameraPermissions() throws Exception {
-        UiObject allowButton = mDevice.findObject(new UiSelector()
+    public static void allowCameraPermissions(UiDevice device) throws Exception {
+        UiObject allowButton = device.findObject(new UiSelector()
                 .text("Allow")
                 .className("android.widget.Button"));
         if (allowButton.exists()) {
@@ -137,7 +143,7 @@ public class CreateNewIdentityActivityTest {
      * TODO: Come up with a more reliable and quicker way to detect when entropy collection has finished.
      *       One possibility is to call mActivity.onEntropyCollectionFinished but this proved problematic.
      */
-    private void waitForEntropyCollectionToFinish() throws Exception {
+    public static void waitForEntropyCollectionToFinish() throws Exception {
         Thread.sleep(10 * 1000);
     }
 }
