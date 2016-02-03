@@ -33,6 +33,7 @@ import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
+import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeWrittenToDiskException;
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
 import io.barnabycolby.sqrlclient.sqrl.EntropyCollector;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
@@ -480,7 +481,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-    public void onCreateNewIdentityButtonClicked(View view) throws IdentitiesCouldNotBeLoadedException {
+    public void onCreateNewIdentityButtonClicked(View view) throws IdentitiesCouldNotBeLoadedException, IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException {
         // Retrieve the identity name and master key
         String identityName = this.mIdentityNameEditText.getText().toString();
         EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
