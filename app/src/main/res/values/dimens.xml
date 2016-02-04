@@ -3,4 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_vertical_separate_margin">16dp</dimen>
+    <dimen name="identity_selector_text_size">25dp</dimen>
 </resources>

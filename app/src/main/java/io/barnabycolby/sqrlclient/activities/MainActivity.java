@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Populate the spinner
         Spinner identitySpinner = (Spinner)findViewById(R.id.IdentitySpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, identityNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.identity_spinner_item, identityNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         identitySpinner.setAdapter(adapter);
     }

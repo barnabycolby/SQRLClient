@@ -44,4 +44,5 @@
     <string name="identity_already_exists">An identity with this name already exists.</string>
     <string name="identities_could_not_be_loaded">The identities could not be loaded from disk.</string>
     <string name="identity_could_not_be_written_to_disk">The identity could not be written to disk.</string>
+    <string name="identity">Identity:</string>
 </resources>
