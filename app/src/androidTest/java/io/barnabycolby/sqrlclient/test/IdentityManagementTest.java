@@ -66,6 +66,14 @@ public class IdentityManagementTest {
         assertNotNull(identitySpinnerAdapter);
         assertEquals(1, identitySpinnerAdapter.getCount());
         assertEquals(identityName, identitySpinnerAdapter.getItem(0));
+
+        String identityName2 = "Alice";
+        createNewIdentity(identityName2);
+
+        identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        assertNotNull(identitySpinnerAdapter);
+        assertEquals(2, identitySpinnerAdapter.getCount());
+        assertEquals(identityName, identitySpinnerAdapter.getItem(1));
     }
 
     private void createNewIdentity(String identityName) throws Exception {
