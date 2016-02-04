@@ -59,7 +59,7 @@ public class IdentityManagementTest {
 
     @Test
     public void identityListContainsCreatedIdentity() throws Exception {
-        String identityName = "Barney";
+        String identityName = "Alice";
         createNewIdentity(identityName);
 
         SpinnerAdapter identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
@@ -67,13 +67,13 @@ public class IdentityManagementTest {
         assertEquals(1, identitySpinnerAdapter.getCount());
         assertEquals(identityName, identitySpinnerAdapter.getItem(0));
 
-        String identityName2 = "Alice";
+        String identityName2 = "Barney";
         createNewIdentity(identityName2);
 
         identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(2, identitySpinnerAdapter.getCount());
-        assertEquals(identityName, identitySpinnerAdapter.getItem(1));
+        assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
     }
 
     private void createNewIdentity(String identityName) throws Exception {
