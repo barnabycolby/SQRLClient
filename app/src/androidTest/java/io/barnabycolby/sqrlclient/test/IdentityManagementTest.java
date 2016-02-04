@@ -9,9 +9,11 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import io.barnabycolby.sqrlclient.activities.MainActivity;
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.activities.CreateNewIdentityActivityTest;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.Rule;
@@ -40,6 +42,12 @@ public class IdentityManagementTest {
         // Espresso doesn't seem to have an easy way to retrieve the list of spinner text
         // So we do this manually instead
         this.mIdentitySpinner = (Spinner)this.mActivity.findViewById(R.id.IdentitySpinner);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        // The list of identities needs to be reset, as these will persist across application instances
+        App.getSQRLIdentityManager().removeAllIdentities();
     }
 
     @Test

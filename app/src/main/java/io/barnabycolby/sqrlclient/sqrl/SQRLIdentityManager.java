@@ -57,14 +57,13 @@ public class SQRLIdentityManager {
             }
 
             // Convert the filename to a human readable string (it should be in base64url format)
-            byte[] decodedIdentityName;
+            String identityName;
             try {
-                decodedIdentityName = Base64.decode(identityFile.getName(), Base64.URL_SAFE);
+                identityName = base64DecodeFilename(identityFile);
             } catch (IllegalArgumentException ex) {
                 // Bad base64
                 continue;
             }
-            String identityName = new String(decodedIdentityName, Charset.forName("UTF-8"));
 
             // Add the identity to the map
             mIdentities.put(identityName, masterKey);
@@ -158,5 +157,45 @@ public class SQRLIdentityManager {
             identityNames.add(this.mIdentities.keyAt(i));
         }
         return identityNames;
+    }
+
+    /**
+     * Removes all identities from the list.
+     *
+     * @throws IOException  If an identity could not be deleted.
+     * @throws IdentitiesCouldNotBeLoadedException  If the identities files could not be loaded.
+     */
+    public void removeAllIdentities() throws IOException, IdentitiesCouldNotBeLoadedException {
+        File identitiesFolder = openIdentitiesFolder();
+        for (File identityFile : identitiesFolder.listFiles()) {
+            // Try and decode the filename first
+            // If it's not valid base64 then we shouldn't delete it
+            String decodedFilename;
+            try {
+                decodedFilename = base64DecodeFilename(identityFile);
+            } catch (IllegalArgumentException ex) {
+                continue;
+            }
+
+            boolean deleteSucceeded = identityFile.delete();
+            if (deleteSucceeded) {
+                // Delete the runtime identity to reflect the changes
+                this.mIdentities.remove(decodedFilename);
+            } else {
+                throw new IOException();
+            }
+        }
+    }
+
+    /**
+     * Base64url decodes a filename.
+     *
+     * @param file  The file whose filename should be decoded.
+     * @throws IllegalArgumentException  If the filename is not valid base64url.
+     */
+    private String base64DecodeFilename(File file) throws IllegalArgumentException {
+        byte[] decodedFileName = Base64.decode(file.getName(), Base64.URL_SAFE);
+        String identityName = new String(decodedFileName, Charset.forName("UTF-8"));
+        return identityName;
     }
 }
