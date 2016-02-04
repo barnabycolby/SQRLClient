@@ -76,6 +76,23 @@ public class IdentityManagementTest {
         assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
     }
 
+    @Test
+    public void maliciousIdentityNamesDoNotCauseProblems() throws Exception {
+        String identityName = "/etc/shadow";
+        createNewIdentity(identityName);
+
+        SpinnerAdapter identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        assertNotNull(identitySpinnerAdapter);
+        assertEquals(identityName, identitySpinnerAdapter.getItem(0));
+
+        String identityName2 = "beans; cat /etc/shadow";
+        createNewIdentity(identityName2);
+
+        identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        assertNotNull(identitySpinnerAdapter);
+        assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
+    }
+
     private void createNewIdentity(String identityName) throws Exception {
         onView(withId(R.id.CreateNewIdentityButton)).perform(click());
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
