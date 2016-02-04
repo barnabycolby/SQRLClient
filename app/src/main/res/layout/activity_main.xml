@@ -28,30 +28,40 @@
             />
     </LinearLayout>
 
-    <RelativeLayout
+    <TableLayout
         android:layout_centerInParent="true"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         >
 
-        <Button
-            android:id="@+id/LoginButton"
-            android:layout_centerHorizontal="true"
+        <TableRow
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:onClick="login"
-            android:text="@string/login"
-            />
+            >
+            <Button
+                android:id="@+id/LoginButton"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:onClick="login"
+                android:text="@string/login"
+                />
+        </TableRow>
 
-        <Button
-            android:id="@+id/CreateNewIdentityButton"
-            android:layout_below="@id/LoginButton"
-            android:layout_centerHorizontal="true"
+        <TableRow
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:onClick="createNewIdentity"
-            android:text="@string/create_new_identity"
-            />
-    </RelativeLayout>
+            >
+            <Button
+                android:id="@+id/CreateNewIdentityButton"
+                android:layout_below="@id/LoginButton"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:onClick="createNewIdentity"
+                android:text="@string/create_new_identity"
+                />
+        </TableRow>
+    </TableLayout>
 
 </RelativeLayout>
