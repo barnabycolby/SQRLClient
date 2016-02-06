@@ -21,8 +21,14 @@ import org.junit.Test;
 
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.not;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -91,6 +97,16 @@ public class IdentityManagementTest {
         identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
+    }
+
+    @Test
+    public void cannotCreateTwoIdentitiesWithTheSameName() throws Exception {
+        String identityName = "Oscar";
+        createNewIdentity(identityName);
+        createNewIdentity(identityName);
+
+        // The following line simply checks whether a toast message is displayed
+        onView(withText(R.string.identity_already_exists)).inRoot(withDecorView(not(mActivity.getWindow().getDecorView()))).check(matches(isDisplayed()));
     }
 
     private void createNewIdentity(String identityName) throws Exception {
