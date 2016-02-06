@@ -174,31 +174,25 @@ public class SQRLIdentityManager {
      *
      * @throws IOException  If an identity could not be deleted.
      * @throws IdentitiesCouldNotBeLoadedException  If the identities files could not be loaded.
+     * @throws IdentityCouldNotBeDeletedException  If the identity file on disk could not be deleted.
      */
-    public void removeAllIdentities() throws IOException, IdentitiesCouldNotBeLoadedException {
+    public void removeAllIdentities() throws IOException, IdentitiesCouldNotBeLoadedException, IdentityCouldNotBeDeletedException {
         File identitiesFolder = openIdentitiesFolder();
-        for (File identityFile : identitiesFolder.listFiles()) {
-            // Try and decode the filename first
-            // If it's not valid base64 then we shouldn't delete it
-            String decodedFilename;
+        // We need to iterate in reverse order as the removeIdentity call will remove the item from the list
+        for (int i = this.mIdentities.size() - 1; i >= 0; i--) {
+            String identityName = this.mIdentities.keyAt(i);
             try {
-                decodedFilename = base64DecodeFilename(identityFile);
-            } catch (IllegalArgumentException ex) {
-                continue;
-            }
-
-            boolean deleteSucceeded = identityFile.delete();
-            if (deleteSucceeded) {
-                // Delete the runtime identity to reflect the changes
-                this.mIdentities.remove(decodedFilename);
-            } else {
-                throw new IOException();
+                removeIdentity(identityName, identitiesFolder);
+            } catch (IdentityDoesNotExistException ex) {
+                // We can ignore this case as we have already verified that the identity does exist
+                // But just in case, we can log a wtf error
+                Log.wtf(TAG, "Calling removeIdentity from removeAllIdentities threw a IdentityDoesNotExistException.");
             }
         }
     }
 
     /**
-     * Removes a single identity from the list
+     * Removes a single identity from the list.
      *
      * @param identityName  The name of the identity to remove.
      * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be loaded.
@@ -206,13 +200,25 @@ public class SQRLIdentityManager {
      * @throws IdentityCouldNotBeDeletedException  If the identity file on disk could not be deleted.
      */
     public void removeIdentity(String identityName) throws IdentitiesCouldNotBeLoadedException, IdentityDoesNotExistException, IdentityCouldNotBeDeletedException {
+        removeIdentity(identityName, openIdentitiesFolder());
+    }
+
+    /**
+     * Removes a single identity from the list.
+     *
+     * Passing the identities folder file in, prevents this method from having to retrieve this for each identity.
+     *
+     * @param identityName  The name of the identity to remove.
+     * @throws IdentityDoesNotExistException  If the identity given by the identity name does not exist.
+     * @throws IdentityCouldNotBeDeletedException  If the identity file on disk could not be deleted.
+     */
+    public void removeIdentity(String identityName, File identitiesFolder) throws IdentityDoesNotExistException, IdentityCouldNotBeDeletedException {
         // Check that the given identityName is valid
         if (!this.mIdentities.containsKey(identityName)) {
             throw new IdentityDoesNotExistException(identityName);
         }
 
         // Remove the identity file
-        File identitiesFolder = openIdentitiesFolder();
         String identityFileName = base64Encode(identityName);
         File identityFile = new File(identitiesFolder, identityFileName);
         // We continue as normal if the identity file does not exist
