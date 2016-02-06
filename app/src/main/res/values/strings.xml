@@ -45,4 +45,8 @@
     <string name="identities_could_not_be_loaded">The identities could not be loaded from disk.</string>
     <string name="identity_could_not_be_written_to_disk">The identity could not be written to disk.</string>
     <string name="identity">Identity:</string>
+    <string name="delete_identity">Delete Identity</string>
+    <string name="identity_deleted">The identity has been successfully deleted.</string>
+    <string name="identity_does_not_exist">The identity \"%s\" does not exist.</string>
+    <string name="identity_could_not_be_deleted">The identity \"%s\" could not be deleted.</string>
 </resources>

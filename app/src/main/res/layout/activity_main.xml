@@ -62,6 +62,21 @@
                 android:text="@string/create_new_identity"
                 />
         </TableRow>
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            >
+            <Button
+                android:id="@+id/DeleteIdentityButton"
+                android:layout_below="@id/CreateNewIdentityButton"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:onClick="deleteIdentity"
+                android:text="@string/delete_identity"
+                />
+        </TableRow>
     </TableLayout>
 
 </RelativeLayout>

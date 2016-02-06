@@ -6,7 +6,9 @@ import android.util.Log;
 
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
+import io.barnabycolby.sqrlclient.exceptions.IdentityDoesNotExistException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeWrittenToDiskException;
+import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeDeletedException;
 import io.barnabycolby.sqrlclient.App;
 
 import java.io.BufferedOutputStream;
@@ -126,11 +128,8 @@ public class SQRLIdentityManager {
      * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be opened.
      */
     private void writeNewIdentityToDisk(String identityName, byte[] masterKey) throws IdentityAlreadyExistsException, IdentitiesCouldNotBeLoadedException, IOException {
-        // First, convert the filename to it's base64url representation. This should remove a potential filename attack surface.
-        byte[] identityNameAsByteArray = identityName.getBytes(Charset.forName("UTF-8"));
-        String encodedFilename = Base64.encodeToString(identityNameAsByteArray, Base64.NO_PADDING | Base64.URL_SAFE | Base64.NO_WRAP);
-
         // Create the new file
+        String encodedFilename = base64Encode(identityName);
         File identitiesFolder = openIdentitiesFolder();
         File newIdentityFile = new File(identitiesFolder, encodedFilename);
         if (newIdentityFile.exists()) {
@@ -143,6 +142,17 @@ public class SQRLIdentityManager {
         bufferedOutputStream.write(masterKey);
         bufferedOutputStream.flush();
         bufferedOutputStream.close();
+    }
+
+    /**
+     * Base64Url encodes a string.
+     *
+     * @param plainText  The plaintext string to encode.
+     * @return  The encoded string.
+     */
+    private String base64Encode(String plainText) {
+        byte[] plainTextAsByteArray = plainText.getBytes(Charset.forName("UTF-8"));
+        return Base64.encodeToString(plainTextAsByteArray, Base64.NO_PADDING | Base64.URL_SAFE | Base64.NO_WRAP);
     }
 
     /**
@@ -185,6 +195,36 @@ public class SQRLIdentityManager {
                 throw new IOException();
             }
         }
+    }
+
+    /**
+     * Removes a single identity from the list
+     *
+     * @param identityName  The name of the identity to remove.
+     * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be loaded.
+     * @throws IdentityDoesNotExistException  If the identity given by the identity name does not exist.
+     * @throws IdentityCouldNotBeDeletedException  If the identity file on disk could not be deleted.
+     */
+    public void removeIdentity(String identityName) throws IdentitiesCouldNotBeLoadedException, IdentityDoesNotExistException, IdentityCouldNotBeDeletedException {
+        // Check that the given identityName is valid
+        if (!this.mIdentities.containsKey(identityName)) {
+            throw new IdentityDoesNotExistException(identityName);
+        }
+
+        // Remove the identity file
+        File identitiesFolder = openIdentitiesFolder();
+        String identityFileName = base64Encode(identityName);
+        File identityFile = new File(identitiesFolder, identityFileName);
+        // We continue as normal if the identity file does not exist
+        if (identityFile.exists()) {
+            boolean deleteSucceeded = identityFile.delete();
+            if (!deleteSucceeded) {
+                throw new IdentityCouldNotBeDeletedException(identityName);
+            }
+        }
+
+        // Remove the identity from the runtime list
+        this.mIdentities.remove(identityName);
     }
 
     /**

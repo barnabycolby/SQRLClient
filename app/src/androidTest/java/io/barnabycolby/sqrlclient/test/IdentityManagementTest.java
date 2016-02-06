@@ -105,8 +105,20 @@ public class IdentityManagementTest {
         createNewIdentity(identityName);
         createNewIdentity(identityName);
 
-        // The following line simply checks whether a toast message is displayed
-        onView(withText(R.string.identity_already_exists)).inRoot(withDecorView(not(mActivity.getWindow().getDecorView()))).check(matches(isDisplayed()));
+        checkToastIsDisplayed(R.string.identity_already_exists);
+    }
+
+    @Test
+    public void deleteIdentityRemovesIdentityFromList() throws Exception {
+        String identityName = "Zane";
+        createNewIdentity(identityName);
+
+        onView(withId(R.id.DeleteIdentityButton)).perform(click());
+        checkToastIsDisplayed(R.string.identity_deleted);
+
+        SpinnerAdapter identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        assertNotNull(identitySpinnerAdapter);
+        assertEquals(0, identitySpinnerAdapter.getCount());
     }
 
     private void createNewIdentity(String identityName) throws Exception {
@@ -116,5 +128,9 @@ public class IdentityManagementTest {
         onView(withId(R.id.IdentityNameEditText)).perform(typeText(identityName));
         CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish();
         onView(withId(R.id.CreateNewIdentityButton)).perform(click());
+    }
+
+    private void checkToastIsDisplayed(int textId) {
+        onView(withText(textId)).inRoot(withDecorView(not(mActivity.getWindow().getDecorView()))).check(matches(isDisplayed()));
     }
 }
