@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (identitySuccessfullyRemoved) {
             String message = this.getResources().getString(R.string.identity_deleted);
-            android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_LONG).show();
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }
 
