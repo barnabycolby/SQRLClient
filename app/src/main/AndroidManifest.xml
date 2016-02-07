@@ -39,6 +39,11 @@
         </activity>
 
         <activity
+            android:name=".activities.CreateNewIdentityActivity"
+            android:label="@string/create_new_identity"
+        />
+
+        <activity
             android:name=".activities.LoginChoicesActivity"
             android:label="@string/login_choices_activity_label"
             />
@@ -53,11 +58,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".activities.CreateNewIdentityActivity"
-            android:label="@string/create_new_identity"
-        />
     </application>
 
 </manifest>
