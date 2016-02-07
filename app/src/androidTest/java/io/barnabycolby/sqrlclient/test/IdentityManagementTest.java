@@ -1,6 +1,8 @@
 package io.barnabycolby.sqrlclient.test;
 
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.app.Instrumentation.ActivityMonitor;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -8,6 +10,7 @@ import android.support.test.uiautomator.UiDevice;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
@@ -122,11 +125,19 @@ public class IdentityManagementTest {
     }
 
     private void createNewIdentity(String identityName) throws Exception {
+        // Create an activity monitor so that we can retrieve an instance of any activities we start
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        ActivityMonitor activityMonitor = instrumentation.addMonitor(CreateNewIdentityActivity.class.getName(), null, false);
+
         onView(withId(R.id.CreateNewIdentityButton)).perform(click());
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiDevice device = UiDevice.getInstance(instrumentation);
         CreateNewIdentityActivityTest.allowCameraPermissions(device);
         onView(withId(R.id.IdentityNameEditText)).perform(typeText(identityName));
-        CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish();
+
+        // We need to pass an instance of the initialised activity to waitForEntropyCollectionToFinish
+        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
+
+        CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish(createNewIdentityActivity);
         onView(withId(R.id.CreateNewIdentityButton)).perform(click());
     }
 

@@ -104,7 +104,7 @@ public class CreateNewIdentityActivityTest {
         mCreateButton.check(matches(not(isDisplayed())));
 
         // Check that button is displayed after the entropy collection has finished
-        waitForEntropyCollectionToFinish();
+        waitForEntropyCollectionToFinish(mActivity);
         mProgressBar.check(matches(not(isDisplayed())));
         mCreateButton.check(matches(isDisplayed()));
     }
@@ -121,7 +121,7 @@ public class CreateNewIdentityActivityTest {
     public void testBCreateButtonEnabledOrDisabledBasedOnIdentityNameText() throws Exception {
         allowCameraPermissions(this.mDevice);
 
-        waitForEntropyCollectionToFinish();
+        waitForEntropyCollectionToFinish(mActivity);
         mIdentityNameEditText.check(matches(withText("")));
         mCreateButton.check(matches(not(isEnabled())));
         mIdentityNameEditText.perform(typeText("Rupert"));
@@ -139,11 +139,7 @@ public class CreateNewIdentityActivityTest {
         }
     }
 
-    /**
-     * TODO: Come up with a more reliable and quicker way to detect when entropy collection has finished.
-     *       One possibility is to call mActivity.onEntropyCollectionFinished but this proved problematic.
-     */
-    public static void waitForEntropyCollectionToFinish() throws Exception {
-        Thread.sleep(10 * 1000);
+    public static void waitForEntropyCollectionToFinish(CreateNewIdentityActivity createNewIdentityActivity) throws Exception {
+        createNewIdentityActivity.onEntropyCollectionFinished();
     }
 }
