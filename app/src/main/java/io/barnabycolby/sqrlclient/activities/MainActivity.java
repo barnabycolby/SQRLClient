@@ -93,4 +93,15 @@ public class MainActivity extends AppCompatActivity {
         // Reinitialise the identity spinner, the list may have changed
         initialiseIdentitySpinner();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Check whether there are actually some identities
+        if (!mIdentityManager.containsIdentities()) {
+            Intent intent = new Intent(this, NoIdentityActivity.class);
+            startActivity(intent);
+        }
+    }
 }

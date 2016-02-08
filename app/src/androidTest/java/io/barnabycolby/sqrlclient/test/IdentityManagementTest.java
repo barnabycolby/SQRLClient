@@ -13,6 +13,7 @@ import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 import org.junit.After;
 import org.junit.Before;
@@ -115,6 +116,18 @@ public class IdentityManagementTest {
         SpinnerAdapter identitySpinnerAdapter = identitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(0, identitySpinnerAdapter.getCount());
+    }
+
+    @Test
+    public void redirectToNoIdentityPageOnceAllIdentitiesAreDeleted() throws Exception {
+        NoIdentityActivity activity = (NoIdentityActivity)Helper.monitorForActivity(NoIdentityActivity.class, 5000, new Lambda() {
+            public void run() throws Exception {
+                String identityName = "Bruce Schneier";
+                Helper.createNewIdentity(identityName);
+                onView(withId(R.id.DeleteIdentityButton)).perform(click());
+            }
+        });
+        assertNotNull(activity);
     }
 
     private void checkToastIsDisplayed(int textId) {
