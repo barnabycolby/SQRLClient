@@ -13,6 +13,8 @@ import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
     public MainActivityTest() {
@@ -42,29 +44,29 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         assertThatButtonIsVisibleAndDisplaysCorrectText(R.id.CreateNewIdentityButton, R.string.create_new_identity);
     }
 
-    public void testLoginChoicesActivityStartedOnLoginButtonClick() {
+    public void testLoginChoicesActivityStartedOnLoginButtonClick() throws Exception {
         assertThatButtonStartsActivity(R.id.LoginButton, LoginChoicesActivity.class);
     }
 
-    public void testCreateNewIdentityActivityStartedOnCreateNewIdentityButtonClick() {
+    public void testCreateNewIdentityActivityStartedOnCreateNewIdentityButtonClick() throws Exception {
         assertThatButtonStartsActivity(R.id.CreateNewIdentityButton, CreateNewIdentityActivity.class);
     }
 
     //endregion
 
-    private void assertThatButtonStartsActivity(int buttonId, Class activityToCheckFor) {
-        // Create an activity monitor to watch for the activity starting
-        ActivityMonitor activityMonitor = getInstrumentation().addMonitor(activityToCheckFor.getName(), null, false);
-
-        // Click the button
-        setActivityInitialTouchMode(true);
-        MainActivity activity = getActivity();
-        Button button = (Button)activity.findViewById(buttonId);
-        TouchUtils.clickView(this, button);
+    private void assertThatButtonStartsActivity(final int buttonId, Class activityToCheckFor) throws Exception {
+        final ActivityInstrumentationTestCase2 instrumentationTestCase = this;
+        Activity newActivity = Helper.monitorForActivity(activityToCheckFor, 5000, new Lambda() {
+            public void run() {
+                // Click the button
+                setActivityInitialTouchMode(true);
+                MainActivity activity = getActivity();
+                Button button = (Button)activity.findViewById(buttonId);
+                TouchUtils.clickView(instrumentationTestCase, button);
+            }
+        });
 
         // Verify that the new activity was started
-        Activity newActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
-        getInstrumentation().removeMonitor(activityMonitor);
         assertNotNull(newActivity);
         newActivity.finish();
     }

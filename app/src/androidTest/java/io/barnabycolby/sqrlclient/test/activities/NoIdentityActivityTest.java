@@ -14,6 +14,7 @@ import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,30 +60,27 @@ public class NoIdentityActivityTest {
     }
 
     @Test
-    public void createNewIdentityButtonTakesYouToTheCreateNewIdentityActivity() {
-        // Set up the activity monitor
-        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        ActivityMonitor activityMonitor = instrumentation.addMonitor(CreateNewIdentityActivity.class.getName(), null, false);
-
-        // Click the button
-        mCreateNewIdentityButton.check(matches(isDisplayed()));
-        mCreateNewIdentityButton.perform(click());
+    public void createNewIdentityButtonTakesYouToTheCreateNewIdentityActivity() throws Exception {
+        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)Helper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
+            public void run() {
+                // Click the button
+                mCreateNewIdentityButton.check(matches(isDisplayed()));
+                mCreateNewIdentityButton.perform(click());
+            }
+        });
 
         // Check the activity was started
-        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
-        instrumentation.removeMonitor(activityMonitor);
         assertNotNull(createNewIdentityActivity);
     }
 
     @Test
     public void createIdentityNavigatesToMainActivity() throws Exception {
-        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        ActivityMonitor activityMonitor = instrumentation.addMonitor(MainActivity.class.getName(), null, false);
+        MainActivity mainActivity = (MainActivity)Helper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
+            public void run() throws Exception {
+                Helper.createNewIdentity("Elon Musk");
+            }
+        });
 
-        Helper.createNewIdentity("Elon Musk");
-
-        MainActivity mainActivity = (MainActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
-        instrumentation.removeMonitor(activityMonitor);
         assertNotNull(mainActivity);
     }
 
