@@ -11,7 +11,7 @@ import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.IdentityManagementTest;
+import io.barnabycolby.sqrlclient.test.activities.MainActivityEspressoTest;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -68,7 +68,7 @@ public class NoIdentityActivityTest {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         ActivityMonitor activityMonitor = instrumentation.addMonitor(MainActivity.class.getName(), null, false);
 
-        IdentityManagementTest.createNewIdentity("Elon Musk");
+        MainActivityEspressoTest.createNewIdentity("Elon Musk");
 
         MainActivity mainActivity = (MainActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
         assertNotNull(mainActivity);

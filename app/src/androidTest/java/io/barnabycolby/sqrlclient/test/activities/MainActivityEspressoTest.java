@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.test;
+package io.barnabycolby.sqrlclient.test.activities;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
-public class IdentityManagementTest {
+public class MainActivityEspressoTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
