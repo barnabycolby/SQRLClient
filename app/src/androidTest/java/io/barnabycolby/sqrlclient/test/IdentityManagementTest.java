@@ -1,21 +1,18 @@
-package io.barnabycolby.sqrlclient.test.activities;
+package io.barnabycolby.sqrlclient.test;
 
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
-import android.support.test.espresso.Espresso;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.UiDevice;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
-import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
+import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.activities.CreateNewIdentityActivityTest;
+import io.barnabycolby.sqrlclient.test.Helper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +21,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
@@ -38,49 +34,43 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
-public class MainActivityEspressoTest {
+public class IdentityManagementTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
-    private Activity mActivity;
-    private Spinner mIdentitySpinner;
+    private Instrumentation mInstrumentation;
+    private ActivityMonitor mMainActivityMonitor;
+    private MainActivity mMainActivity;
 
     @Before
     public void setUp() {
-        this.mActivity = mActivityRule.getActivity();
-
-        // Espresso doesn't seem to have an easy way to retrieve the list of spinner text
-        // So we do this manually instead
-        this.mIdentitySpinner = (Spinner)this.mActivity.findViewById(R.id.IdentitySpinner);
+        this.mInstrumentation = InstrumentationRegistry.getInstrumentation();
+        this.mMainActivityMonitor = this.mInstrumentation.addMonitor(MainActivity.class.getName(), null, false);
     }
 
     @After
     public void tearDown() throws Exception {
         // The list of identities needs to be reset, as these will persist across application instances
         App.getSQRLIdentityManager().removeAllIdentities();
-    }
 
-    @Test
-    public void identityListEmptyIfNoIdentitiesExist() {
-        SpinnerAdapter identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
-        assertNotNull(identitySpinnerAdapter);
-        assertEquals(0, identitySpinnerAdapter.getCount());
+        this.mInstrumentation.removeMonitor(this.mMainActivityMonitor);
     }
 
     @Test
     public void identityListContainsCreatedIdentity() throws Exception {
         String identityName = "Alice";
-        createNewIdentity(identityName);
+        Helper.createNewIdentity(identityName);
 
-        SpinnerAdapter identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        Spinner identitySpinner = this.getIdentitySpinner();
+        SpinnerAdapter identitySpinnerAdapter = identitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(1, identitySpinnerAdapter.getCount());
         assertEquals(identityName, identitySpinnerAdapter.getItem(0));
 
         String identityName2 = "Barney";
-        createNewIdentity(identityName2);
+        Helper.createNewIdentity(identityName2);
 
-        identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        identitySpinnerAdapter = identitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(2, identitySpinnerAdapter.getCount());
         assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
@@ -89,16 +79,17 @@ public class MainActivityEspressoTest {
     @Test
     public void maliciousIdentityNamesDoNotCauseProblems() throws Exception {
         String identityName = "/etc/shadow";
-        createNewIdentity(identityName);
+        Helper.createNewIdentity(identityName);
 
-        SpinnerAdapter identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        Spinner identitySpinner = this.getIdentitySpinner();
+        SpinnerAdapter identitySpinnerAdapter = identitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(identityName, identitySpinnerAdapter.getItem(0));
 
         String identityName2 = "beans; cat /etc/shadow";
-        createNewIdentity(identityName2);
+        Helper.createNewIdentity(identityName2);
 
-        identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        identitySpinnerAdapter = identitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
     }
@@ -106,8 +97,8 @@ public class MainActivityEspressoTest {
     @Test
     public void cannotCreateTwoIdentitiesWithTheSameName() throws Exception {
         String identityName = "Oscar";
-        createNewIdentity(identityName);
-        createNewIdentity(identityName);
+        Helper.createNewIdentity(identityName);
+        Helper.createNewIdentity(identityName);
 
         checkToastIsDisplayed(R.string.identity_already_exists);
     }
@@ -115,36 +106,31 @@ public class MainActivityEspressoTest {
     @Test
     public void deleteIdentityRemovesIdentityFromList() throws Exception {
         String identityName = "Zane";
-        createNewIdentity(identityName);
+        Helper.createNewIdentity(identityName);
 
         onView(withId(R.id.DeleteIdentityButton)).perform(click());
         checkToastIsDisplayed(R.string.identity_deleted);
 
-        SpinnerAdapter identitySpinnerAdapter = this.mIdentitySpinner.getAdapter();
+        Spinner identitySpinner = this.getIdentitySpinner();
+        SpinnerAdapter identitySpinnerAdapter = identitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
         assertEquals(0, identitySpinnerAdapter.getCount());
     }
 
-    public static void createNewIdentity(String identityName) throws Exception {
-        // Create an activity monitor so that we can retrieve an instance of any activities we start
-        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        ActivityMonitor activityMonitor = instrumentation.addMonitor(CreateNewIdentityActivity.class.getName(), null, false);
-
-        onView(withId(R.id.CreateNewIdentityButton)).perform(click());
-        UiDevice device = UiDevice.getInstance(instrumentation);
-        CreateNewIdentityActivityTest.allowCameraPermissions(device);
-        onView(withId(R.id.IdentityNameEditText)).perform(typeText(identityName));
-        Espresso.closeSoftKeyboard();
-
-        // We need to pass an instance of the initialised activity to waitForEntropyCollectionToFinish
-        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
-        instrumentation.removeMonitor(activityMonitor);
-
-        CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish(createNewIdentityActivity);
-        onView(withId(R.id.CreateNewIdentityButton)).perform(click());
+    private void checkToastIsDisplayed(int textId) {
+        onView(withText(textId)).inRoot(withDecorView(not(getMainActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
     }
 
-    private void checkToastIsDisplayed(int textId) {
-        onView(withText(textId)).inRoot(withDecorView(not(mActivity.getWindow().getDecorView()))).check(matches(isDisplayed()));
+    private Spinner getIdentitySpinner() {
+        return (Spinner)getMainActivity().findViewById(R.id.IdentitySpinner);
+    }
+
+    private MainActivity getMainActivity() {
+        if (this.mMainActivity == null) {
+            this.mMainActivity = (MainActivity)this.mInstrumentation.waitForMonitorWithTimeout(this.mMainActivityMonitor, 5000);
+            assertNotNull(this.mMainActivity);
+        }
+
+        return this.mMainActivity;
     }
 }
