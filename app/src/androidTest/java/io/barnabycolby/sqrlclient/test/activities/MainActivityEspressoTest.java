@@ -138,6 +138,7 @@ public class MainActivityEspressoTest {
 
         // We need to pass an instance of the initialised activity to waitForEntropyCollectionToFinish
         CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
+        instrumentation.removeMonitor(activityMonitor);
 
         CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish(createNewIdentityActivity);
         onView(withId(R.id.CreateNewIdentityButton)).perform(click());

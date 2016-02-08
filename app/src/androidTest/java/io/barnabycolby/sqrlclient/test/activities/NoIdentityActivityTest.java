@@ -69,6 +69,7 @@ public class NoIdentityActivityTest {
 
         // Check the activity was started
         CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
+        instrumentation.removeMonitor(activityMonitor);
         assertNotNull(createNewIdentityActivity);
     }
 
@@ -80,6 +81,7 @@ public class NoIdentityActivityTest {
         MainActivityEspressoTest.createNewIdentity("Elon Musk");
 
         MainActivity mainActivity = (MainActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
+        instrumentation.removeMonitor(activityMonitor);
         assertNotNull(mainActivity);
     }
 
@@ -97,6 +99,7 @@ public class NoIdentityActivityTest {
 
         // Assert that the main activity was not started
         MainActivity mainActivity = (MainActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 500);
+        instrumentation.removeMonitor(activityMonitor);
         assertNull(mainActivity);
     }
 }

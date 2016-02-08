@@ -1,6 +1,5 @@
 package io.barnabycolby.sqrlclient.test.activities;
 
-import android.app.Instrumentation.ActivityMonitor;
 import android.test.*;
 import android.content.Intent;
 import android.net.Uri;

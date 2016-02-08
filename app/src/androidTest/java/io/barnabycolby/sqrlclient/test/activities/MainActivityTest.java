@@ -50,6 +50,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
         // Verify that the new activity was started
         Activity newActivity = getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 5000);
+        getInstrumentation().removeMonitor(activityMonitor);
         assertNotNull(newActivity);
         newActivity.finish();
     }
