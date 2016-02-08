@@ -9,12 +9,26 @@ import android.view.View;
 
 import io.barnabycolby.sqrlclient.activities.ConfirmSiteNameActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
+import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 public class ConfirmSiteNameActivityTest extends ActivityInstrumentationTestCase2<ConfirmSiteNameActivity> {
 
     public ConfirmSiteNameActivityTest() {
         super(ConfirmSiteNameActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        App.getSQRLIdentityManager().save("Gerald", new byte[32]);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        App.getSQRLIdentityManager().removeAllIdentities();
     }
 
     //region TESTS
@@ -57,6 +71,20 @@ public class ConfirmSiteNameActivityTest extends ActivityInstrumentationTestCase
         ConfirmSiteNameActivity activity = startActivityWithGivenURI(sqrlUri);
         assertThatFriendlySiteNameMatchesString(activity, "GRC");
         assertThatConfirmDenySiteButtonsAreVisible(activity, true);
+    }
+
+    public void testRedirectedToNoIdentityActivityIfNoIdentitiesExist() throws Exception {
+        // The setUp method has created an identity for us
+        // As this test is a special case, we need to manually remove it
+        App.getSQRLIdentityManager().removeAllIdentities();
+
+        NoIdentityActivity activity = (NoIdentityActivity)Helper.monitorForActivity(NoIdentityActivity.class, 5000, new Lambda() {
+            public void run() {
+                String sqrlUri = "sqrl://www.grc.com/sqrl?nut=mCwPTJWrbcBNMJKc76sI8w&sfn=R1JD";
+                startActivityWithGivenURI(sqrlUri);
+            }
+        });
+        assertNotNull(activity);
     }
 
     //endregion

@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
 import io.barnabycolby.sqrlclient.activities.ConfirmSiteNameStateFragment;
+import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
@@ -30,7 +30,7 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
  * If an account does not already exist, the user is asked whether they would like to create an account or not.
  * </p>
  */
-public class ConfirmSiteNameActivity extends AppCompatActivity {
+public class ConfirmSiteNameActivity extends IdentityMustExistActivity {
 
     private static final String TAG = ConfirmSiteNameActivity.class.getName();
     private SwappableTextView informationTextView;

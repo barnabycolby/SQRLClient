@@ -2,13 +2,13 @@ package io.barnabycolby.sqrlclient.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
+import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Activity displayed when the user enters the application, offering a menu of choices for interaction with the application.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends IdentityMustExistActivity {
     private SQRLIdentityManager mIdentityManager;
     private Spinner mIdentitySpinner;
 
@@ -92,16 +92,5 @@ public class MainActivity extends AppCompatActivity {
 
         // Reinitialise the identity spinner, the list may have changed
         initialiseIdentitySpinner();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Check whether there are actually some identities
-        if (!mIdentityManager.containsIdentities()) {
-            Intent intent = new Intent(this, NoIdentityActivity.class);
-            startActivity(intent);
-        }
     }
 }
