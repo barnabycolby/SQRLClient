@@ -3,6 +3,7 @@ package io.barnabycolby.sqrlclient.test.activities;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
+import android.support.test.espresso.Espresso;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -133,6 +134,7 @@ public class MainActivityEspressoTest {
         UiDevice device = UiDevice.getInstance(instrumentation);
         CreateNewIdentityActivityTest.allowCameraPermissions(device);
         onView(withId(R.id.IdentityNameEditText)).perform(typeText(identityName));
+        Espresso.closeSoftKeyboard();
 
         // We need to pass an instance of the initialised activity to waitForEntropyCollectionToFinish
         CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
