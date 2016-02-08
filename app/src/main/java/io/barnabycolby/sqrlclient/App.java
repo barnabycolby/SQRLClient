@@ -37,9 +37,14 @@ public class App extends Application {
      *
      * If an instance does not already exist, it will be created.
      */
-    public static SQRLIdentityManager getSQRLIdentityManager() throws IdentitiesCouldNotBeLoadedException {
+    public static SQRLIdentityManager getSQRLIdentityManager() {
         if (sIdentityManager == null) {
-            sIdentityManager = new SQRLIdentityManager();
+            try {
+                sIdentityManager = new SQRLIdentityManager();
+            } catch (IdentitiesCouldNotBeLoadedException ex) {
+                // TODO: Handle this crash in a cleaner way, perhaps displaying a dialog to the user before gracefully terminating
+                throw new RuntimeException(ex);
+            }
         }
 
         return sIdentityManager;

@@ -33,12 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Get the identity manager
-        try {
-            this.mIdentityManager = App.getSQRLIdentityManager();
-        } catch (IdentitiesCouldNotBeLoadedException ex) {
-            // TODO: Handle this crash in a cleaner way, perhaps displaying a dialog to the user before gracefully terminating
-            throw new RuntimeException(ex);
-        }
+        this.mIdentityManager = App.getSQRLIdentityManager();
 
         // Initialise the spinner
         this.mIdentitySpinner = (Spinner)findViewById(R.id.IdentitySpinner);
