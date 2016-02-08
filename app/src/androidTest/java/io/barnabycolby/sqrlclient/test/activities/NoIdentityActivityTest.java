@@ -8,8 +8,10 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
+import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.test.IdentityManagementTest;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class NoIdentityActivityTest {
     private NoIdentityActivity mActivity;
+    private ViewInteraction mCreateNewIdentityButton;
 
     @Rule
     public ActivityTestRule<NoIdentityActivity> mActivityTestRule = new ActivityTestRule<NoIdentityActivity>(NoIdentityActivity.class);
@@ -36,6 +39,7 @@ public class NoIdentityActivityTest {
     @Before
     public void setUp() throws Exception {
         this.mActivity = mActivityTestRule.getActivity();
+        this.mCreateNewIdentityButton = onView(withId(R.id.CreateNewIdentityButton));
     }
 
     @Test
@@ -51,12 +55,22 @@ public class NoIdentityActivityTest {
         ActivityMonitor activityMonitor = instrumentation.addMonitor(CreateNewIdentityActivity.class.getName(), null, false);
 
         // Click the button
-        ViewInteraction createNewIdentityButton = onView(withId(R.id.CreateNewIdentityButton));
-        createNewIdentityButton.check(matches(isDisplayed()));
-        createNewIdentityButton.perform(click());
+        mCreateNewIdentityButton.check(matches(isDisplayed()));
+        mCreateNewIdentityButton.perform(click());
 
         // Check the activity was started
         CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
         assertNotNull(createNewIdentityActivity);
+    }
+
+    @Test
+    public void createIdentityNavigatesToMainActivity() throws Exception {
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        ActivityMonitor activityMonitor = instrumentation.addMonitor(MainActivity.class.getName(), null, false);
+
+        IdentityManagementTest.createNewIdentity("Elon Musk");
+
+        MainActivity mainActivity = (MainActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 5000);
+        assertNotNull(mainActivity);
     }
 }

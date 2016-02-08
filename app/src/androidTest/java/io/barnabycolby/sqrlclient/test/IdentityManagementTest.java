@@ -124,7 +124,7 @@ public class IdentityManagementTest {
         assertEquals(0, identitySpinnerAdapter.getCount());
     }
 
-    private void createNewIdentity(String identityName) throws Exception {
+    public static void createNewIdentity(String identityName) throws Exception {
         // Create an activity monitor so that we can retrieve an instance of any activities we start
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         ActivityMonitor activityMonitor = instrumentation.addMonitor(CreateNewIdentityActivity.class.getName(), null, false);

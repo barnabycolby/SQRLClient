@@ -244,4 +244,13 @@ public class SQRLIdentityManager {
         String identityName = new String(decodedFileName, Charset.forName("UTF-8"));
         return identityName;
     }
+
+    /**
+     * Informs the caller whether this instance is managing any identities.
+     *
+     * @return True if at least one identity is associated with this manager, false otherwise.
+     */
+    public boolean containsIdentities() {
+        return !this.mIdentities.isEmpty();
+    }
 }

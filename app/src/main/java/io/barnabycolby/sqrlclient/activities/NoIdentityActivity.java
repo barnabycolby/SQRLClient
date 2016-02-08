@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
 
 /**
  * Activity displayed when no SQRL identities are associated with the application, for example, the first time the application is launched.
@@ -17,6 +19,18 @@ public class NoIdentityActivity extends AppCompatActivity {
         // Standard Android stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_identity);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Check whether there really are no identities
+        SQRLIdentityManager identityManager = App.getSQRLIdentityManager();        
+        if (identityManager.containsIdentities()) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     /**
