@@ -28,6 +28,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -90,6 +91,7 @@ public class NoIdentityActivityTest {
         // Set up an activity monitor
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         ActivityMonitor activityMonitor = instrumentation.addMonitor(MainActivity.class.getName(), null, false);
+        int initialNumberOfHits = activityMonitor.getHits();
 
         // Navigate to the CreateNewIdentity activity and then press back
         mCreateNewIdentityButton.perform(click());
@@ -98,8 +100,7 @@ public class NoIdentityActivityTest {
         device.pressBack();
 
         // Assert that the main activity was not started
-        MainActivity mainActivity = (MainActivity)instrumentation.waitForMonitorWithTimeout(activityMonitor, 500);
+        assertEquals(initialNumberOfHits, activityMonitor.getHits());
         instrumentation.removeMonitor(activityMonitor);
-        assertNull(mainActivity);
     }
 }
