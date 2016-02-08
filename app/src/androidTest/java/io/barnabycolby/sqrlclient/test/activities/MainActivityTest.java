@@ -11,11 +11,25 @@ import android.widget.Button;
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
     public MainActivityTest() {
         super(MainActivity.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        byte[] masterKey = new byte[32];
+        App.getSQRLIdentityManager().save("Kanye", masterKey);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        App.getSQRLIdentityManager().removeAllIdentities();
     }
 
     //region TESTS
