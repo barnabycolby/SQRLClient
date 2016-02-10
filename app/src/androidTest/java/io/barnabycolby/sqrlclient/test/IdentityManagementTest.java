@@ -2,6 +2,7 @@ package io.barnabycolby.sqrlclient.test;
 
 import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
+import android.support.test.espresso.Espresso;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -12,6 +13,7 @@ import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
 import io.barnabycolby.sqrlclient.test.Helper;
 import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
@@ -23,12 +25,17 @@ import org.junit.Test;
 
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 
 import static org.junit.Assert.assertEquals;
@@ -128,6 +135,62 @@ public class IdentityManagementTest {
             }
         });
         assertNotNull(activity);
+    }
+
+    @Test
+    public void currentIdentityIsFirstIdentityWhenCreated() throws Exception {
+        String identityName = "Martin Fowler";
+        Helper.createNewIdentity(identityName);
+        assertEquals(identityName, App.getSQRLIdentityManager().getCurrentIdentityName());
+    }
+
+    @Test
+    public void selectedIdentityMirrorsCurrentIdentityOnMainActivityLoad() throws Exception {
+        // Initially we start on the no identity activity
+        // To avoid automatically being switched to the main activity, we perform the identity set up manually
+        SQRLIdentityManager identityManager = App.getSQRLIdentityManager();
+        String identityName1 = "Pablo Escobar";
+        String identityName2 = "Walter White";
+        identityManager.save(identityName1, new byte[32]);
+        identityManager.save(identityName2, new byte[32]);
+        identityManager.setCurrentIdentity(identityName2);
+
+        // Trigger the transition back to MainActivity by going to the create identity activity and pressing back
+        onView(withId(R.id.CreateNewIdentityButton)).perform(click());
+        Espresso.pressBack();
+
+        onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerText(identityName2)));
+    }
+
+    @Test
+    public void currentIdentityUpdatedAfterCurrentIdentityDeleted() throws Exception {
+        String identityName1 = "Alan Turing";
+        String identityName2 = "Charles Babbage";
+        Helper.createNewIdentity(identityName1);
+        Helper.createNewIdentity(identityName2);
+
+        assertEquals(identityName1, App.getSQRLIdentityManager().getCurrentIdentityName());
+        onView(withId(R.id.DeleteIdentityButton)).perform(click());
+        assertEquals(identityName2, App.getSQRLIdentityManager().getCurrentIdentityName());
+    }
+
+    @Test
+    public void currentIdentityUpdatedWhenSpinnerSelected() throws Exception {
+        String identityName1 = "Dan North";
+        String identityName2 = "Haskell Curry";
+        Helper.createNewIdentity(identityName1);
+        Helper.createNewIdentity(identityName2);
+
+        assertEquals(identityName1, App.getSQRLIdentityManager().getCurrentIdentityName());
+        selectIdentitySpinnerItem(identityName2);
+        assertEquals(identityName2, App.getSQRLIdentityManager().getCurrentIdentityName());
+        selectIdentitySpinnerItem(identityName1);
+        assertEquals(identityName1, App.getSQRLIdentityManager().getCurrentIdentityName());
+    }
+
+    private void selectIdentitySpinnerItem(String item) {
+        onView(withId(R.id.IdentitySpinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is(item))).perform(click());
     }
 
     private void checkToastIsDisplayed(int textId) {

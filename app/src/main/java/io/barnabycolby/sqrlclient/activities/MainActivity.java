@@ -2,7 +2,9 @@ package io.barnabycolby.sqrlclient.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -12,6 +14,7 @@ import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
+import io.barnabycolby.sqrlclient.exceptions.IdentityDoesNotExistException;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
@@ -22,7 +25,9 @@ import java.util.List;
 /**
  * Activity displayed when the user enters the application, offering a menu of choices for interaction with the application.
  */
-public class MainActivity extends IdentityMustExistActivity {
+public class MainActivity extends IdentityMustExistActivity implements AdapterView.OnItemSelectedListener {
+    private static String TAG = MainActivity.class.getName();
+
     private SQRLIdentityManager mIdentityManager;
     private Spinner mIdentitySpinner;
 
@@ -37,6 +42,7 @@ public class MainActivity extends IdentityMustExistActivity {
 
         // Initialise the spinner
         this.mIdentitySpinner = (Spinner)findViewById(R.id.IdentitySpinner);
+        this.mIdentitySpinner.setOnItemSelectedListener(this);
         initialiseIdentitySpinner();
     }
     
@@ -46,6 +52,22 @@ public class MainActivity extends IdentityMustExistActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.identity_spinner_item, identityNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.mIdentitySpinner.setAdapter(adapter);
+
+        // Set the currently selected identity
+        if (identityNames.size() > 0) {
+            // Check whether a current identity has already been selected
+            String currentIdentityName = this.mIdentityManager.getCurrentIdentityName();
+            if (currentIdentityName != null && identityNames.contains(currentIdentityName)) {
+                this.mIdentitySpinner.setSelection(adapter.getPosition(currentIdentityName));
+            } else {
+                try {
+                    this.mIdentityManager.setCurrentIdentity((String)this.mIdentitySpinner.getSelectedItem());
+                } catch (IdentityDoesNotExistException ex) {
+                    Log.wtf(TAG, "Identity name taken from SQRLIdentityManager.getIdentityNames() list does not exist according to setCurrentIdentity.");
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
     }
 
     /**
@@ -92,5 +114,24 @@ public class MainActivity extends IdentityMustExistActivity {
 
         // Reinitialise the identity spinner, the list may have changed
         initialiseIdentitySpinner();
+    }
+
+    /**
+     * Called when an item in the identity spinner is selected.
+     */
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selectedIdentityName = (String)parent.getItemAtPosition(position);
+        try {
+            this.mIdentityManager.setCurrentIdentity(selectedIdentityName);
+        } catch (IdentityDoesNotExistException ex) {
+            Log.wtf(TAG, "Identity selected from identity spinner does not exist.");
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Do nothing
     }
 }
