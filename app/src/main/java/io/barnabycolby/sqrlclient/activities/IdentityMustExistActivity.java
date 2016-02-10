@@ -15,11 +15,22 @@ public class IdentityMustExistActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        checkIdentitiesExist();
+    }
 
+    /**
+     * Checks whether any identities still exist, starting the NoIdentity activity if not.
+     *
+     * @return True if some identities exist, and false if not. Note that false also indicates an intent has been started for the NoIdentityActivity.
+     */
+    public boolean checkIdentitiesExist() {
         // Check whether there are actually some identities
         if (!App.getSQRLIdentityManager().containsIdentities()) {
             Intent intent = new Intent(this, NoIdentityActivity.class);
             startActivity(intent);
+            return false;
         }
+
+        return true;
     }
 }

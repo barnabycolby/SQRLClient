@@ -113,8 +113,10 @@ public class IdentityManagementTest {
 
     @Test
     public void deleteIdentityRemovesIdentityFromList() throws Exception {
-        String identityName = "Zane";
-        Helper.createNewIdentity(identityName);
+        // We need to create two identities, as otherwise when we delete the identity,
+        // the NoIdentityActivity will be started and the list won't be updated
+        Helper.createNewIdentity("Zane Lowe");
+        Helper.createNewIdentity("David Rodigan");
 
         onView(withId(R.id.DeleteIdentityButton)).perform(click());
         checkToastIsDisplayed(R.string.identity_deleted);
@@ -122,15 +124,16 @@ public class IdentityManagementTest {
         Spinner identitySpinner = this.getIdentitySpinner();
         SpinnerAdapter identitySpinnerAdapter = identitySpinner.getAdapter();
         assertNotNull(identitySpinnerAdapter);
-        assertEquals(0, identitySpinnerAdapter.getCount());
+        assertEquals(1, identitySpinnerAdapter.getCount());
     }
 
     @Test
     public void redirectToNoIdentityPageOnceAllIdentitiesAreDeleted() throws Exception {
+        String identityName = "Bruce Schneier";
+        Helper.createNewIdentity(identityName);
+
         NoIdentityActivity activity = (NoIdentityActivity)Helper.monitorForActivity(NoIdentityActivity.class, 5000, new Lambda() {
             public void run() throws Exception {
-                String identityName = "Bruce Schneier";
-                Helper.createNewIdentity(identityName);
                 onView(withId(R.id.DeleteIdentityButton)).perform(click());
             }
         });

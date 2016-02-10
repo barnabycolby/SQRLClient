@@ -97,15 +97,21 @@ public class MainActivity extends IdentityMustExistActivity implements AdapterVi
             identitySuccessfullyRemoved = true;
         } catch (SQRLException ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
-        } finally {
-            // Make sure that the identity spinner is up to date
-            initialiseIdentitySpinner();
         }
 
+        // Display a toast message if successful
         if (identitySuccessfullyRemoved) {
             String message = this.getResources().getString(R.string.identity_deleted);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
+
+        if (!this.checkIdentitiesExist()) {
+            // Because checkIdentitiesExist returned false, we must be about to move to the NoIdentityActivity
+            // So we don't care about updating the UI components on this activity
+            return;
+        }
+
+        initialiseIdentitySpinner();
     }
 
     @Override
