@@ -9,6 +9,7 @@ import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityDoesNotExistException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeWrittenToDiskException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeDeletedException;
+import io.barnabycolby.sqrlclient.exceptions.InvalidMasterKeyException;
 import io.barnabycolby.sqrlclient.App;
 
 import java.io.BufferedOutputStream;
@@ -286,5 +287,29 @@ public class SQRLIdentityManager {
      */
     public String getCurrentIdentityName() {
         return this.mCurrentIdentity;
+    }
+
+    /**
+     * Gets a SQRLIdentity instance of the currently selected identity for the given site.
+     *
+     * @param uri  The SQRLUri for the site.
+     */
+    public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri) {
+        byte[] masterKeyForCurrentIdentity = this.mIdentities.get(this.getCurrentIdentityName());
+        if (masterKeyForCurrentIdentity == null) {
+            Log.wtf(TAG, "getCurrentIdentityName() returned a string not present in mIdentities");
+            throw new RuntimeException();
+        }
+
+        // Create the new identity
+        SQRLIdentity identity;
+        try {
+            identity = new SQRLIdentity(masterKeyForCurrentIdentity, uri);
+        } catch (InvalidMasterKeyException ex) {
+            Log.wtf(TAG, "According to SQRLIdentity, the master key was invalid.", ex);
+            throw new RuntimeException(ex);
+        }
+
+        return identity;
     }
 }

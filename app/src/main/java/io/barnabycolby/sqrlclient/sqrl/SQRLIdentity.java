@@ -4,6 +4,7 @@ import android.util.Base64;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.CryptographyException;
+import io.barnabycolby.sqrlclient.exceptions.InvalidMasterKeyException;
 import io.barnabycolby.sqrlclient.R;
 
 import java.nio.charset.Charset;
@@ -15,6 +16,22 @@ import static org.abstractj.kalium.NaCl.sodium;
  * Wraps a SQRL Identity to provide helper methods for using the identity.
  */
 public class SQRLIdentity {
+    private byte[] mMasterKey;
+    private SQRLUri mUri;
+
+    public SQRLIdentity(byte[] masterKey, SQRLUri uri) throws InvalidMasterKeyException {
+        if (masterKey == null || uri == null) {
+            throw new NullPointerException();
+        }
+
+        if (masterKey.length != 32) {
+            throw new InvalidMasterKeyException();
+        }
+
+        this.mMasterKey = masterKey;
+        this.mUri = uri;
+    }
+
     /**
      * Gets the SQRL Identity public key.
      *

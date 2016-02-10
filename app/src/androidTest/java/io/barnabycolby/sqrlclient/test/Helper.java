@@ -16,6 +16,8 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.junit.Assert.fail;
+
 public class Helper {
 
     public static void createNewIdentity(final String identityName) throws Exception {
@@ -52,6 +54,20 @@ public class Helper {
         Activity activity = instrumentation.waitForMonitorWithTimeout(activityMonitor, timeOut);
         instrumentation.removeMonitor(activityMonitor);
         return activity;
+    }
+
+    public static <E extends Exception> void assertExceptionThrown(Class<E> exceptionClass, Lambda lambda) throws Exception {
+        try {
+            lambda.run();
+        } catch (Exception ex) {
+            if (exceptionClass.isInstance(ex)) {
+                return;
+            } else {
+                throw ex;
+            }
+        }
+
+        fail(exceptionClass.getSimpleName() + " was not thrown.");
     }
 
     public static interface Lambda {

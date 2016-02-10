@@ -1,5 +1,6 @@
 package io.barnabycolby.sqrlclient.sqrl.factories;
 
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
@@ -7,8 +8,6 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
 import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
-
-import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -73,7 +72,7 @@ public class SQRLRequestFactory {
 
     private SQRLIdentity getIdentity() {
         if (this.mIdentity == null) {
-            this.mIdentity = new SQRLIdentity();
+            this.mIdentity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri);
         }
 
         return this.mIdentity;
