@@ -33,6 +33,11 @@ public class SQRLIdentityManager {
     private SimpleArrayMap<String, byte[]> mIdentities;
 
     /**
+     * Stores the currently selected identity, that should be used when creating SQRLIdentity objects.
+     */
+    private String mCurrentIdentity;
+
+    /**
      * Constructs a new instance of the SQRLIdentityManager.
      *
      * Handles the loading of identities from disk.
@@ -231,6 +236,11 @@ public class SQRLIdentityManager {
 
         // Remove the identity from the runtime list
         this.mIdentities.remove(identityName);
+
+        // If the identity is the currently selected identity then we need to deselect it
+        if (identityName.equals(this.getCurrentIdentityName())) {
+            this.setCurrentIdentity(null);
+        }
     }
 
     /**
@@ -252,5 +262,29 @@ public class SQRLIdentityManager {
      */
     public boolean containsIdentities() {
         return !this.mIdentities.isEmpty();
+    }
+
+    /**
+     * Sets the identity that should be used when generating SQRLIdentity objects.
+     *
+     * @param identityName  The name of the identity to use. If this is null, then all identities are deselected.
+     * @throws IdentityDoesNotExistException  If the name of the identity does not correspond to an identity managed by this object.
+     */
+    public void setCurrentIdentity(String identityName) throws IdentityDoesNotExistException {
+        if (identityName != null && !this.mIdentities.containsKey(identityName)) {
+            throw new IdentityDoesNotExistException(identityName);
+        }
+
+        // At this point, idenityName is either a valid identity name or null
+        this.mCurrentIdentity = identityName;
+    }
+
+    /**
+     * Gets the name of the currently selected identity.
+     * 
+     * @return The name ofthe current identity.
+     */
+    public String getCurrentIdentityName() {
+        return this.mCurrentIdentity;
     }
 }
