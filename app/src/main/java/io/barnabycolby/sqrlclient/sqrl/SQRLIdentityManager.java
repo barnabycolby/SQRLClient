@@ -4,6 +4,7 @@ import android.support.v4.util.SimpleArrayMap;
 import android.util.Base64;
 import android.util.Log;
 
+import io.barnabycolby.sqrlclient.exceptions.CryptographyException;
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityDoesNotExistException;
@@ -307,6 +308,9 @@ public class SQRLIdentityManager {
             identity = new SQRLIdentity(masterKeyForCurrentIdentity, uri);
         } catch (InvalidMasterKeyException ex) {
             Log.wtf(TAG, "According to SQRLIdentity, the master key was invalid.", ex);
+            throw new RuntimeException(ex);
+        } catch (CryptographyException ex) {
+            Log.wtf(TAG, "Some kind of cryptography exception occurred when creating a new identity.", ex);
             throw new RuntimeException(ex);
         }
 

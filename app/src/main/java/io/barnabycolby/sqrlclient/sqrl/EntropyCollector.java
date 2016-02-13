@@ -8,6 +8,8 @@ import android.media.ImageReader;
 import android.util.Size;
 import android.view.Surface;
 
+import eu.artemisc.stodium.Stodium;
+
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
 
 import java.nio.ByteBuffer;
@@ -16,7 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.abstractj.kalium.NaCl.sodium;
+import org.abstractj.kalium.Sodium;
 
 /**
  * Collects images from the camera in order to harvest the entropy, which is used to generate a random value.
@@ -28,6 +30,11 @@ import static org.abstractj.kalium.NaCl.sodium;
  * https://github.com/googlesamples/android-Camera2Raw/blob/master/Application/src/main/java/com/example/android/camera2raw/Camera2RawFragment.java
  */
 public class EntropyCollector implements ImageReader.OnImageAvailableListener, AutoCloseable {
+    static {
+        // Require sodium_init()
+        Stodium.StodiumInit();
+    }
+
     // The more entropy the better, in practice, this target seems to be a good trade-off between collection time and amount of entropy
     private long TARGET_ENTROPY_IN_BITS = 5 * 1024 * 1024;
 
@@ -163,7 +170,7 @@ public class EntropyCollector implements ImageReader.OnImageAvailableListener, A
 
         // Update the cumulative hash
         byte[] newCumulativeHash = new byte[32];
-        sodium().crypto_hash_sha256(newCumulativeHash, dataToHash, dataToHash.length);
+        Sodium.crypto_hash_sha256(newCumulativeHash, dataToHash, dataToHash.length);
         this.mCumulativeHash = newCumulativeHash;
 
         // Update the progress

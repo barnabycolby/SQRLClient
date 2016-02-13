@@ -2,6 +2,9 @@ package io.barnabycolby.sqrlclient.sqrl;
 
 import android.util.Base64;
 
+import eu.artemisc.stodium.Ed25519;
+import eu.artemisc.stodium.Stodium;
+
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.CryptographyException;
 import io.barnabycolby.sqrlclient.exceptions.InvalidMasterKeyException;
@@ -9,17 +12,22 @@ import io.barnabycolby.sqrlclient.R;
 
 import java.nio.charset.Charset;
 
-import org.abstractj.kalium.crypto.Util;
-import static org.abstractj.kalium.NaCl.sodium;
+import org.abstractj.kalium.Sodium;
 
 /**
  * Wraps a SQRL Identity to provide helper methods for using the identity.
  */
 public class SQRLIdentity {
+    static {
+        Stodium.StodiumInit();
+    }
+
     private byte[] mMasterKey;
     private SQRLUri mUri;
+    private byte[] mPrivateKey = new byte[64];
+    private byte[] mPublicKey = new byte[32];
 
-    public SQRLIdentity(byte[] masterKey, SQRLUri uri) throws InvalidMasterKeyException {
+    public SQRLIdentity(byte[] masterKey, SQRLUri uri) throws InvalidMasterKeyException, CryptographyException {
         if (masterKey == null || uri == null) {
             throw new NullPointerException();
         }
@@ -30,6 +38,23 @@ public class SQRLIdentity {
 
         this.mMasterKey = masterKey;
         this.mUri = uri;
+
+        // Compute the private and public key pair for the identity
+        byte[] hmacResult = new byte[32];
+        byte[] hostNameAsByteArray = uri.getHost().getBytes(Charset.forName("UTF-8"));
+        int result = Sodium.crypto_auth_hmacsha256(hmacResult, hostNameAsByteArray, hostNameAsByteArray.length, masterKey);
+        checkForCryptographyError(result, R.string.key_generation_failed);
+        try {
+            Ed25519.keypairSeed(this.mPublicKey, this.mPrivateKey, hmacResult);
+        } catch (SecurityException ex) {
+            checkForCryptographyError(-1, R.string.key_generation_failed);
+        }
+    }
+
+    private void checkForCryptographyError(int result, int errorMessage) throws CryptographyException {
+        if (result < 0) {
+            throw new CryptographyException(App.getApplicationResources().getString(errorMessage));
+        }
     }
 
     /**
@@ -38,8 +63,7 @@ public class SQRLIdentity {
      * @return The identity key.
      */
     public String getIdentityKey() {
-        // Currently this simply returns a hardcoded public key
-        return "AKcDCChuFwzyHo2gm14fbuFmi27MIjUmcEXJx4pWdLo";
+        return Base64.encodeToString(this.mPublicKey, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
     }
 
     /**
@@ -49,23 +73,13 @@ public class SQRLIdentity {
      * @throws CryptographyException  If an unrecoverable cryptographic error occurs when signing the message.
      */
     public String signUsingIdentityPrivateKey(String message) throws CryptographyException {
-        // Currently this uses a hardcoded private key that matches
-        // the public key used above
-        String privateKey = "A3vucIkohGpHGFx7fzTTBi3BWNzeaL8EW4HeyGB22akApwMIKG4XDPIejaCbXh9u4WaLbswiNSZwRcnHilZ0ug";
-        byte[] privateKeyAsByteArray = Base64.decode(privateKey, Base64.URL_SAFE);
-
         // Sign the message
         byte[] messageAsByteArray = message.getBytes(Charset.forName("UTF-8"));
-        byte[] signature = Util.prependZeros(64, messageAsByteArray);
-        int[] bufferLen = new int[1];
-        int result = sodium().crypto_sign_ed25519(signature, bufferLen, messageAsByteArray, messageAsByteArray.length, privateKeyAsByteArray);
+        byte[] signature = new byte[messageAsByteArray.length + Ed25519.SIGNBYTES]; //Util.prependZeros(64, messageAsByteArray);
+        int result = Ed25519.sign(signature, messageAsByteArray, this.mPrivateKey);
+        checkForCryptographyError(result, R.string.identity_signature_failed);
 
-        // Check for errors
-        if (result < 0) {
-            throw new CryptographyException(App.getApplicationResources().getString(R.string.identity_signature_failed));
-        }
-
-        signature = Util.slice(signature, 0, 64);
+        //signature = Util.slice(signature, 0, 64);
         return Base64.encodeToString(signature, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
     }
 
