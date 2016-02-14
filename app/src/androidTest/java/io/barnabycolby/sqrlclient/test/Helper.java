@@ -44,7 +44,7 @@ public class Helper {
         onView(withId(R.id.CreateNewIdentityButton)).perform(click());
 
         // Fill in the enter new password activity
-        String password = "abcxyz";
+        String password = "h$UpKd7x8AIxPCQ^";
         onView(withId(R.id.PasswordEditText)).perform(typeText(password));
         onView(withId(R.id.SecondPasswordEditText)).perform(typeText(password));
         Espresso.closeSoftKeyboard();

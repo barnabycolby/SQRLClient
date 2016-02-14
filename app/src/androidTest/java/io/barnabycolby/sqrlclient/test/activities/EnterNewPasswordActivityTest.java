@@ -88,14 +88,14 @@ public class EnterNewPasswordActivityTest {
 
     @Test
     public void nextButtonStaysDisabledIfPasswordsDoNotMatch() {
-        this.mPasswordEditText.perform(typeText("monkey123"));
-        this.mSecondPasswordEditText.perform(typeText("brains56"));
+        this.mPasswordEditText.perform(typeText("&HCbmL5KZSjN9o5e"));
+        this.mSecondPasswordEditText.perform(typeText("OZAU22aFFn^$Oqw$"));
         this.mNextButton.check(matches(not(isEnabled())));
     }
 
     @Test
-    public void nextButtonEnabledIfPasswordsMatch() {
-        String password = "changeme";
+    public void nextButtonEnabledIfPasswordsMatchAndPasswordIsStrong() {
+        String password = "%%QKyF0cO*%kP&*@";
         this.mPasswordEditText.perform(typeText(password));
         this.mSecondPasswordEditText.perform(typeText(password));
         this.mNextButton.check(matches(isEnabled()));
@@ -112,7 +112,7 @@ public class EnterNewPasswordActivityTest {
 
     @Test
     public void nextButtonRedirectsToMainActivity() throws Exception {
-        String password = "qwerty";
+        String password = "08v$Z!U#qm$EGB^X";
         this.mPasswordEditText.perform(typeText(password));
         this.mSecondPasswordEditText.perform(typeText(password));
         Espresso.closeSoftKeyboard();
@@ -134,5 +134,13 @@ public class EnterNewPasswordActivityTest {
                 instrumentation.startActivitySync(intent);
             }
         });
+    }
+
+    @Test
+    public void nextButtonDisabledIfWeakPasswordIsUsed() {
+        String weakPassword = "Monkey123";
+        this.mPasswordEditText.perform(typeText(weakPassword));
+        this.mSecondPasswordEditText.perform(typeText(weakPassword));
+        this.mNextButton.check(matches(not(isEnabled())));
     }
 }

@@ -53,13 +53,13 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
     public void afterTextChanged(Editable s) {
         String password = this.mPasswordEditText.getText().toString();
         String secondPassword = this.mSecondPasswordEditText.getText().toString();
-        if (secondPassword.equals(password)) {
+        updatePasswordStrengthMeter();
+
+        if (secondPassword.equals(password) && this.mPasswordStrengthMeter.getProgress() >= 100) {
             this.mNextButton.setEnabled(true);
         } else {
             this.mNextButton.setEnabled(false);
         }
-
-        updatePasswordStrengthMeter();
     }
 
     // We only need to use the afterTextChanged method, so we can ignore these two
