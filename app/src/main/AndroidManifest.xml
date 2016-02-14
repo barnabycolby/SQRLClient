@@ -44,6 +44,11 @@
         />
 
         <activity
+            android:name=".activities.EnterNewPasswordActivity"
+            android:label="@string/enter_new_password"
+        />
+
+        <activity
             android:name=".activities.LoginChoicesActivity"
             android:label="@string/login_choices_activity_label"
             />

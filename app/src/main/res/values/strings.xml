@@ -52,4 +52,6 @@
     <string name="no_identity_explanation">You must create an identity in order to use this application. Your identity will be used to log in to websites, and will not take long to create.</string>
     <string name="invalid_master_key">The provided master key was invalid.</string>
     <string name="key_generation_failed">A failure occurred while trying to generate the SQRL keypair.</string>
+    <string name="next">Next</string>
+    <string name="enter_new_password">Enter New Password</string>
 </resources>
