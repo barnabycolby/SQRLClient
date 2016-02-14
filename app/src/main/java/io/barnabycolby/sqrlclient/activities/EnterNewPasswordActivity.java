@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.App;
@@ -25,6 +26,7 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
     private EditText mPasswordEditText;
     private EditText mSecondPasswordEditText;
     private Button mNextButton;
+    private ProgressBar mPasswordStrengthMeter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
         this.mSecondPasswordEditText = (EditText)findViewById(R.id.SecondPasswordEditText);
         this.mSecondPasswordEditText.addTextChangedListener(this);
         this.mNextButton = (Button)findViewById(R.id.NextButton);
+        this.mPasswordStrengthMeter = (ProgressBar)findViewById(R.id.PasswordStrengthMeter);
     }
 
     @Override
@@ -55,6 +58,8 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
         } else {
             this.mNextButton.setEnabled(false);
         }
+
+        updatePasswordStrengthMeter();
     }
 
     // We only need to use the afterTextChanged method, so we can ignore these two
@@ -77,5 +82,63 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * Character classes used for the password strength meter algorithm.
+     */
+    private enum CharacterClass {
+        NONE,
+        LOWERTHAN128,
+        DIGIT,
+        LOWERCASE,
+        GREATERCASE,
+        GREATERTHAN128
+    };
+
+    /**
+     * Updates the password strength meter to reflect the strength of the password.
+     *
+     * Based on a password strength algorithm described in episode 468 of Security Now: https://www.grc.com/sn/sn-468.htm
+     */
+    private void updatePasswordStrengthMeter() {
+        String password = this.mPasswordEditText.getText().toString();
+        int numberOfCharacters = password.length();
+
+        // Iterate over string characters
+        // Number of class transitions starts at -1 as an easy way to make the first transition from NONE not count
+        int numberOfClassTransitions = -1;
+        String uniqueCharacters = "";
+        CharacterClass previousClass = CharacterClass.NONE;
+        for (char c : password.toCharArray()) {
+            // Count number of unique characters
+            if (!uniqueCharacters.contains(String.valueOf(c))) {
+                uniqueCharacters += c;
+            }
+
+            // See if this is a class transition
+            CharacterClass characterClass = CharacterClass.NONE;
+            int code = (int)c;
+            if (code < 58 && code > 47) {
+                characterClass = CharacterClass.DIGIT;
+            } else if (code < 91 && code > 64) {
+                characterClass = CharacterClass.GREATERCASE;
+            } else if (code < 123 && code > 96) {
+                characterClass = CharacterClass.LOWERCASE;
+            } else if (code < 128) {
+                characterClass = CharacterClass.LOWERTHAN128;
+            } else if (code > 127) {
+                characterClass = CharacterClass.GREATERTHAN128;
+            }
+            if (characterClass != previousClass) {
+                numberOfClassTransitions += 1;
+            }
+            previousClass = characterClass;
+        }
+        int numberOfUniqueCharacters = uniqueCharacters.length();
+
+        int passwordStrengthNumerator = numberOfCharacters + numberOfUniqueCharacters + (2 * numberOfClassTransitions);
+        int passwordStrength = (int)((((float)passwordStrengthNumerator) / 30) * 100);
+        this.mPasswordStrengthMeter.setProgress(passwordStrength);
     }
 }
