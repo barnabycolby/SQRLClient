@@ -6,10 +6,17 @@ import android.app.Instrumentation.ActivityMonitor;
 import android.support.test.espresso.Espresso;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.UiDevice;
+import android.view.View;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.activities.CreateNewIdentityActivityTest;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -72,5 +79,38 @@ public class Helper {
 
     public static interface Lambda {
         public void run() throws Exception;
+    }
+
+    public static Matcher<View> withSpinnerItemText(final String expectedText) {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view instanceof Spinner)) {
+                    return false;
+                }
+
+                Spinner spinner = (Spinner)view;
+                SpinnerAdapter adapter = spinner.getAdapter();
+                if (adapter == null) {
+                    return false;
+                }
+
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    if (!(adapter.getItem(i) instanceof String)) {
+                        continue;
+                    }
+
+                    String itemText = (String)adapter.getItem(i);
+                    if (expectedText.equals(itemText)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {}
+        };
     }
 }

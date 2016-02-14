@@ -33,6 +33,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
+import static io.barnabycolby.sqrlclient.test.Helper.withSpinnerItemText;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
@@ -69,19 +71,12 @@ public class IdentityManagementTest {
         String identityName = "Alice";
         Helper.createNewIdentity(identityName);
 
-        Spinner identitySpinner = this.getIdentitySpinner();
-        SpinnerAdapter identitySpinnerAdapter = identitySpinner.getAdapter();
-        assertNotNull(identitySpinnerAdapter);
-        assertEquals(1, identitySpinnerAdapter.getCount());
-        assertEquals(identityName, identitySpinnerAdapter.getItem(0));
+        onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName)));
 
         String identityName2 = "Barney";
         Helper.createNewIdentity(identityName2);
 
-        identitySpinnerAdapter = identitySpinner.getAdapter();
-        assertNotNull(identitySpinnerAdapter);
-        assertEquals(2, identitySpinnerAdapter.getCount());
-        assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
+        onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName2)));
     }
 
     @Test
