@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -63,6 +64,30 @@ public class EnterNewPasswordActivityTest {
         this.mSecondPasswordEditText.check(matches(withHint(R.string.second_password_hint)));
         this.mPasswordStrengthMeter.check(matches(isDisplayed()));
         this.mNextButton.check(matches(isDisplayed()));
+        this.mNextButton.check(matches(not(isEnabled())));
+    }
+
+    @Test
+    public void nextButtonStaysDisabledIfPasswordsDoNotMatch() {
+        this.mPasswordEditText.perform(typeText("monkey123"));
+        this.mSecondPasswordEditText.perform(typeText("brains56"));
+        this.mNextButton.check(matches(not(isEnabled())));
+    }
+
+    @Test
+    public void nextButtonEnabledIfPasswordsMatch() {
+        String password = "changeme";
+        this.mPasswordEditText.perform(typeText(password));
+        this.mSecondPasswordEditText.perform(typeText(password));
+        this.mNextButton.check(matches(isEnabled()));
+    }
+
+    @Test
+    public void nextButtonDisabledIfTextChangedAfterPasswordsMatch() {
+        String password = "P4$$w0rd";
+        this.mPasswordEditText.perform(typeText(password));
+        this.mSecondPasswordEditText.perform(typeText(password));
+        this.mPasswordEditText.perform(typeText("beans"));
         this.mNextButton.check(matches(not(isEnabled())));
     }
 }
