@@ -316,4 +316,14 @@ public class SQRLIdentityManager {
 
         return identity;
     }
+
+    /**
+     * Checks whether an identity exists.
+     *
+     * @param identityName  The name of the identity to check for.
+     * @return  True if the identity exists, false otherwise.
+     */
+    public boolean identityExists(String identityName) {
+        return this.mIdentities.containsKey(identityName);
+    }
 }

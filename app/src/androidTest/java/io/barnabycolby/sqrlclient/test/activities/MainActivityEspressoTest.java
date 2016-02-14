@@ -36,6 +36,9 @@ public class MainActivityEspressoTest {
         @Override
         protected void beforeActivityLaunched() {
             this.mInstrumentation = InstrumentationRegistry.getInstrumentation();
+            try {
+                App.getSQRLIdentityManager().removeAllIdentities();
+            } catch (Exception ex) {}
             this.mNoIdentityActivityMonitor = this.mInstrumentation.addMonitor(NoIdentityActivity.class.getName(), null, false);
         }
 

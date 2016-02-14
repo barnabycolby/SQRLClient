@@ -33,9 +33,6 @@ import android.widget.Toast;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
-import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
-import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
-import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeWrittenToDiskException;
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
 import io.barnabycolby.sqrlclient.sqrl.EntropyCollector;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
@@ -483,7 +480,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-    public void onCreateNewIdentityButtonClicked(View view) throws IdentitiesCouldNotBeLoadedException, IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException {
+    public void onCreateNewIdentityButtonClicked(View view) {
         // Retrieve the identity name and master key
         String identityName = this.mIdentityNameEditText.getText().toString();
         EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
@@ -495,11 +492,9 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
         }
         byte[] masterKey = entropyCollector.getCumulativeHash();
 
-        // Attempt to save the new identity, displaying a dialog if it already exists
-        try {
-            App.getSQRLIdentityManager().save(identityName, masterKey);
-        } catch (IdentityAlreadyExistsException ex) {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        // Check whether the identity already exists
+        if (App.getSQRLIdentityManager().identityExists(identityName)) {
+            Toast.makeText(this, this.getResources().getString(R.string.identity_already_exists), Toast.LENGTH_LONG).show();
 
             // We only finish the activity if an identity has been successfully created
             // Otherwise the user would have to regenerate the entropy
@@ -508,6 +503,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
         // Start the enter new password activity
         Intent intent = new Intent(this, EnterNewPasswordActivity.class);
+        intent.putExtra("identityName", identityName);
+        intent.putExtra("masterKey", masterKey);
         startActivity(intent);
     }
 }

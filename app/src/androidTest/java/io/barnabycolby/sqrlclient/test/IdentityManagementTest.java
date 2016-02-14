@@ -198,6 +198,31 @@ public class IdentityManagementTest {
         assertEquals(identityName1, App.getSQRLIdentityManager().getCurrentIdentityName());
     }
 
+    @Test
+    public void identityNotCreatedIfCancelledOnEnterNewPasswordActivity() throws Exception {
+        Helper.createNewIdentity("Oliver");
+        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)Helper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
+            public void run() throws Exception {
+                onView(withId(R.id.CreateNewIdentityButton)).perform(click());
+                UiDevice device = UiDevice.getInstance(mInstrumentation);
+                CreateNewIdentityActivityTest.allowCameraPermissions(device);
+                onView(withId(R.id.IdentityNameEditText)).perform(typeText("Tom"));
+                Espresso.closeSoftKeyboard();
+            }
+        });
+
+        CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish(createNewIdentityActivity);
+        onView(withId(R.id.CreateNewIdentityButton)).perform(click());
+
+        Espresso.pressBack();
+        Espresso.pressBack();
+
+        onView(withId(R.id.IdentitySpinner)).check(matches(not(withSpinnerItemText("Tom"))));
+
+        // Cleanup
+        App.getSQRLIdentityManager().removeAllIdentities();        
+    }
+
     private void selectIdentitySpinnerItem(String item) {
         onView(withId(R.id.IdentitySpinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is(item))).perform(click());

@@ -1,8 +1,12 @@
 package io.barnabycolby.sqrlclient.test.activities;
 
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Context;
+import android.content.Intent;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -34,7 +38,16 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(AndroidJUnit4.class)
 public class EnterNewPasswordActivityTest {
     @Rule
-    public ActivityTestRule<EnterNewPasswordActivity> mActivityTestRule = new ActivityTestRule<EnterNewPasswordActivity>(EnterNewPasswordActivity.class);
+    public ActivityTestRule<EnterNewPasswordActivity> mActivityTestRule = new ActivityTestRule<EnterNewPasswordActivity>(EnterNewPasswordActivity.class) {
+        @Override
+        protected Intent getActivityIntent() {
+            Context context = InstrumentationRegistry.getInstrumentation().getContext();
+            Intent intent = new Intent(context, EnterNewPasswordActivity.class);
+            intent.putExtra("identityName", "Roald Dahl");
+            intent.putExtra("masterKey", new byte[32]);
+            return intent;
+        }
+    };
 
     private Activity mActivity;
 
@@ -110,5 +123,16 @@ public class EnterNewPasswordActivityTest {
             }
         });
         assertNotNull(mainActivity);
+    }
+
+    @Test
+    public void throwsExceptionIfMissingRequiredIntentExtras() throws Exception {
+        final Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        final Intent intent = new Intent(instrumentation.getContext(), EnterNewPasswordActivity.class);
+        Helper.assertExceptionThrown(RuntimeException.class, new Lambda() {
+            public void run() throws Exception {
+                instrumentation.startActivitySync(intent);
+            }
+        });
     }
 }
