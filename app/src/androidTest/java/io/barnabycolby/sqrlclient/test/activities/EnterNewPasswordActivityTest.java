@@ -7,7 +7,10 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
+import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,7 +29,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class EnterNewPasswordActivityTest {
@@ -95,12 +98,17 @@ public class EnterNewPasswordActivityTest {
     }
 
     @Test
-    public void nextButtonFinishesActivity() {
+    public void nextButtonRedirectsToMainActivity() throws Exception {
         String password = "qwerty";
         this.mPasswordEditText.perform(typeText(password));
         this.mSecondPasswordEditText.perform(typeText(password));
         Espresso.closeSoftKeyboard();
-        this.mNextButton.perform(click());
-        assertTrue(this.mActivity.isFinishing());
+
+        Activity mainActivity = Helper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
+            public void run() {
+                mNextButton.perform(click());
+            }
+        });
+        assertNotNull(mainActivity);
     }
 }

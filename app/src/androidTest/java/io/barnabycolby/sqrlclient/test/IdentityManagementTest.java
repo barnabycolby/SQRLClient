@@ -6,14 +6,17 @@ import android.support.test.espresso.Espresso;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
+import io.barnabycolby.sqrlclient.test.activities.CreateNewIdentityActivityTest;
 import io.barnabycolby.sqrlclient.test.Helper;
 import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
@@ -24,6 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -37,6 +41,7 @@ import static io.barnabycolby.sqrlclient.test.Helper.withSpinnerItemText;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 
@@ -84,24 +89,31 @@ public class IdentityManagementTest {
         String identityName = "/etc/shadow";
         Helper.createNewIdentity(identityName);
 
-        Spinner identitySpinner = this.getIdentitySpinner();
-        SpinnerAdapter identitySpinnerAdapter = identitySpinner.getAdapter();
-        assertNotNull(identitySpinnerAdapter);
-        assertEquals(identityName, identitySpinnerAdapter.getItem(0));
+        onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName)));
 
         String identityName2 = "beans; cat /etc/shadow";
         Helper.createNewIdentity(identityName2);
 
-        identitySpinnerAdapter = identitySpinner.getAdapter();
-        assertNotNull(identitySpinnerAdapter);
-        assertEquals(identityName2, identitySpinnerAdapter.getItem(1));
+        onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName2)));
     }
 
     @Test
     public void cannotCreateTwoIdentitiesWithTheSameName() throws Exception {
-        String identityName = "Oscar";
+        final String identityName = "Oscar";
         Helper.createNewIdentity(identityName);
-        Helper.createNewIdentity(identityName);
+
+        // Try to recreate an identity with the same name
+        CreateNewIdentityActivity createnewIdentityActivity = (CreateNewIdentityActivity)Helper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
+            public void run() throws Exception {
+                onView(withId(R.id.CreateNewIdentityButton)).perform(click());
+                UiDevice device = UiDevice.getInstance(mInstrumentation);
+                CreateNewIdentityActivityTest.allowCameraPermissions(device);
+                onView(withId(R.id.IdentityNameEditText)).perform(typeText(identityName));
+                Espresso.closeSoftKeyboard();
+            }
+        });
+        CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish(createnewIdentityActivity);
+        onView(withId(R.id.CreateNewIdentityButton)).perform(click());
 
         checkToastIsDisplayed(R.string.identity_already_exists);
     }

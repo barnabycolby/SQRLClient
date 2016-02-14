@@ -42,6 +42,13 @@ public class Helper {
         // We need to pass an instance of the initialised activity to waitForEntropyCollectionToFinish
         CreateNewIdentityActivityTest.waitForEntropyCollectionToFinish(createNewIdentityActivity);
         onView(withId(R.id.CreateNewIdentityButton)).perform(click());
+
+        // Fill in the enter new password activity
+        String password = "abcxyz";
+        onView(withId(R.id.PasswordEditText)).perform(typeText(password));
+        onView(withId(R.id.SecondPasswordEditText)).perform(typeText(password));
+        Espresso.closeSoftKeyboard();
+        onView(withId(R.id.NextButton)).perform(click());
     }
 
     /**

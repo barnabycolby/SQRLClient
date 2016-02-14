@@ -16,7 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
+import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
+import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -27,6 +31,7 @@ import org.junit.Test;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -128,6 +133,24 @@ public class CreateNewIdentityActivityTest {
         mCreateButton.check(matches(isEnabled()));
         mIdentityNameEditText.perform(clearText());
         mCreateButton.check(matches(not(isEnabled())));
+    }
+
+    @Test
+    public void testBEnterNewPasswordActivityStartedOnCreateClick() throws Exception {
+        allowCameraPermissions(this.mDevice);
+        waitForEntropyCollectionToFinish(mActivity);
+        mIdentityNameEditText.perform(typeText("Jason Statham"));
+
+        Activity enterNewPasswordActivity = Helper.monitorForActivity(EnterNewPasswordActivity.class, 5000, new Lambda() {
+            public void run() {
+                mCreateButton.perform(click());
+            }
+        });
+
+        // Cleanup
+        App.getSQRLIdentityManager().removeAllIdentities();
+
+        assertNotNull(enterNewPasswordActivity);
     }
 
     public static void allowCameraPermissions(UiDevice device) throws Exception {

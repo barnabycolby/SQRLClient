@@ -3,6 +3,7 @@ package io.barnabycolby.sqrlclient.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeWrittenToDiskException;
@@ -504,6 +506,8 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
             return;
         }
 
-        this.finish();
+        // Start the enter new password activity
+        Intent intent = new Intent(this, EnterNewPasswordActivity.class);
+        startActivity(intent);
     }
 }

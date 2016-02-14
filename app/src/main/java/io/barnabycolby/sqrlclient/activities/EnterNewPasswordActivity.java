@@ -1,5 +1,6 @@
 package io.barnabycolby.sqrlclient.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -49,6 +50,7 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
     public void onNextClicked(View view) {
-        this.finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
