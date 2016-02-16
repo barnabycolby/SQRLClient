@@ -1,11 +1,11 @@
-package io.barnabycolby.sqrlclient.test.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.protocol;
 
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
-import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLQueryRequest;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
 
 import java.io.IOException;

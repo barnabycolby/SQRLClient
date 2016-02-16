@@ -12,7 +12,7 @@ import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 
 import java.io.IOException;
 

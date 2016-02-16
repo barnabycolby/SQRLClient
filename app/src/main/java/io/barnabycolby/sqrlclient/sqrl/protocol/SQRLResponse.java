@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.sqrl.protocol;
 
 import android.util.Base64;
 import android.support.v4.util.ArrayMap;
@@ -6,7 +6,7 @@ import android.support.v4.util.ArrayMap;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLConnection;
 
 import java.io.*;
 import java.lang.Character;

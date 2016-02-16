@@ -1,11 +1,11 @@
-package io.barnabycolby.sqrlclient.test.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.protocol;
 
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
-import io.barnabycolby.sqrlclient.sqrl.SQRLRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLRequest;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

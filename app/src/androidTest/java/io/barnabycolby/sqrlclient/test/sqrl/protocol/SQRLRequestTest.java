@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.test.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.protocol;
 
 import android.net.Uri;
 import android.support.test.runner.AndroidJUnit4;
@@ -12,8 +12,11 @@ import org.junit.runner.RunWith;
 import static org.mockito.Mockito.*;
 
 import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
-import io.barnabycolby.sqrlclient.sqrl.*;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 @RunWith(AndroidJUnit4.class)
 public class SQRLRequestTest {

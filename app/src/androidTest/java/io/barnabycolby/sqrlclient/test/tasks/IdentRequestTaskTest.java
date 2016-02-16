@@ -7,8 +7,8 @@ import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
-import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLIdentRequest;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 import io.barnabycolby.sqrlclient.tasks.IdentRequestTask;
 
 import java.util.concurrent.TimeUnit;

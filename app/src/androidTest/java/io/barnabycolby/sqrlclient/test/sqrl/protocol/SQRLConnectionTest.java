@@ -1,9 +1,10 @@
-package io.barnabycolby.sqrlclient.test.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.protocol;
 
 import android.support.test.runner.AndroidJUnit4;
 import android.net.Uri;
 
-import io.barnabycolby.sqrlclient.sqrl.*;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 import java.io.*;
 import java.net.HttpURLConnection;

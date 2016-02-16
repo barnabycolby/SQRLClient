@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.sqrl.protocol;
 
 /**
  * Maps friendly names of the flags encoded by the tif value to their actual hexadecimal value.

@@ -1,6 +1,7 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.sqrl.protocol;
 
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 import java.io.IOException;
 import java.io.InputStream;

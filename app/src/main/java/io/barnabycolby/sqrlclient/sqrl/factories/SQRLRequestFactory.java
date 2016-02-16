@@ -4,9 +4,9 @@ import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
-import io.barnabycolby.sqrlclient.sqrl.SQRLIdentRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLQueryRequest;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLIdentRequest;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLQueryRequest;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 import java.io.IOException;

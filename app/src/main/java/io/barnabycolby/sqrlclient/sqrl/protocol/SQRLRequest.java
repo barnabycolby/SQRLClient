@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.sqrl.protocol;
 
 import android.util.Base64;
 
@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLConnectionFactory;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 
 /**
  * Implements common functionality of SQRL requests, allowing easy implementation of new SQRL requests.

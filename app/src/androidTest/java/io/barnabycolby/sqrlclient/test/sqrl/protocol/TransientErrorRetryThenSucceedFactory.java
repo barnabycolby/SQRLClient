@@ -1,7 +1,8 @@
-package io.barnabycolby.sqrlclient.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.protocol;
 
 import io.barnabycolby.sqrlclient.exceptions.*;
-import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
 
 import java.io.ByteArrayOutputStream;

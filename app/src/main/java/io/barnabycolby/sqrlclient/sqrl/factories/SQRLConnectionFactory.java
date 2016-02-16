@@ -1,7 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl.factories;
 
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
-import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLConnection;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 import java.io.IOException;

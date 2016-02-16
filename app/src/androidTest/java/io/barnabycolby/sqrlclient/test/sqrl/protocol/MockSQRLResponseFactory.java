@@ -1,9 +1,9 @@
-package io.barnabycolby.sqrlclient.test.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.protocol;
 
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
-import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLResponseFactory;
 
 import java.io.IOException;

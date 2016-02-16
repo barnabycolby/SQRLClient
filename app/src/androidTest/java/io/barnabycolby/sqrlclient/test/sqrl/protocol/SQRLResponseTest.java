@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.test.sqrl;
+package io.barnabycolby.sqrlclient.test.sqrl.protocol;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -16,8 +16,8 @@ import io.barnabycolby.sqrlclient.exceptions.CommandFailedException;
 import io.barnabycolby.sqrlclient.exceptions.InvalidServerResponseException;
 import io.barnabycolby.sqrlclient.exceptions.TransientErrorException;
 import io.barnabycolby.sqrlclient.exceptions.VersionNotSupportedException;
-import io.barnabycolby.sqrlclient.sqrl.SQRLConnection;
-import io.barnabycolby.sqrlclient.sqrl.SQRLResponse;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLConnection;
+import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
