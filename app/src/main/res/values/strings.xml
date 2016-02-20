@@ -58,4 +58,6 @@
     <string name="password_hint">Enter password...</string>
     <string name="second_password_hint">Enter password again...</string>
     <string name="password_contains_null">The password contained a NUL character, illegal for use in SQRL.</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_password_help">Enter the password for the selected identity.</string>
 </resources>
