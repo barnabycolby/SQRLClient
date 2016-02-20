@@ -57,4 +57,5 @@
     <string name="enter_new_password_explanation">Please enter the password you would like to use to protect your identity. It needs to be as strong as possible to protect against bad guys, so make it as long and random as you can! You will need to enter it every time you login to a site.</string>
     <string name="password_hint">Enter password...</string>
     <string name="second_password_hint">Enter password again...</string>
+    <string name="password_contains_null">The password contained a NUL character, illegal for use in SQRL.</string>
 </resources>
