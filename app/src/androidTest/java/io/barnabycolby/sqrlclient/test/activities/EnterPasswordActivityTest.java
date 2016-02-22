@@ -14,6 +14,8 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 
+import static android.support.test.espresso.action.ViewActions.clearText;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -63,5 +65,15 @@ public class EnterPasswordActivityTest {
         this.mInformationTextView.check(matches(withText(R.string.enter_password_help)));
         this.mLoginButton.check(matches(isDisplayed()));
         this.mLoginButton.check(matches(not(isEnabled())));
+    }
+
+    @Test
+    public void loginButtonEnabledIfPasswordNotBlank() {
+        this.mPasswordEditText.perform(typeText("brains"));
+        this.mLoginButton.check(matches(isEnabled()));
+        this.mPasswordEditText.perform(clearText());
+        this.mLoginButton.check(matches(not(isEnabled())));
+        this.mPasswordEditText.perform(typeText("zombies"));
+        this.mLoginButton.check(matches(isEnabled()));
     }
 }
