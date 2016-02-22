@@ -8,7 +8,6 @@ import io.barnabycolby.sqrlclient.activities.EnterPasswordActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -34,26 +33,43 @@ public class EnterPasswordActivityTest {
     private ViewInteraction mInformationTextView;
     private ViewInteraction mLoginButton;
 
+    private class TestRule extends ActivityTestRule<EnterPasswordActivity> {
+        public TestRule() {
+            super(EnterPasswordActivity.class);
+        }
+
+        @Override
+        public void beforeActivityLaunched() {
+            // Set up the identities
+            try {
+                App.getSQRLIdentityManager().save("Harriet", new byte[32]);
+                App.getSQRLIdentityManager().save("Rupert", new byte[32]);
+            } catch (Exception ex) {
+                // Do nothing if an exception gets thrown
+            }
+        }
+
+        @Override
+        public void afterActivityFinished() {
+            try {
+                App.getSQRLIdentityManager().removeAllIdentities();
+            } catch (Exception ex) {
+                // Do nothing if an exception gets thrown
+            }
+        }
+    }
+
     @Rule
-    public ActivityTestRule<EnterPasswordActivity> mActivityTestRule = new ActivityTestRule<EnterPasswordActivity>(EnterPasswordActivity.class);
+    public TestRule mActivityTestRule = new TestRule();
 
     @Before
     public void setUp() throws Exception {
-        // Set up the identities
-        App.getSQRLIdentityManager().save("Harriet", new byte[32]);
-        App.getSQRLIdentityManager().save("Rupert", new byte[32]);
-
         // Get espresso references to the UI components
         this.mIdentitySpinner = onView(withId(R.id.IdentitySpinner));
         this.mPasswordEditText = onView(withId(R.id.PasswordEditText));
         this.mVerifyProgressBar = onView(withId(R.id.VerifyProgressBar));
         this.mInformationTextView = onView(withId(R.id.InformationTextView));
         this.mLoginButton = onView(withId(R.id.LoginButton));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        App.getSQRLIdentityManager().removeAllIdentities();
     }
 
     @Test
