@@ -20,8 +20,12 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import static io.barnabycolby.sqrlclient.test.helpers.OrientationChangeAction.orientationPortrait;
+import static io.barnabycolby.sqrlclient.test.helpers.OrientationChangeAction.orientationLandscape;
 
 import static org.hamcrest.Matchers.not;
 
@@ -98,6 +102,23 @@ public class EnterPasswordActivityTest {
     public void progressBarDisplayedOnceLoginClicked() {
         this.mPasswordEditText.perform(typeText("gorillas"));
         this.mLoginButton.perform(click());
+        this.mLoginButton.check(matches(not(isDisplayed())));
+        this.mVerifyProgressBar.check(matches(isDisplayed()));
+        this.mInformationTextView.check(matches(withText(R.string.verifying_password)));
+        this.mPasswordEditText.check(matches(not(isEnabled())));
+    }
+
+    @Test
+    public void uiStateSurvivesOrientationChange() {
+        String password = "crocodile";
+        this.mPasswordEditText.perform(typeText(password));
+        this.mLoginButton.perform(click());
+
+        // Switch the orientation. As we don't know what the current orientation is then we switch to both landscape and portrait
+        onView(isRoot()).perform(orientationLandscape());
+        onView(isRoot()).perform(orientationPortrait());
+
+        this.mPasswordEditText.check(matches(withText(password)));
         this.mLoginButton.check(matches(not(isDisplayed())));
         this.mVerifyProgressBar.check(matches(isDisplayed()));
         this.mInformationTextView.check(matches(withText(R.string.verifying_password)));

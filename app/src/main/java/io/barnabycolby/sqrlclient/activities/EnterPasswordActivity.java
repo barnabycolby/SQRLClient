@@ -22,6 +22,10 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     private ProgressBar mVerifyProgressBar;
     private TextView mInformationTextView;
 
+    private boolean mLoginClicked = false;
+    private String mLoginClickedKey = "loginClicked";
+    private String mPasswordKey = "password";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Standard Android stuff
@@ -51,6 +55,8 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
      * Called when the login button is clicked.
      */
     public void onLoginButtonClicked(View view) {
+        this.mLoginClicked = true;
+
         // Double check that the password field is not empty
         if (this.mPasswordEditText.getText().length() == 0) {
             String errorMessage = this.getResources().getString(R.string.password_is_blank);
@@ -63,6 +69,27 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         this.mVerifyProgressBar.setVisibility(View.VISIBLE);
         this.mInformationTextView.setText(R.string.verifying_password);
         this.mPasswordEditText.setEnabled(false);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(mLoginClickedKey, mLoginClicked);
+        outState.putString(mPasswordKey, this.mPasswordEditText.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle inState) {
+        // Restore the password
+        String password = inState.getString(mPasswordKey);
+        if (password != null) {
+            this.mPasswordEditText.setText(password);
+        }
+
+        // Restore the rest of the UI
+        this.mLoginClicked = inState.getBoolean(mLoginClickedKey);
+        if (this.mLoginClicked) {
+            onLoginButtonClicked(null);
+        }
     }
 
     // These methods are required by the TextWatcher interface, but we don't use them
