@@ -11,9 +11,9 @@ import io.barnabycolby.sqrlclient.activities.ConfirmSiteNameActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.Helper;
-import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 public class ConfirmSiteNameActivityTest extends ActivityInstrumentationTestCase2<ConfirmSiteNameActivity> {
 

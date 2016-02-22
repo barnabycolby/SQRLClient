@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.activities.CreateNewIdentityActivityTest;
 
@@ -82,10 +83,6 @@ public class Helper {
         }
 
         fail(exceptionClass.getSimpleName() + " was not thrown.");
-    }
-
-    public static interface Lambda {
-        public void run() throws Exception;
     }
 
     public static Matcher<View> withSpinnerItemText(final String expectedText) {

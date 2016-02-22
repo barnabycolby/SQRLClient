@@ -4,7 +4,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.sqrl.EnScrypt;
 import io.barnabycolby.sqrlclient.test.Helper;
-import io.barnabycolby.sqrlclient.test.Helper.Lambda;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 
 import org.junit.runner.RunWith;
 import org.junit.Test;

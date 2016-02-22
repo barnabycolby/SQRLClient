@@ -12,9 +12,9 @@ import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.Helper;
-import io.barnabycolby.sqrlclient.test.Helper.Lambda;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
     public MainActivityTest() {

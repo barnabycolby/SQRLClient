@@ -31,6 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.helpers.Helper;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
@@ -107,7 +109,7 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
         // Has the entropy collection finished? If so, then we need to display the create button instead of the progress bar
         EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
         if (entropyCollector != null && entropyCollector.hasFinished()) {
-            showHideViewsOnEntropyCollectionFinish();
+            onEntropyCollectionFinished();
         }
 
         // Get the camera manager
@@ -452,21 +454,17 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
     @Override
     public void onEntropyCollectionFinished() {
-        if (android.os.Looper.getMainLooper().getThread() == Thread.currentThread()) {
-            showHideViewsOnEntropyCollectionFinish();
-        } else {
-            this.runOnUiThread(new Runnable() {
-                @Override
+        try {
+            Helper.runOnUIThread(this, new Lambda() {
                 public void run() {
-                    showHideViewsOnEntropyCollectionFinish();
+                    mProgressBar.setVisibility(View.GONE);
+                    mCreateButton.setVisibility(View.VISIBLE);
                 }
             });
+        } catch (Exception ex) {
+            // The code inside run cannot throw an exception
+            Log.wtf(TAG, "Setting the visibility of UI components somehow threw an exception.");
         }
-    }
-
-    private void showHideViewsOnEntropyCollectionFinish() {
-        this.mProgressBar.setVisibility(View.GONE);
-        this.mCreateButton.setVisibility(View.VISIBLE);
     }
 
     @Override

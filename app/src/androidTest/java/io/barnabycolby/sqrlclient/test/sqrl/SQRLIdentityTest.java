@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import io.barnabycolby.sqrlclient.exceptions.InvalidMasterKeyException;
 import io.barnabycolby.sqrlclient.sqrl.*;
 import io.barnabycolby.sqrlclient.test.Helper;
-import io.barnabycolby.sqrlclient.test.Helper.Lambda;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

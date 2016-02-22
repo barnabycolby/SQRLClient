@@ -14,7 +14,7 @@ import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.Helper;
-import io.barnabycolby.sqrlclient.test.Helper.Lambda;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 
 import org.junit.After;
 import org.junit.Before;
