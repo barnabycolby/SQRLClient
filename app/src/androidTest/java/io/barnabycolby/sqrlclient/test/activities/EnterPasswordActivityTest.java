@@ -101,5 +101,6 @@ public class EnterPasswordActivityTest {
         this.mLoginButton.check(matches(not(isDisplayed())));
         this.mVerifyProgressBar.check(matches(isDisplayed()));
         this.mInformationTextView.check(matches(withText(R.string.verifying_password)));
+        this.mPasswordEditText.check(matches(not(isEnabled())));
     }
 }

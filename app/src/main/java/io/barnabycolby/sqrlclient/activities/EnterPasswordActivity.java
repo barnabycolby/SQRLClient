@@ -62,6 +62,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         this.mLoginButton.setVisibility(View.GONE);
         this.mVerifyProgressBar.setVisibility(View.VISIBLE);
         this.mInformationTextView.setText(R.string.verifying_password);
+        this.mPasswordEditText.setEnabled(false);
     }
 
     // These methods are required by the TextWatcher interface, but we don't use them
