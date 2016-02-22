@@ -62,4 +62,6 @@
     <string name="enter_password_help">Enter the password for the selected identity.</string>
     <string name="verifying_password">Verifying password...</string>
     <string name="password_is_blank">The password cannot be blank!</string>
+    <string name="incorrect_password" color="red">That password was incorrect!</string>
+    <string name="login_activity_label">Logging in</string>
 </resources>

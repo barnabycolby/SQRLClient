@@ -1,12 +1,16 @@
 package io.barnabycolby.sqrlclient.test.activities;
 
+import android.app.Activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.activities.EnterPasswordActivity;
+import io.barnabycolby.sqrlclient.activities.LoginActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,9 +32,12 @@ import static io.barnabycolby.sqrlclient.test.helpers.OrientationChangeAction.or
 import static io.barnabycolby.sqrlclient.test.helpers.OrientationChangeAction.orientationLandscape;
 
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class EnterPasswordActivityTest {
+
+    private EnterPasswordActivity mActivity;
 
     private ViewInteraction mIdentitySpinner;
     private ViewInteraction mPasswordEditText;
@@ -69,6 +76,8 @@ public class EnterPasswordActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        this.mActivity = this.mActivityTestRule.getActivity();
+
         // Get espresso references to the UI components
         this.mIdentitySpinner = onView(withId(R.id.IdentitySpinner));
         this.mPasswordEditText = onView(withId(R.id.PasswordEditText));
@@ -123,5 +132,35 @@ public class EnterPasswordActivityTest {
         this.mVerifyProgressBar.check(matches(isDisplayed()));
         this.mInformationTextView.check(matches(withText(R.string.verifying_password)));
         this.mPasswordEditText.check(matches(not(isEnabled())));
+    }
+
+    @Test
+    public void passwordIncorrectResetsUIAndDisplaysErrorMessage() {
+        this.mPasswordEditText.perform(typeText("liontamer"));
+        this.mLoginButton.perform(click());
+
+        // Fake the password incorrect result
+        this.mActivity.onPasswordCryptResult(false);
+
+        this.mLoginButton.check(matches(isDisplayed()));
+        this.mVerifyProgressBar.check(matches(not(isDisplayed())));
+        this.mInformationTextView.check(matches(withText(R.string.incorrect_password)));
+        this.mPasswordEditText.check(matches(isEnabled()));
+        this.mPasswordEditText.check(matches(withText("")));
+    }
+
+    @Test
+    public void passwordCorrectRedirectsToLoginActivity() throws Exception {
+        this.mPasswordEditText.perform(typeText("clownjuggler"));
+        
+        Activity loginActivity = Helper.monitorForActivity(LoginActivity.class, 5000, new Lambda() {
+            public void run() {
+                mLoginButton.perform(click());
+
+                // Fake the password correct result
+                mActivity.onPasswordCryptResult(true);
+            }
+        });
+        assertNotNull(loginActivity);
     }
 }

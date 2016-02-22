@@ -1,9 +1,12 @@
 package io.barnabycolby.sqrlclient.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,12 +14,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.barnabycolby.sqrlclient.helpers.Helper;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 
 /**
  * This activity asks the user to enter the password for the selected identity, and then proceeds to verify it.
  */
 public class EnterPasswordActivity extends AppCompatActivity implements TextWatcher {
+    private static String TAG = EnterPasswordActivity.class.getName();
+
+    // Allows the context of this activity to be accessed from within an inner class
+    private Context mContext = this;
+
     private Button mLoginButton;
     private EditText mPasswordEditText;
     private ProgressBar mVerifyProgressBar;
@@ -89,6 +99,29 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         this.mLoginClicked = inState.getBoolean(mLoginClickedKey);
         if (this.mLoginClicked) {
             onLoginButtonClicked(null);
+        }
+    }
+
+    public void onPasswordCryptResult(final boolean result) {
+        try {
+            Helper.runOnUIThread(this, new Lambda() {
+                public void run() {
+                    if (result) {
+                        Intent intent = new Intent(mContext, LoginActivity.class);
+                        startActivity(intent);
+                    } else {
+                        mLoginClicked = false;
+                        mLoginButton.setVisibility(View.VISIBLE);
+                        mVerifyProgressBar.setVisibility(View.GONE);
+                        mInformationTextView.setText(R.string.incorrect_password);
+                        mPasswordEditText.setEnabled(true);
+                        mPasswordEditText.setText("");
+                    }
+                }
+            });
+        } catch (Exception ex) {
+            // The code inside run does not throw exceptions, so this should be impossible
+            Log.wtf(TAG, "onPasswordCryptResult lambda threw an exception when it should have been impossible.");
         }
     }
 
