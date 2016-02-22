@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.Test;
 
 import static android.support.test.espresso.action.ViewActions.clearText;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onView;
@@ -91,5 +92,14 @@ public class EnterPasswordActivityTest {
         this.mLoginButton.check(matches(not(isEnabled())));
         this.mPasswordEditText.perform(typeText("zombies"));
         this.mLoginButton.check(matches(isEnabled()));
+    }
+
+    @Test
+    public void progressBarDisplayedOnceLoginClicked() {
+        this.mPasswordEditText.perform(typeText("gorillas"));
+        this.mLoginButton.perform(click());
+        this.mLoginButton.check(matches(not(isDisplayed())));
+        this.mVerifyProgressBar.check(matches(isDisplayed()));
+        this.mInformationTextView.check(matches(withText(R.string.verifying_password)));
     }
 }
