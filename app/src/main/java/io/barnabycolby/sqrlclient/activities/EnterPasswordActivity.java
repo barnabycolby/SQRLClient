@@ -2,6 +2,7 @@ package io.barnabycolby.sqrlclient.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -35,12 +36,21 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     private boolean mLoginClicked = false;
     private String mLoginClickedKey = "loginClicked";
     private String mPasswordKey = "password";
+    private Uri mUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Standard Android stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_password);
+
+        // Store the uri given to us so that we can pass it on later
+        this.mUri = this.getIntent().getData();
+        if (this.mUri == null) {
+            String errorMessage = "Uri passed via intent was null.";
+            Log.e(TAG, errorMessage);
+            throw new IllegalArgumentException(errorMessage);
+        }
 
         // Store a reference to any UI components required elsewhere
         this.mLoginButton = (Button)findViewById(R.id.LoginButton);
@@ -108,6 +118,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
                 public void run() {
                     if (result) {
                         Intent intent = new Intent(mContext, LoginActivity.class);
+                        intent.setData(mUri);
                         startActivity(intent);
                     } else {
                         mLoginClicked = false;

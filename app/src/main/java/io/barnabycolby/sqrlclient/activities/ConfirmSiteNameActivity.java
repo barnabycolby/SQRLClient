@@ -3,15 +3,14 @@ package io.barnabycolby.sqrlclient.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
-import io.barnabycolby.sqrlclient.activities.ConfirmSiteNameStateFragment;
 import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
+import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
@@ -33,13 +32,9 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 public class ConfirmSiteNameActivity extends IdentityMustExistActivity {
 
     private static final String TAG = ConfirmSiteNameActivity.class.getName();
-    private SwappableTextView informationTextView;
-    private TextView friendlySiteNameTextView;
-    private SQRLUri sqrlUri;
-    private View confirmDenySiteButtons;
-    private Resources resources;
-    private static String sStateFragmentTag = "stateFragment";
-    private ConfirmSiteNameStateFragment mStateFragment;
+    private TextView mInformationTextView;
+    private TextView mFriendlySiteNameTextView;
+    private Uri mUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,151 +42,50 @@ public class ConfirmSiteNameActivity extends IdentityMustExistActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_site_name);
 
-        this.resources = getResources();
-
-        FragmentManager fragmentManager = this.getFragmentManager();
-        Fragment stateFragmentBeforeCast = fragmentManager.findFragmentByTag(sStateFragmentTag);
-        if (stateFragmentBeforeCast == null) {
-            boolean result = initialise();
-            if (!result) {
-                return;
-            }
-        } else {
-            if (!(stateFragmentBeforeCast instanceof ConfirmSiteNameStateFragment)) {
-                throw new IllegalStateException("stateFragment was not of type ConfirmSiteNameStateFragment");
-            }
-            this.mStateFragment = (ConfirmSiteNameStateFragment)stateFragmentBeforeCast;
-            restore();
-        }
-
-        // Set the textview to display the URI
-        this.friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
-        friendlySiteNameTextView.setText(this.mStateFragment.getDisplayName());
-        friendlySiteNameTextView.setVisibility(View.VISIBLE);
-
-        // Show the confirm/deny site buttons
-        confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
-        confirmDenySiteButtons.setVisibility(View.VISIBLE);
-    }
-
-    private boolean initialise() {
         // Get the uri from the data and the uri text box
         Intent intent = getIntent();
-        Uri uri = intent.getData();
-        if (uri == null) {
+        this.mUri = intent.getData();
+        if (this.mUri == null) {
             Log.e(TAG, "Uri passed via intent was null.");
-            return false;
+            return;
         }
 
         // Store the uri in a SQRLUri so that we can query it more easily
-        TextView rawInformationTextView = (TextView)findViewById(R.id.InformationTextView);
-        this.informationTextView = new SwappableTextView(rawInformationTextView);
+        this.mInformationTextView = (TextView)findViewById(R.id.InformationTextView);
+        SQRLUri sqrlUri;
         try {
-            sqrlUri = new SQRLUri(uri);
+            sqrlUri = new SQRLUri(this.mUri);
         } catch (SQRLException ex) {
-            String errorMessage = resources.getString(R.string.invalid_link);
-            informationTextView.setText(errorMessage);
+            String errorMessage = this.getResources().getString(R.string.invalid_link);
+            this.mInformationTextView.setText(errorMessage);
             Log.e(TAG, "Could not create SQRLUri: " + ex.getMessage());
-            return false;
+            return;
         }
 
-        // Create the SQRLRequestFactory used to generate requests
-        SQRLRequestFactory requestFactory = new SQRLRequestFactory(this.sqrlUri);
+        // Set the textview to display the URI
+        this.mFriendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
+        this.mFriendlySiteNameTextView.setText(sqrlUri.getDisplayName());
+        this.mFriendlySiteNameTextView.setVisibility(View.VISIBLE);
 
-        // Retrieve the friendly name
-        String displayName = sqrlUri.getDisplayName();
-
-        // Create the state fragment to store the state
-        this.mStateFragment = new ConfirmSiteNameStateFragment(this.informationTextView, this.sqrlUri, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
-        this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.sStateFragmentTag).commit();
-
-        return true;
-    }
-
-    private void restore() {
-        // Update the swappable text views underlying text view
-        TextView rawInformationTextView = (TextView)findViewById(R.id.InformationTextView);
-        this.informationTextView = this.mStateFragment.getInformationTextView();
-        this.informationTextView.setTextView(rawInformationTextView);
-
-        // Retrieve the SQRL Uri
-        this.sqrlUri = this.mStateFragment.getSQRLUri();
-
-        // Reattach the listeners used for callbacks
-        this.mStateFragment.getAccountExistsDetachableListener().attach(this.getAccountExistsListener());
-        this.mStateFragment.getDialogDetachableListener().attach(this.getDialogListener());
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if (this.mStateFragment != null) {
-            this.mStateFragment.getAccountExistsDetachableListener().detach();
-            this.mStateFragment.getDialogDetachableListener().detach();
-        }
+        // Show the confirm/deny site buttons
+        View confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
+        confirmDenySiteButtons.setVisibility(View.VISIBLE);
     }
 
     /**
      * Called when the deny site button is clicked.
      */
     public void denySite(View view) {
-        abortIdentRequest();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     /**
      * Called when the confirm site button is clicked.
      */
     public void confirmSite(View view) {
-        AccountExistsTask accountExistsTask = new AccountExistsTask(this.mStateFragment.getRequestFactory(), informationTextView, this.mStateFragment.getAccountExistsDetachableListener());
-        accountExistsTask.execute();
-    }
-
-    private ProceedAbortListener getAccountExistsListener() {
-        return new ProceedAbortListener() {
-            @Override
-            public void proceed() {
-                onAccountAlreadyExists();
-            }
-
-            @Override
-            public void abort() {
-                onAccountDoesNotAlreadyExist();
-            }
-        };
-    }
-
-    public void onAccountAlreadyExists() {
-        proceedWithIdentRequest();
-    }
-
-    public void onAccountDoesNotAlreadyExist() {
-        // We need to ask the user if they would like to create an account or not
-        CreateAccountDialogFragment dialog = new CreateAccountDialogFragment(this.mStateFragment.getDialogDetachableListener());
-        dialog.show(this.getSupportFragmentManager(), "createAccount");
-    }
-
-    private ProceedAbortListener getDialogListener() {
-        return new ProceedAbortListener() {
-            @Override
-            public void proceed() {
-                proceedWithIdentRequest();
-            }
-
-            @Override
-            public void abort() {
-                abortIdentRequest();
-            }
-        };
-    }
-
-    public void abortIdentRequest() {
-        Intent intent = new Intent(this, LoginChoicesActivity.class);
+        Intent intent = new Intent(this, EnterPasswordActivity.class);
+        intent.setData(this.mUri);
         startActivity(intent);
-    }
-
-    public void proceedWithIdentRequest() {
-        IdentRequestTask identRequestTask = new IdentRequestTask(this.mStateFragment.getRequestFactory(), informationTextView);
-        identRequestTask.execute();
     }
 }

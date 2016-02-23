@@ -11,11 +11,11 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 /**
- * Stores the state required by the ConfirmSiteName Activity, allowing it to recover after a runtime change, such as an orientation change.
+ * Stores the state required by the Login Activity, allowing it to recover after a runtime change, such as an orientation change.
  *
  * Includes help for attaching/detaching the listeners used by the activity.
  */
-public class ConfirmSiteNameStateFragment extends Fragment {
+public class LoginStateFragment extends Fragment {
     private SwappableTextView mInformationTextView;
     private SQRLUri mSQRLUri;
     private SQRLRequestFactory mRequestFactory;
@@ -33,7 +33,7 @@ public class ConfirmSiteNameStateFragment extends Fragment {
      * @param dialogListener  The listener object used for create account dialog callbacks.
      * @param displayName  The servers display name.
      */
-    public ConfirmSiteNameStateFragment(SwappableTextView informationTextView, SQRLUri sqrlUri, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener, String displayName) {
+    public LoginStateFragment(SwappableTextView informationTextView, SQRLUri sqrlUri, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener, String displayName) {
         this.mInformationTextView = informationTextView;
         this.mSQRLUri = sqrlUri;
         this.mRequestFactory = requestFactory;

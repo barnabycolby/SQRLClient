@@ -1,6 +1,8 @@
 package io.barnabycolby.sqrlclient.test.activities;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -32,12 +34,14 @@ import static io.barnabycolby.sqrlclient.test.helpers.OrientationChangeAction.or
 import static io.barnabycolby.sqrlclient.test.helpers.OrientationChangeAction.orientationLandscape;
 
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class EnterPasswordActivityTest {
 
     private EnterPasswordActivity mActivity;
+    private Uri mUri = Uri.parse("sqrl://www.grc.com/sqrl?nut=mCwPTJWrbcBNMJKc76sI8w&sfn=R1JD");
 
     private ViewInteraction mIdentitySpinner;
     private ViewInteraction mPasswordEditText;
@@ -56,6 +60,7 @@ public class EnterPasswordActivityTest {
             try {
                 App.getSQRLIdentityManager().save("Harriet", new byte[32]);
                 App.getSQRLIdentityManager().save("Rupert", new byte[32]);
+                App.getSQRLIdentityManager().setCurrentIdentity("Harriet");
             } catch (Exception ex) {
                 // Do nothing if an exception gets thrown
             }
@@ -68,6 +73,13 @@ public class EnterPasswordActivityTest {
             } catch (Exception ex) {
                 // Do nothing if an exception gets thrown
             }
+        }
+
+        @Override
+        protected Intent getActivityIntent() {
+            Intent intent = super.getActivityIntent();
+            intent.setData(mUri);
+            return intent;
         }
     }
 
@@ -162,5 +174,11 @@ public class EnterPasswordActivityTest {
             }
         });
         assertNotNull(loginActivity);
+
+        // Check that the data uri was passed along
+        Uri actualUri = loginActivity.getIntent().getData();
+        assertEquals(this.mUri, actualUri);
+
+        loginActivity.finish();
     }
 }

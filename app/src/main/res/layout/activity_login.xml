@@ -23,30 +23,6 @@
             android:visibility="invisible"
             />
 
-        <LinearLayout
-            android:id="@+id/ConfirmDenySiteButtons"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/FriendlySiteNameTextView"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            >
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:onClick="confirmSite"
-                android:text="@string/confirm_site_name"
-            />
-            <Button
-                android:id="@+id/DenySiteButton"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:onClick="denySite"
-                android:text="@string/incorrect_site_name"
-            />
-        </LinearLayout>
-
         <TextView
             android:id="@+id/InformationTextView"
             android:layout_below="@id/ConfirmDenySiteButtons"
