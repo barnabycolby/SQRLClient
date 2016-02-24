@@ -18,11 +18,13 @@ import android.widget.Toast;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
+import io.barnabycolby.sqrlclient.tasks.PasswordVerificationTask;
 
 /**
  * This activity asks the user to enter the password for the selected identity, and then proceeds to verify it.
  */
-public class EnterPasswordActivity extends AppCompatActivity implements TextWatcher {
+public class EnterPasswordActivity extends AppCompatActivity implements TextWatcher, PasswordCryptListener {
     private static String TAG = EnterPasswordActivity.class.getName();
 
     // Allows the context of this activity to be accessed from within an inner class
@@ -89,6 +91,10 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         this.mVerifyProgressBar.setVisibility(View.VISIBLE);
         this.mInformationTextView.setText(R.string.verifying_password);
         this.mPasswordEditText.setEnabled(false);
+
+        // Start the password verification task
+        PasswordVerificationTask verificationTask = new PasswordVerificationTask(this);
+        verificationTask.execute();
     }
 
     @Override
@@ -112,6 +118,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         }
     }
 
+    @Override
     public void onPasswordCryptResult(final boolean result) {
         try {
             Helper.runOnUIThread(this, new Lambda() {
@@ -134,6 +141,11 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
             // The code inside run does not throw exceptions, so this should be impossible
             Log.wtf(TAG, "onPasswordCryptResult lambda threw an exception when it should have been impossible.");
         }
+    }
+
+    @Override
+    public void onPasswordCryptProgressUpdate(int progress) {
+        this.mVerifyProgressBar.setProgress(progress);
     }
 
     // These methods are required by the TextWatcher interface, but we don't use them
