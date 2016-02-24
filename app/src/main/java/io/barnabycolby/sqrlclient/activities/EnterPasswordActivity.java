@@ -1,5 +1,7 @@
 package io.barnabycolby.sqrlclient.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,6 +31,7 @@ import io.barnabycolby.sqrlclient.views.IdentitySpinner;
 public class EnterPasswordActivity extends AppCompatActivity implements TextWatcher, PasswordCryptListener {
     private static String TAG = EnterPasswordActivity.class.getName();
     public static String ASYNC_TASKS_DISABLED = "asyncTasksDisabled";
+    private static String sStateFragmentTag = "stateFragment";
 
     // Allows the context of this activity to be accessed from within an inner class
     private Context mContext = this;
@@ -43,7 +46,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     private String mLoginClickedKey = "loginClicked";
     private String mPasswordKey = "password";
     private Uri mUri;
-    private PasswordVerificationTask mVerificationTask;
+    private EnterPasswordStateFragment mStateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,28 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
 
         // Add this class as a listener when the password changes
         this.mPasswordEditText.addTextChangedListener(this);
+
+        // We use a detachable listener mechanism, that allows listener callbacks to span multiple instances of an activity
+        FragmentManager fragmentManager = this.getFragmentManager();
+        Fragment stateFragmentBeforeCast = fragmentManager.findFragmentByTag(sStateFragmentTag);
+        if (stateFragmentBeforeCast == null) {
+            initialise();
+        } else {
+            if (!(stateFragmentBeforeCast instanceof EnterPasswordStateFragment)) {
+                throw new IllegalStateException("stateFragment was not of type EnterPasswordStateFragment");
+            }
+            this.mStateFragment = (EnterPasswordStateFragment)stateFragmentBeforeCast;
+            restore();
+        }
+    }
+
+    private void initialise() {
+        this.mStateFragment = new EnterPasswordStateFragment(this);
+        this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.sStateFragmentTag).commit();
+    }
+
+    private void restore() {
+        this.mStateFragment.getPasswordCryptDetachableListener().attach(this);
     }
 
     @Override
@@ -102,20 +127,30 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         // Start the password verification task
         // To support the testing of this activity, we need to check whether async tasks have been disabled
         boolean asyncTasksDisabled = this.getIntent().getBooleanExtra(this.ASYNC_TASKS_DISABLED, false);
-        if (!asyncTasksDisabled) {
-            this.mVerificationTask = new PasswordVerificationTask(this);
-            this.mVerificationTask.execute();
+        if (!asyncTasksDisabled && this.mStateFragment.getPasswordVerificationTask() == null) {
+            PasswordVerificationTask passwordVerificationTask = new PasswordVerificationTask(this.mStateFragment.getPasswordCryptDetachableListener());
+            this.mStateFragment.setPasswordVerificationTask(passwordVerificationTask);
+            passwordVerificationTask.execute();
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
         outState.putBoolean(mLoginClickedKey, mLoginClicked);
         outState.putString(mPasswordKey, this.mPasswordEditText.getText().toString());
+
+        // Detach any listeners associated with this activity
+        if (this.mStateFragment != null) {
+            this.mStateFragment.getPasswordCryptDetachableListener().detach();
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+
         // Restore the password
         String password = inState.getString(mPasswordKey);
         if (password != null) {
@@ -158,16 +193,6 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     @Override
     public void onPasswordCryptProgressUpdate(int progress) {
         this.mVerifyProgressBar.setProgress(progress);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // We need to cancel the password verification task before exiting, to prevent it from behaving badly
-        if (this.mVerificationTask != null && this.mVerificationTask.getStatus() != AsyncTask.Status.FINISHED) {
-            this.mVerificationTask.cancel(true);
-        }
     }
 
     // These methods are required by the TextWatcher interface, but we don't use them
