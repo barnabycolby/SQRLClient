@@ -14,6 +14,7 @@ import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.test.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -68,18 +69,13 @@ public class EnterPasswordActivityTest {
         }
 
         @Override
-        public void afterActivityFinished() {
-            try {
-                App.getSQRLIdentityManager().removeAllIdentities();
-            } catch (Exception ex) {
-                // Do nothing if an exception gets thrown
-            }
-        }
-
-        @Override
         protected Intent getActivityIntent() {
             Intent intent = super.getActivityIntent();
             intent.setData(mUri);
+
+            // Disable async task execution so that the tests can proceed without the async tasks starting any new activities
+            intent.putExtra(EnterPasswordActivity.ASYNC_TASKS_DISABLED, true);
+
             return intent;
         }
     }
@@ -99,9 +95,15 @@ public class EnterPasswordActivityTest {
         this.mLoginButton = onView(withId(R.id.LoginButton));
     }
 
+    @After
+    public void tearDown() throws Exception {
+        App.getSQRLIdentityManager().removeAllIdentities();
+    }
+
     @Test
     public void displaysCorrectInitialUIComponents() {
         this.mIdentitySpinner.check(matches(isDisplayed()));
+        this.mIdentitySpinner.check(matches(isEnabled()));
         this.mPasswordEditText.check(matches(isDisplayed()));
         this.mVerifyProgressBar.check(matches(not(isDisplayed())));
         this.mInformationTextView.check(matches(isDisplayed()));
@@ -128,6 +130,7 @@ public class EnterPasswordActivityTest {
         this.mVerifyProgressBar.check(matches(isDisplayed()));
         this.mInformationTextView.check(matches(withText(R.string.verifying_password)));
         this.mPasswordEditText.check(matches(not(isEnabled())));
+        this.mIdentitySpinner.check(matches(not(isEnabled())));
     }
 
     @Test
@@ -145,6 +148,7 @@ public class EnterPasswordActivityTest {
         this.mVerifyProgressBar.check(matches(isDisplayed()));
         this.mInformationTextView.check(matches(withText(R.string.verifying_password)));
         this.mPasswordEditText.check(matches(not(isEnabled())));
+        this.mIdentitySpinner.check(matches(not(isEnabled())));
     }
 
     @Test
@@ -160,6 +164,7 @@ public class EnterPasswordActivityTest {
         this.mInformationTextView.check(matches(withText(R.string.incorrect_password)));
         this.mPasswordEditText.check(matches(isEnabled()));
         this.mPasswordEditText.check(matches(withText("")));
+        this.mIdentitySpinner.check(matches(isEnabled()));
     }
 
     @Test

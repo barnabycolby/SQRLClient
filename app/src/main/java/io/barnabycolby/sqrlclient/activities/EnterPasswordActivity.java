@@ -20,12 +20,14 @@ import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 import io.barnabycolby.sqrlclient.tasks.PasswordVerificationTask;
+import io.barnabycolby.sqrlclient.views.IdentitySpinner;
 
 /**
  * This activity asks the user to enter the password for the selected identity, and then proceeds to verify it.
  */
 public class EnterPasswordActivity extends AppCompatActivity implements TextWatcher, PasswordCryptListener {
     private static String TAG = EnterPasswordActivity.class.getName();
+    public static String ASYNC_TASKS_DISABLED = "asyncTasksDisabled";
 
     // Allows the context of this activity to be accessed from within an inner class
     private Context mContext = this;
@@ -34,6 +36,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     private EditText mPasswordEditText;
     private ProgressBar mVerifyProgressBar;
     private TextView mInformationTextView;
+    private IdentitySpinner mIdentitySpinner;
 
     private boolean mLoginClicked = false;
     private String mLoginClickedKey = "loginClicked";
@@ -59,6 +62,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         this.mPasswordEditText = (EditText)findViewById(R.id.PasswordEditText);
         this.mVerifyProgressBar = (ProgressBar)findViewById(R.id.VerifyProgressBar);
         this.mInformationTextView = (TextView)findViewById(R.id.InformationTextView);
+        this.mIdentitySpinner = (IdentitySpinner)findViewById(R.id.IdentitySpinner);
 
         // Add this class as a listener when the password changes
         this.mPasswordEditText.addTextChangedListener(this);
@@ -91,10 +95,15 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         this.mVerifyProgressBar.setVisibility(View.VISIBLE);
         this.mInformationTextView.setText(R.string.verifying_password);
         this.mPasswordEditText.setEnabled(false);
+        this.mIdentitySpinner.setEnabled(false);
 
         // Start the password verification task
-        PasswordVerificationTask verificationTask = new PasswordVerificationTask(this);
-        verificationTask.execute();
+        // To support the testing of this activity, we need to check whether async tasks have been disabled
+        boolean asyncTasksDisabled = this.getIntent().getBooleanExtra(this.ASYNC_TASKS_DISABLED, false);
+        if (!asyncTasksDisabled) {
+            PasswordVerificationTask verificationTask = new PasswordVerificationTask(this);
+            verificationTask.execute();
+        }
     }
 
     @Override
@@ -134,6 +143,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
                         mInformationTextView.setText(R.string.incorrect_password);
                         mPasswordEditText.setEnabled(true);
                         mPasswordEditText.setText("");
+                        mIdentitySpinner.setEnabled(true);
                     }
                 }
             });
