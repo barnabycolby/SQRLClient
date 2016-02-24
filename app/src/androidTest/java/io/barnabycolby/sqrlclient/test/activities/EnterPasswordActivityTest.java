@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.Espresso.onView;
@@ -111,17 +112,17 @@ public class EnterPasswordActivityTest {
 
     @Test
     public void loginButtonEnabledIfPasswordNotBlank() {
-        this.mPasswordEditText.perform(typeText("brains"));
+        this.mPasswordEditText.perform(typeText("brains"), closeSoftKeyboard());
         this.mLoginButton.check(matches(isEnabled()));
         this.mPasswordEditText.perform(clearText());
         this.mLoginButton.check(matches(not(isEnabled())));
-        this.mPasswordEditText.perform(typeText("zombies"));
+        this.mPasswordEditText.perform(typeText("zombies"), closeSoftKeyboard());
         this.mLoginButton.check(matches(isEnabled()));
     }
 
     @Test
     public void progressBarDisplayedOnceLoginClicked() {
-        this.mPasswordEditText.perform(typeText("gorillas"));
+        this.mPasswordEditText.perform(typeText("gorillas"), closeSoftKeyboard());
         this.mLoginButton.perform(click());
         this.mLoginButton.check(matches(not(isDisplayed())));
         this.mVerifyProgressBar.check(matches(isDisplayed()));
@@ -132,7 +133,7 @@ public class EnterPasswordActivityTest {
     @Test
     public void uiStateSurvivesOrientationChange() {
         String password = "crocodile";
-        this.mPasswordEditText.perform(typeText(password));
+        this.mPasswordEditText.perform(typeText(password), closeSoftKeyboard());
         this.mLoginButton.perform(click());
 
         // Switch the orientation. As we don't know what the current orientation is then we switch to both landscape and portrait
@@ -148,7 +149,7 @@ public class EnterPasswordActivityTest {
 
     @Test
     public void passwordIncorrectResetsUIAndDisplaysErrorMessage() {
-        this.mPasswordEditText.perform(typeText("liontamer"));
+        this.mPasswordEditText.perform(typeText("liontamer"), closeSoftKeyboard());
         this.mLoginButton.perform(click());
 
         // Fake the password incorrect result
@@ -163,7 +164,7 @@ public class EnterPasswordActivityTest {
 
     @Test
     public void passwordCorrectRedirectsToLoginActivity() throws Exception {
-        this.mPasswordEditText.perform(typeText("clownjuggler"));
+        this.mPasswordEditText.perform(typeText("clownjuggler"), closeSoftKeyboard());
         
         Activity loginActivity = Helper.monitorForActivity(LoginActivity.class, 5000, new Lambda() {
             public void run() {
