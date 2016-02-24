@@ -22,7 +22,7 @@ public class PasswordVerificationTask extends TestableAsyncTask<String, Integer,
     protected Boolean doInBackground(String... passwords) {
         for (int i = 0; i < 10; i++) {
             try {
-                Thread.sleep(200);
+                Thread.sleep(500);
             } catch (InterruptedException ex) {}
             this.mProgress += 10;
             publishProgress(this.mProgress);
