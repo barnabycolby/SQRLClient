@@ -3,6 +3,7 @@ package io.barnabycolby.sqrlclient.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -42,6 +43,7 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     private String mLoginClickedKey = "loginClicked";
     private String mPasswordKey = "password";
     private Uri mUri;
+    private PasswordVerificationTask mVerificationTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +103,8 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         // To support the testing of this activity, we need to check whether async tasks have been disabled
         boolean asyncTasksDisabled = this.getIntent().getBooleanExtra(this.ASYNC_TASKS_DISABLED, false);
         if (!asyncTasksDisabled) {
-            PasswordVerificationTask verificationTask = new PasswordVerificationTask(this);
-            verificationTask.execute();
+            this.mVerificationTask = new PasswordVerificationTask(this);
+            this.mVerificationTask.execute();
         }
     }
 
@@ -156,6 +158,16 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     @Override
     public void onPasswordCryptProgressUpdate(int progress) {
         this.mVerifyProgressBar.setProgress(progress);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // We need to cancel the password verification task before exiting, to prevent it from behaving badly
+        if (this.mVerificationTask != null && this.mVerificationTask.getStatus() != AsyncTask.Status.FINISHED) {
+            this.mVerificationTask.cancel(true);
+        }
     }
 
     // These methods are required by the TextWatcher interface, but we don't use them
