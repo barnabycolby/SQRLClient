@@ -5,14 +5,12 @@ import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 /**
  * Wrapper around PasswordCryptListener that allows the listener to be detached and reattached without the listener clients knowledge.
  *
- * During the time where no listener is attached, if a call to onPasswordCryptResult or onPasswordCryptProgressUpdate occurs it will be logged and replayed to the next listener that attaches.
+ * During the time where no listener is attached, if a call to onPasswordCryptResult occurs it will be logged and replayed to the next listener that attaches.
  */
 public class PasswordCryptDetachableListener implements PasswordCryptListener {
     private PasswordCryptListener mListener;
     private boolean mResultCalledDuringDetach = false;
     private boolean mResultValue;
-    private boolean mProgressUpdateCalledDuringDetach = false;
-    private int mProgressUpdateValue;
 
     /**
      * Constructs a new instance in the detached listener state.
@@ -44,10 +42,7 @@ public class PasswordCryptDetachableListener implements PasswordCryptListener {
             this.mResultCalledDuringDetach = false;
         }
 
-        if (this.mProgressUpdateCalledDuringDetach) {
-            this.mListener.onPasswordCryptProgressUpdate(this.mProgressUpdateValue);
-            this.mProgressUpdateCalledDuringDetach = false;
-        }
+        // It doesn't make much sense to replay progress updates
     }
 
     /**
@@ -71,9 +66,6 @@ public class PasswordCryptDetachableListener implements PasswordCryptListener {
     public void onPasswordCryptProgressUpdate(int progress) {
         if (this.mListener != null) {
             this.mListener.onPasswordCryptProgressUpdate(progress);
-        } else {
-            this.mProgressUpdateCalledDuringDetach = true;
-            this.mProgressUpdateValue = progress;
         }
     }
 }

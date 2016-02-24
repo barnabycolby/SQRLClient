@@ -93,6 +93,12 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
 
     private void restore() {
         this.mStateFragment.getPasswordCryptDetachableListener().attach(this);
+
+        // Restore the password verification progress to the Progress Bar
+        PasswordVerificationTask passwordVerificationTask = this.mStateFragment.getPasswordVerificationTask();
+        if (passwordVerificationTask != null) {
+            this.mVerifyProgressBar.setProgress(passwordVerificationTask.getProgress());
+        }
     }
 
     @Override

@@ -41,4 +41,11 @@ public class PasswordVerificationTask extends TestableAsyncTask<String, Integer,
         // We must call this because we are using the TestableAsyncTask
         executionFinished();
     }
+
+    /**
+     * Gets the latest published progress value.
+     */
+    public int getProgress() {
+        return this.mProgress;
+    }
 }
