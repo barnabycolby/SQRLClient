@@ -1,7 +1,5 @@
 package io.barnabycolby.sqrlclient.activities;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,7 +46,7 @@ import java.util.List;
  *
  * The activity harvests entropy from the camera and uses it to create a new SQRL identity.
  */
-public class CreateNewIdentityActivity extends AppCompatActivity implements EntropyCollector.ProgressListener, TextWatcher {
+public class CreateNewIdentityActivity extends StateFragmentActivity<CreateNewIdentityStateFragment> implements EntropyCollector.ProgressListener, TextWatcher {
     private static final String TAG = CreateNewIdentityActivity.class.getName();
 
     private int CAMERA_PERMISSION_REQUEST = 0;
@@ -60,8 +58,6 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
     private CameraDevice mCamera;
     private CaptureRequest mCaptureRequest;
     private CameraCaptureSession mCameraSession;
-    private CreateNewIdentityStateFragment mStateFragment;
-    private String mStateFragmentTag = "stateFragment";
     private Surface mPreviewSurface;
     private Surface mEntropySurface;
     private int mNextCameraIdIndex = 0;
@@ -75,16 +71,6 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
         // Standard Android stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_identity);
-
-        // Retrieve the state fragment
-        FragmentManager fragmentManager = this.getFragmentManager();
-        Fragment stateFragmentBeforeCast = fragmentManager.findFragmentByTag(mStateFragmentTag);
-        if (stateFragmentBeforeCast == null) {
-            this.mStateFragment = new CreateNewIdentityStateFragment();
-            this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.mStateFragmentTag).commit();
-        } else {
-            this.mStateFragment = (CreateNewIdentityStateFragment)stateFragmentBeforeCast;
-        }
 
         // Store a reference to any required UI elements
         this.mProgressBar = (ProgressBar)findViewById(R.id.EntropyHarvesterProgressBar);
@@ -101,12 +87,11 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
         if (this.mUnrecoverableErrorOccurred) {
             redisplayErrorMessage(savedInstanceState);
+            return;
         } else {
-            initialise();
+            super.initialiseFragment();
         }
-    }
 
-    private void initialise() {
         // Has the entropy collection finished? If so, then we need to display the create button instead of the progress bar
         EntropyCollector entropyCollector = this.mStateFragment.getEntropyCollector();
         if (entropyCollector != null && entropyCollector.hasFinished()) {
@@ -122,6 +107,13 @@ public class CreateNewIdentityActivity extends AppCompatActivity implements Entr
 
         initialiseTextureView();
     }
+
+    @Override
+    protected CreateNewIdentityStateFragment initialise() {
+        return new CreateNewIdentityStateFragment();
+    }
+
+    @Override protected void restore() {}
 
     private void initialiseTextureView() {
         // Initialise the camera preview view
