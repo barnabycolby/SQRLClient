@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import io.barnabycolby.sqrlclient.helpers.DetachableListener;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortDetachableListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
@@ -37,8 +38,8 @@ public class LoginStateFragment extends Fragment {
         this.mInformationTextView = informationTextView;
         this.mSQRLUri = sqrlUri;
         this.mRequestFactory = requestFactory;
-        this.mAccountExistsDetachableListener = new ProceedAbortDetachableListener(accountExistsListener);
-        this.mDialogDetachableListener = new ProceedAbortDetachableListener(dialogListener);
+        this.mAccountExistsDetachableListener = (ProceedAbortDetachableListener)DetachableListener.create(accountExistsListener, ProceedAbortDetachableListener.class);
+        this.mDialogDetachableListener = (ProceedAbortDetachableListener)DetachableListener.create(dialogListener, ProceedAbortDetachableListener.class);
         this.mDisplayName = displayName;
     }
 

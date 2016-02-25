@@ -3,6 +3,7 @@ package io.barnabycolby.sqrlclient.activities;
 import android.app.Fragment;
 import android.os.Bundle;
 
+import io.barnabycolby.sqrlclient.helpers.DetachableListener;
 import io.barnabycolby.sqrlclient.helpers.PasswordCryptDetachableListener;
 import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 import io.barnabycolby.sqrlclient.tasks.PasswordVerificationTask;
@@ -22,7 +23,7 @@ public class EnterPasswordStateFragment extends Fragment {
      * @param passwordCryptDetachableListener  The listener object used for password verification.
      */
     public EnterPasswordStateFragment(PasswordCryptListener passwordCryptListener) {
-        this.mPasswordCryptDetachableListener = new PasswordCryptDetachableListener(passwordCryptListener);
+        this.mPasswordCryptDetachableListener = (PasswordCryptDetachableListener)DetachableListener.create(passwordCryptListener, PasswordCryptDetachableListener.class);
     }
 
     @Override
