@@ -35,6 +35,7 @@ import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
+import io.barnabycolby.sqrlclient.activities.fragments.CreateNewIdentityStateFragment;
 import io.barnabycolby.sqrlclient.exceptions.RawUnsupportedException;
 import io.barnabycolby.sqrlclient.sqrl.EntropyCollector;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;

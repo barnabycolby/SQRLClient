@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
-import io.barnabycolby.sqrlclient.activities.LoginStateFragment;
+import io.barnabycolby.sqrlclient.activities.fragments.LoginStateFragment;
 import io.barnabycolby.sqrlclient.activities.IdentityMustExistStateFragmentActivity;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;

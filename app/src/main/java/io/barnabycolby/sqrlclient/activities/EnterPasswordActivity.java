@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.barnabycolby.sqrlclient.activities.fragments.EnterPasswordStateFragment;
 import io.barnabycolby.sqrlclient.activities.IdentityMustExistStateFragmentActivity;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;

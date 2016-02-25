@@ -1,4 +1,4 @@
-package io.barnabycolby.sqrlclient.activities;
+package io.barnabycolby.sqrlclient.activities.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
