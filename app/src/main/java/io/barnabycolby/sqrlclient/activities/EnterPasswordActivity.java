@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.activities.fragments.EnterPasswordStateFragment;
-import io.barnabycolby.sqrlclient.activities.IdentityMustExistStateFragmentActivity;
+import io.barnabycolby.sqrlclient.activities.StateFragmentActivity;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
@@ -27,7 +27,7 @@ import io.barnabycolby.sqrlclient.views.IdentitySpinner;
 /**
  * This activity asks the user to enter the password for the selected identity, and then proceeds to verify it.
  */
-public class EnterPasswordActivity extends IdentityMustExistStateFragmentActivity<EnterPasswordStateFragment> implements TextWatcher, PasswordCryptListener {
+public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordStateFragment> implements TextWatcher, PasswordCryptListener {
     private static String TAG = EnterPasswordActivity.class.getName();
     public static String ASYNC_TASKS_DISABLED = "asyncTasksDisabled";
 
@@ -186,6 +186,12 @@ public class EnterPasswordActivity extends IdentityMustExistStateFragmentActivit
     @Override
     public void onPasswordCryptProgressUpdate(int progress) {
         this.mVerifyProgressBar.setProgress(progress);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Helper.checkIdentitiesExist(this);
     }
 
     // These methods are required by the TextWatcher interface, but we don't use them

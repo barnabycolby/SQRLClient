@@ -3,8 +3,7 @@ package io.barnabycolby.sqrlclient.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
-
-import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * Handles an activities state if it must persist across activity instances.
@@ -19,7 +18,7 @@ import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
  * onCreate.
  * </p>
  */
-public abstract class IdentityMustExistStateFragmentActivity<T extends Fragment> extends IdentityMustExistActivity {
+public abstract class StateFragmentActivity<T extends Fragment> extends AppCompatActivity {
     private String mStateFragmentTag = "stateFragment";
     protected T mStateFragment;
 

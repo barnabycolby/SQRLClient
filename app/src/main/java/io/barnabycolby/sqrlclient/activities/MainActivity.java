@@ -2,15 +2,16 @@ package io.barnabycolby.sqrlclient.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
-import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
 import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
+import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
 import io.barnabycolby.sqrlclient.views.IdentitySpinner;
@@ -18,7 +19,7 @@ import io.barnabycolby.sqrlclient.views.IdentitySpinner;
 /**
  * Activity displayed when the user enters the application, offering a menu of choices for interaction with the application.
  */
-public class MainActivity extends IdentityMustExistActivity {
+public class MainActivity extends AppCompatActivity {
     private static String TAG = MainActivity.class.getName();
 
     private SQRLIdentityManager mIdentityManager;
@@ -72,12 +73,18 @@ public class MainActivity extends IdentityMustExistActivity {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
 
-        if (!this.checkIdentitiesExist()) {
+        if (!Helper.checkIdentitiesExist(this)) {
             // Because checkIdentitiesExist returned false, we must be about to move to the NoIdentityActivity
             // So we don't care about updating the UI components on this activity
             return;
         }
         
         this.mIdentitySpinner.repopulate(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Helper.checkIdentitiesExist(this);
     }
 }

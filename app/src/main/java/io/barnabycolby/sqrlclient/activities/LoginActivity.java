@@ -11,9 +11,10 @@ import android.view.View;
 import android.widget.*;
 
 import io.barnabycolby.sqrlclient.activities.fragments.LoginStateFragment;
-import io.barnabycolby.sqrlclient.activities.IdentityMustExistStateFragmentActivity;
+import io.barnabycolby.sqrlclient.activities.StateFragmentActivity;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.R;
@@ -25,7 +26,7 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 /**
  * Performs the login sequence to a given site.
  */
-public class LoginActivity extends IdentityMustExistStateFragmentActivity<LoginStateFragment> {
+public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
     private static final String TAG = LoginActivity.class.getName();
 
     private boolean mInitialiseSucceeded = true;
@@ -164,6 +165,12 @@ public class LoginActivity extends IdentityMustExistStateFragmentActivity<LoginS
         if (this.mIdentRequestTask != null && this.mIdentRequestTask.getStatus() != AsyncTask.Status.FINISHED) {
             this.mIdentRequestTask.cancel(true);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Helper.checkIdentitiesExist(this);
     }
 
     /**
