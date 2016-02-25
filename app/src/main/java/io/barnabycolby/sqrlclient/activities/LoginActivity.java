@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.*;
 
 import io.barnabycolby.sqrlclient.activities.LoginStateFragment;
-import io.barnabycolby.sqrlclient.activities.IdentityMustExistActivity;
+import io.barnabycolby.sqrlclient.activities.IdentityMustExistStateFragmentActivity;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
@@ -25,14 +25,14 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 /**
  * Performs the login sequence to a given site.
  */
-public class LoginActivity extends IdentityMustExistActivity {
+public class LoginActivity extends IdentityMustExistStateFragmentActivity<LoginStateFragment> {
     private static final String TAG = LoginActivity.class.getName();
+
+    private boolean mInitialiseSucceeded = true;
 
     private SwappableTextView informationTextView;
     private TextView friendlySiteNameTextView;
     private SQRLUri sqrlUri;
-    private static String sStateFragmentTag = "stateFragment";
-    private LoginStateFragment mStateFragment;
 
     private AccountExistsTask mAccountExistsTask;
     private IdentRequestTask mIdentRequestTask;
@@ -43,21 +43,11 @@ public class LoginActivity extends IdentityMustExistActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // A fragment is used to preserve objects between activity pauses/resumes
-        // We see if it needs to be created or already exists, and handle each case differently
-        FragmentManager fragmentManager = this.getFragmentManager();
-        Fragment stateFragmentBeforeCast = fragmentManager.findFragmentByTag(sStateFragmentTag);
-        if (stateFragmentBeforeCast == null) {
-            boolean result = initialise();
-            if (!result) {
-                return;
-            }
-        } else {
-            if (!(stateFragmentBeforeCast instanceof LoginStateFragment)) {
-                throw new IllegalStateException("stateFragment was not of type LoginStateFragment");
-            }
-            this.mStateFragment = (LoginStateFragment)stateFragmentBeforeCast;
-            restore();
+        super.initialiseFragment();
+
+        // Check for error
+        if (!this.mInitialiseSucceeded) {
+            return;
         }
 
         // Set the textview to display the URI
@@ -70,18 +60,15 @@ public class LoginActivity extends IdentityMustExistActivity {
         this.mAccountExistsTask.execute();
     }
 
-    /**
-     * Called if this activity is being created for the first time (for example, not recreated after a pause)
-     *
-     * @return True if initialisation succeeded, false otherwise.
-     */
-    private boolean initialise() {
+    @Override
+    protected LoginStateFragment initialise() {
         // Get the uri from the data and the uri text box
         Intent intent = getIntent();
         Uri uri = intent.getData();
         if (uri == null) {
             Log.e(TAG, "Uri passed via intent was null.");
-            return false;
+            this.mInitialiseSucceeded = false;
+            return null;
         }
 
         // Store the uri in a SQRLUri so that we can query it more easily
@@ -93,7 +80,8 @@ public class LoginActivity extends IdentityMustExistActivity {
             String errorMessage = this.getResources().getString(R.string.invalid_link);
             informationTextView.setText(errorMessage);
             Log.e(TAG, "Could not create SQRLUri: " + ex.getMessage());
-            return false;
+            this.mInitialiseSucceeded = false;
+            return null;
         }
 
         // Create the SQRLRequestFactory used to generate requests
@@ -103,18 +91,12 @@ public class LoginActivity extends IdentityMustExistActivity {
         String displayName = sqrlUri.getDisplayName();
 
         // Create the state fragment to store the state
-        this.mStateFragment = new LoginStateFragment(this.informationTextView, this.sqrlUri, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
-        this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.sStateFragmentTag).commit();
-
-        return true;
+        this.mInitialiseSucceeded = true;
+        return new LoginStateFragment(this.informationTextView, this.sqrlUri, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
     }
 
-    /**
-     * Called if this activity has existed in a previous instance, such as after resuming from a pause.
-     *
-     * This method restores the state of the activity using the state fragment.
-     */
-    private void restore() {
+    @Override
+    protected void restore() {
         // Update the swappable text views underlying text view
         TextView rawInformationTextView = (TextView)findViewById(R.id.InformationTextView);
         this.informationTextView = this.mStateFragment.getInformationTextView();

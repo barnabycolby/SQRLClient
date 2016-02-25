@@ -1,13 +1,10 @@
 package io.barnabycolby.sqrlclient.activities;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.barnabycolby.sqrlclient.activities.IdentityMustExistStateFragmentActivity;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
@@ -28,10 +26,9 @@ import io.barnabycolby.sqrlclient.views.IdentitySpinner;
 /**
  * This activity asks the user to enter the password for the selected identity, and then proceeds to verify it.
  */
-public class EnterPasswordActivity extends AppCompatActivity implements TextWatcher, PasswordCryptListener {
+public class EnterPasswordActivity extends IdentityMustExistStateFragmentActivity<EnterPasswordStateFragment> implements TextWatcher, PasswordCryptListener {
     private static String TAG = EnterPasswordActivity.class.getName();
     public static String ASYNC_TASKS_DISABLED = "asyncTasksDisabled";
-    private static String sStateFragmentTag = "stateFragment";
 
     // Allows the context of this activity to be accessed from within an inner class
     private Context mContext = this;
@@ -46,7 +43,6 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
     private String mLoginClickedKey = "loginClicked";
     private String mPasswordKey = "password";
     private Uri mUri;
-    private EnterPasswordStateFragment mStateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,26 +68,16 @@ public class EnterPasswordActivity extends AppCompatActivity implements TextWatc
         // Add this class as a listener when the password changes
         this.mPasswordEditText.addTextChangedListener(this);
 
-        // We use a detachable listener mechanism, that allows listener callbacks to span multiple instances of an activity
-        FragmentManager fragmentManager = this.getFragmentManager();
-        Fragment stateFragmentBeforeCast = fragmentManager.findFragmentByTag(sStateFragmentTag);
-        if (stateFragmentBeforeCast == null) {
-            initialise();
-        } else {
-            if (!(stateFragmentBeforeCast instanceof EnterPasswordStateFragment)) {
-                throw new IllegalStateException("stateFragment was not of type EnterPasswordStateFragment");
-            }
-            this.mStateFragment = (EnterPasswordStateFragment)stateFragmentBeforeCast;
-            restore();
-        }
+        super.initialiseFragment();
     }
 
-    private void initialise() {
-        this.mStateFragment = new EnterPasswordStateFragment(this);
-        this.getFragmentManager().beginTransaction().add(this.mStateFragment, this.sStateFragmentTag).commit();
+    @Override
+    protected EnterPasswordStateFragment initialise() {
+        return new EnterPasswordStateFragment(this);
     }
 
-    private void restore() {
+    @Override
+    protected void restore() {
         this.mStateFragment.getPasswordCryptDetachableListener().attach(this);
 
         // Restore the password verification progress to the Progress Bar
