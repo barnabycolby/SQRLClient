@@ -40,7 +40,7 @@ public class ConfirmSiteNameActivityEspressoTest {
         @Override
         protected void beforeActivityLaunched() {
             try {
-                App.getSQRLIdentityManager().save("Barnaby Colby", new byte[32]);
+                App.getSQRLIdentityManager().save("Barnaby Colby", new byte[32], "g3wC!rUnDN5M#TDj");
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

@@ -107,10 +107,11 @@ public class SQRLIdentityManager {
      *
      * @param identityName  The name of the new identity. This will be used for UI identification and system identification.
      * @param masterKey  The master key of the new identity.
+     * @param password  The password that protects the new identity.
      * @throws IdentityAlreadyExistsException  If an identity with the same name already exists.
      * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be opened.
      */
-    public void save(String identityName, byte[] masterKey) throws IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException, IdentitiesCouldNotBeLoadedException {
+    public void save(String identityName, byte[] masterKey, String password) throws IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException, IdentitiesCouldNotBeLoadedException {
         if (mIdentities.containsKey(identityName)) {
             throw new IdentityAlreadyExistsException();
         }
@@ -294,8 +295,9 @@ public class SQRLIdentityManager {
      * Gets a SQRLIdentity instance of the currently selected identity for the given site.
      *
      * @param uri  The SQRLUri for the site.
+     * @param password  The password to unlock the identity.
      */
-    public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri) {
+    public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri, String password) {
         byte[] masterKeyForCurrentIdentity = this.mIdentities.get(this.getCurrentIdentityName());
         if (masterKeyForCurrentIdentity == null) {
             Log.wtf(TAG, "getCurrentIdentityName() returned a string not present in mIdentities");

@@ -23,7 +23,7 @@ public class ConfirmSiteNameActivityTest extends ActivityInstrumentationTestCase
 
     @Override
     protected void setUp() throws Exception {
-        App.getSQRLIdentityManager().save("Gerald", new byte[32]);
+        App.getSQRLIdentityManager().save("Gerald", new byte[32], "reg50NMg90!M0l5i");
     }
 
     @Override

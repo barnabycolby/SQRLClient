@@ -71,7 +71,7 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
     public void onNextClicked(View view) throws IdentitiesCouldNotBeLoadedException, IdentityCouldNotBeWrittenToDiskException {
         // Attempt to save the new identity, displaying a dialog if it already exists
         try {
-            App.getSQRLIdentityManager().save(this.mIdentityName, this.mMasterKey);
+            App.getSQRLIdentityManager().save(this.mIdentityName, this.mMasterKey, "");
         } catch (IdentityAlreadyExistsException ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
 

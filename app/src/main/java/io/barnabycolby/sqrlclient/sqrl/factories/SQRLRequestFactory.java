@@ -72,7 +72,7 @@ public class SQRLRequestFactory {
 
     private SQRLIdentity getIdentity() {
         if (this.mIdentity == null) {
-            this.mIdentity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri);
+            this.mIdentity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri, "");
         }
 
         return this.mIdentity;

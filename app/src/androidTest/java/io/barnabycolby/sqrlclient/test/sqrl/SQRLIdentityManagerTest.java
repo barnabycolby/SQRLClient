@@ -16,14 +16,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
-public class SQRLIdentityManagementTest {
+public class SQRLIdentityManagerTest {
     private SQRLIdentityManager mIdentityManager;
     private String mIdentityName = "Rick Rubin";
 
     @Before
     public void setUp() throws Exception {
         this.mIdentityManager = App.getSQRLIdentityManager();
-        this.mIdentityManager.save(this.mIdentityName, new byte[32]);
+        this.mIdentityManager.save(this.mIdentityName, new byte[32], "C5E8Yz5T4&kbipkN");
     }
 
     @After

@@ -56,6 +56,7 @@ public class IdentityManagementTest {
     private Instrumentation mInstrumentation;
     private ActivityMonitor mMainActivityMonitor;
     private MainActivity mMainActivity;
+    private String mPassword = "ZS9rtA#pTAtm48!q";
 
     @Before
     public void setUp() {
@@ -161,8 +162,8 @@ public class IdentityManagementTest {
         SQRLIdentityManager identityManager = App.getSQRLIdentityManager();
         String identityName1 = "Pablo Escobar";
         String identityName2 = "Walter White";
-        identityManager.save(identityName1, new byte[32]);
-        identityManager.save(identityName2, new byte[32]);
+        identityManager.save(identityName1, new byte[32], mPassword);
+        identityManager.save(identityName2, new byte[32], mPassword);
         identityManager.setCurrentIdentity(identityName2);
 
         // Trigger the transition back to MainActivity by going to the create identity activity and pressing back

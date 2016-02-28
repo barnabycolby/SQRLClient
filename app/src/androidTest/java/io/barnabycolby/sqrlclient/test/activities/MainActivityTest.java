@@ -25,7 +25,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     protected void setUp() throws Exception {
         super.setUp();
         byte[] masterKey = new byte[32];
-        App.getSQRLIdentityManager().save("Kanye", masterKey);
+        App.getSQRLIdentityManager().save("Kanye", masterKey, "Fy23w$sr^dJ6wdUv");
     }
 
     @Override
