@@ -4,6 +4,7 @@ import eu.artemisc.stodium.Scrypt;
 import eu.artemisc.stodium.Stodium;
 
 import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.R;
 
 import java.nio.charset.Charset;
@@ -73,7 +74,7 @@ public class EnScrypt {
         // Set up the required byte arrays
         byte[] key = new byte[32];
         byte[] passwordAsByteArray = password.getBytes(Charset.forName("UTF-8"));
-        byte[] saltAsByteArray = hexStringToByteArray(salt);
+        byte[] saltAsByteArray = Helper.hexStringToByteArray(salt);
 
         // Perform the chaining of the scrypt operations
         byte[] scryptOutput = saltAsByteArray;
@@ -118,18 +119,6 @@ public class EnScrypt {
         }
 
         return builder.toString();
-    }
-
-    // Taken from http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
-    private static byte[] hexStringToByteArray(String hexString) {
-        int len = hexString.length();
-        byte[] array = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            array[i / 2] = (byte)((Character.digit(hexString.charAt(i), 16) << 4)
-                                 + Character.digit(hexString.charAt(i + 1), 16));
-        }
-
-        return array;
     }
 
     private static byte[] xorByteArrays(byte[] xs, byte[] ys) {

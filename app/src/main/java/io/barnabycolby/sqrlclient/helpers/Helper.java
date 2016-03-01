@@ -52,4 +52,16 @@ public class Helper {
 
         return true;
     }
+
+    // Taken from http://stackoverflow.com/questions/8890174/in-java-how-do-i-convert-a-hex-string-to-a-byte
+    public static byte[] hexStringToByteArray(String hexString) {
+        int len = hexString.length();
+        byte[] array = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            array[i / 2] = (byte)((Character.digit(hexString.charAt(i), 16) << 4)
+                                 + Character.digit(hexString.charAt(i + 1), 16));
+        }
+
+        return array;
+    }
 }
