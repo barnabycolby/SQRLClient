@@ -21,14 +21,38 @@ public class EnScrypt {
     // This class only contains static methods
     private EnScrypt() {}
 
+    private enum OperationCount { ITERATIONS, SECONDS };
+
     /**
-     * Performs an EnScrypt key derivation on the given password, using the given parameters.
+     * Performs an EnScrypt key derivation on the given password, using the given password, salt and number of iterations.
      *
      * @param password  The password to derive a key from.
      * @param salt  The salt to use.
      * @param iterations  The number of SCRYPT iterations that should be performed.
      */
     public static String deriveKey(String password, String salt, int iterations) throws SecurityException {
+        return deriveKey(password, salt, OperationCount.ITERATIONS, iterations);
+    }
+
+    /**
+     * Performs an EnScrypt key derivation for 5 seconds, using the given password and salt.
+     *
+     * @param password  The password to derive a key from.
+     * @param salt  The salt to use.
+     */
+    public static String deriveKeyFor5Seconds(String password, String salt) throws SecurityException {
+        return deriveKey(password, salt, OperationCount.SECONDS, 5);
+    }
+
+    /**
+     * Performs an EnScrypt key derivation on the given password, using the given parameters.
+     *
+     * @param password  The password to derive a key from.
+     * @param salt  The salt to use.
+     * @param operationType  Whether the count is in terms of no. of iterations of no. of seconds.
+     * @param count  The count of iterations or seconds to perform.
+     */
+    private static String deriveKey(String password, String salt, OperationCount operationType, int count) {
         // Handle null arguments
         if (password == null) {
             password = "";
@@ -53,9 +77,23 @@ public class EnScrypt {
 
         // Perform the chaining of the scrypt operations
         byte[] scryptOutput = saltAsByteArray;
-        for (int i = 0; i < iterations; i++) {
+        long startTime = System.currentTimeMillis();
+        int i = 0;
+        while (true) {
             scryptOutput = scryptDeriveKey(passwordAsByteArray, scryptOutput);
             key = xorByteArrays(key, scryptOutput);
+
+            if (operationType.equals(OperationCount.ITERATIONS)) {
+                i++;
+                if (i == count) {
+                    break;
+                }
+            } else if (operationType.equals(OperationCount.SECONDS)) {
+                long duration = System.currentTimeMillis() - startTime;
+                if (duration >= count * 1000) {
+                    break;
+                }
+            }
         }
 
         return byteArrayToHexString(key);

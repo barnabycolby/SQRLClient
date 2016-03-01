@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class EnScryptTest {
@@ -53,5 +54,17 @@ public class EnScryptTest {
                 EnScrypt.deriveKey("Bar\0ney", null, 1);
             }
         });
+    }
+
+    @Test
+    public void deriveKeyFor5SecondsShouldTake5Seconds() {
+        long startTime = System.currentTimeMillis();
+        EnScrypt.deriveKeyFor5Seconds("password", "0000000000000000000000000000000000000000000000000000000000000000");
+        long endTime = System.currentTimeMillis();
+
+        long duration = endTime - startTime;
+        long fourAndAHalfSeconds = 4500;
+        long fiveAndAHalfSeconds = 5500;
+        assertTrue(duration > fourAndAHalfSeconds && duration < fiveAndAHalfSeconds);
     }
 }
