@@ -19,8 +19,7 @@ public class EnScrypt {
         Stodium.StodiumInit();
     }
 
-    // This class only contains static methods
-    private EnScrypt() {}
+    private int mIterations;
 
     private enum OperationCount { ITERATIONS, SECONDS };
 
@@ -31,7 +30,7 @@ public class EnScrypt {
      * @param salt  The salt to use.
      * @param iterations  The number of SCRYPT iterations that should be performed.
      */
-    public static String deriveKey(String password, String salt, int iterations) throws SecurityException {
+    public String deriveKey(String password, String salt, int iterations) throws SecurityException {
         return deriveKey(password, salt, OperationCount.ITERATIONS, iterations);
     }
 
@@ -41,7 +40,7 @@ public class EnScrypt {
      * @param password  The password to derive a key from.
      * @param salt  The salt to use.
      */
-    public static String deriveKeyFor5Seconds(String password, String salt) throws SecurityException {
+    public String deriveKeyFor5Seconds(String password, String salt) throws SecurityException {
         return deriveKey(password, salt, OperationCount.SECONDS, 5);
     }
 
@@ -79,14 +78,14 @@ public class EnScrypt {
         // Perform the chaining of the scrypt operations
         byte[] scryptOutput = saltAsByteArray;
         long startTime = System.currentTimeMillis();
-        int i = 0;
+        int numberOfIterationsPerformed = 0;
         while (true) {
             scryptOutput = scryptDeriveKey(passwordAsByteArray, scryptOutput);
             key = xorByteArrays(key, scryptOutput);
+            numberOfIterationsPerformed++;
 
             if (operationType.equals(OperationCount.ITERATIONS)) {
-                i++;
-                if (i == count) {
+                if (numberOfIterationsPerformed == count) {
                     break;
                 }
             } else if (operationType.equals(OperationCount.SECONDS)) {
@@ -97,6 +96,8 @@ public class EnScrypt {
             }
         }
 
+        // Store the number of iterations performed, this will be required by the caller if using deriveKeyFor5Seconds
+        this.mIterations = numberOfIterationsPerformed;
         return byteArrayToHexString(key);
     }
 
@@ -106,13 +107,13 @@ public class EnScrypt {
      * @param password  The password to derive a key from, or a previous output from scrypt.
      * @param salt  The salt to use.
      */
-    private static byte[] scryptDeriveKey(byte[] password, byte[] salt) {
+    private byte[] scryptDeriveKey(byte[] password, byte[] salt) {
         byte[] key = new byte[32];
         Stodium.checkStatus(Sodium.crypto_pwhash_scryptsalsa208sha256_ll(password, password.length, salt, salt.length, 512, 256, 1, key, key.length));
         return key;
     }
 
-    private static String byteArrayToHexString(byte[] array) {
+    private String byteArrayToHexString(byte[] array) {
         StringBuilder builder = new StringBuilder();
         for (byte b : array) {
             builder.append(String.format("%02x", b));
@@ -121,7 +122,7 @@ public class EnScrypt {
         return builder.toString();
     }
 
-    private static byte[] xorByteArrays(byte[] xs, byte[] ys) {
+    private byte[] xorByteArrays(byte[] xs, byte[] ys) {
         byte[] result = new byte[xs.length];
         for (int i = 0; i < xs.length; i++) {
             int x = (int)xs[i];
@@ -130,5 +131,9 @@ public class EnScrypt {
             result[i] = (byte)(0xff & xor);
         }
         return result;
+    }
+
+    public int getIterations() {
+        return this.mIterations;
     }
 }
