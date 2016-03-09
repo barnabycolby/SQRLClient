@@ -35,12 +35,33 @@ public class EnScrypt {
     }
 
     /**
+     * Performs an EnScrypt key derivation on the given password, using the given password, salt and number of iterations.
+     *
+     * @param password  The password to derive a key from.
+     * @param salt  The salt to use.
+     * @param iterations  The number of SCRYPT iterations that should be performed.
+     */
+    public byte[] deriveKey(String password, byte[] salt, int iterations) throws SecurityException {
+        return deriveKey(password, salt, OperationCount.ITERATIONS, iterations);
+    }
+
+    /**
      * Performs an EnScrypt key derivation for 5 seconds, using the given password and salt.
      *
      * @param password  The password to derive a key from.
      * @param salt  The salt to use.
      */
     public String deriveKeyFor5Seconds(String password, String salt) throws SecurityException {
+        return deriveKey(password, salt, OperationCount.SECONDS, 5);
+    }
+
+    /**
+     * Performs an EnScrypt key derivation for 5 seconds, using the given password and salt.
+     *
+     * @param password  The password to derive a key from.
+     * @param salt  The salt to use.
+     */
+    public byte[] deriveKeyFor5Seconds(String password, byte[] salt) throws SecurityException {
         return deriveKey(password, salt, OperationCount.SECONDS, 5);
     }
 
@@ -52,13 +73,27 @@ public class EnScrypt {
      * @param operationType  Whether the count is in terms of no. of iterations of no. of seconds.
      * @param count  The count of iterations or seconds to perform.
      */
-    private static String deriveKey(String password, String salt, OperationCount operationType, int count) {
+    private String deriveKey(String password, String salt, OperationCount operationType, int count) {
+        byte[] saltAsByteArray = salt == null ? null : Helper.hexStringToByteArray(salt);
+        byte[] key = deriveKey(password, saltAsByteArray, operationType, count);
+        return byteArrayToHexString(key);
+    }
+
+    /**
+     * Performs an EnScrypt key derivation on the given password, using the given parameters.
+     *
+     * @param password  The password to derive a key from.
+     * @param salt  The salt to use.
+     * @param operationType  Whether the count is in terms of no. of iterations of no. of seconds.
+     * @param count  The count of iterations or seconds to perform.
+     */
+    private byte[] deriveKey(String password, byte[] salt, OperationCount operationType, int count) {
         // Handle null arguments
         if (password == null) {
             password = "";
         }
         if (salt == null) {
-            salt = "";
+            salt = new byte[0];
         }
 
         // Check that the password doesn't contain any null characters
@@ -73,10 +108,9 @@ public class EnScrypt {
         // Set up the required byte arrays
         byte[] key = new byte[32];
         byte[] passwordAsByteArray = password.getBytes(Charset.forName("UTF-8"));
-        byte[] saltAsByteArray = Helper.hexStringToByteArray(salt);
 
         // Perform the chaining of the scrypt operations
-        byte[] scryptOutput = saltAsByteArray;
+        byte[] scryptOutput = salt;
         long startTime = System.currentTimeMillis();
         int numberOfIterationsPerformed = 0;
         while (true) {
@@ -98,7 +132,8 @@ public class EnScrypt {
 
         // Store the number of iterations performed, this will be required by the caller if using deriveKeyFor5Seconds
         this.mIterations = numberOfIterationsPerformed;
-        return byteArrayToHexString(key);
+
+        return key;
     }
 
     /**
