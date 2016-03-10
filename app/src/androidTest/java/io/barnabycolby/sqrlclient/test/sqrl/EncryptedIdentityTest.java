@@ -3,7 +3,7 @@ package io.barnabycolby.sqrlclient.test.sqrl;
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.helpers.Lambda;
-import io.barnabycolby.sqrlclient.sqrl.PasswordCrypt;
+import io.barnabycolby.sqrlclient.sqrl.EncryptedIdentity;
 
 import javax.crypto.AEADBadTagException;
 import java.security.GeneralSecurityException;
@@ -15,34 +15,34 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class PasswordCryptTest {
+public class EncryptedIdentityTest {
 
     @Test
     public void encryptFollowedByDecryptShouldReturnOriginalMasterKey() throws Exception {
         // Encrytp the master key
-        PasswordCrypt passwordCrypt = new PasswordCrypt();
         byte[] masterKey = io.barnabycolby.sqrlclient.helpers.Helper.hexStringToByteArray("A001A1B086A1AD531831208011D3451E882D077EFA0215A5B37521884376156A");
         String password = "7pfRpj#YtAdP5hML";
-        byte[] encryptedMasterKey = passwordCrypt.encryptMasterKey(masterKey, password);
+        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, password);
+        byte[] encryptedMasterKey = encryptedIdentity.getEncryptedMasterKey();
 
         // Decrypt the master key
-        passwordCrypt = new PasswordCrypt(passwordCrypt.getSalt(), passwordCrypt.getIterations(), passwordCrypt.getIv());
-        byte[] decryptedMasterKey = passwordCrypt.decryptMasterKey(encryptedMasterKey, password);
+        encryptedIdentity = new EncryptedIdentity(encryptedMasterKey, encryptedIdentity.getSalt(), encryptedIdentity.getIterations(), encryptedIdentity.getIv());
+        byte[] decryptedMasterKey = encryptedIdentity.decrypt(password);
         assertArrayEquals(masterKey, decryptedMasterKey);
     }
 
     @Test
     public void decryptingWithTheWrongPasswordThrowsAnAEADBadTagException() throws Exception {
         // Encrypt the master key
-        PasswordCrypt passwordCrypt = new PasswordCrypt();
         byte[] masterKey = io.barnabycolby.sqrlclient.helpers.Helper.hexStringToByteArray("A001A1B086A1AD531831208011D3451E882D077EFA0215A5B37521884376156A");
-        final byte[] encryptedMasterKey = passwordCrypt.encryptMasterKey(masterKey, "beans");
+        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, "beans");
+        final byte[] encryptedMasterKey = encryptedIdentity.getEncryptedMasterKey();
 
         // Decrypt the master key
-        final PasswordCrypt passwordCrypt2 = new PasswordCrypt(passwordCrypt.getSalt(), passwordCrypt.getIterations(), passwordCrypt.getIv());
+        final EncryptedIdentity encryptedIdentity2 = new EncryptedIdentity(encryptedMasterKey, encryptedIdentity.getSalt(), encryptedIdentity.getIterations(), encryptedIdentity.getIv());
         io.barnabycolby.sqrlclient.test.Helper.assertExceptionThrown(AEADBadTagException.class, new Lambda() {
             public void run() throws GeneralSecurityException {
-                passwordCrypt2.decryptMasterKey(encryptedMasterKey, "sausages");
+                encryptedIdentity2.decrypt("sausages");
             }
         });
     }
