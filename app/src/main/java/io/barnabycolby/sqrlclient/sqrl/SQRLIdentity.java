@@ -75,11 +75,10 @@ public class SQRLIdentity {
     public String signUsingIdentityPrivateKey(String message) throws CryptographyException {
         // Sign the message
         byte[] messageAsByteArray = message.getBytes(Charset.forName("UTF-8"));
-        byte[] signature = new byte[messageAsByteArray.length + Ed25519.SIGNBYTES]; //Util.prependZeros(64, messageAsByteArray);
-        int result = Ed25519.sign(signature, messageAsByteArray, this.mPrivateKey);
+        byte[] signature = new byte[Ed25519.SIGNBYTES];
+        int result = Ed25519.signDetached(signature, messageAsByteArray, this.mPrivateKey);
         checkForCryptographyError(result, R.string.identity_signature_failed);
 
-        //signature = Util.slice(signature, 0, 64);
         return Base64.encodeToString(signature, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
     }
 
