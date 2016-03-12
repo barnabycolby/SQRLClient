@@ -1,6 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl.factories;
 
 import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.exceptions.IncorrectPasswordException;
 import io.barnabycolby.sqrlclient.exceptions.NoNutException;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
@@ -11,6 +12,7 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.GeneralSecurityException;
 
 /**
  * A factory to help with the creation of a SQRLRequest.
@@ -40,7 +42,7 @@ public class SQRLRequestFactory {
      * @throws IOException  If the connection to the server could not be created.
      * @throws SQRLException  If the send fails.
      */
-    public SQRLResponse createAndSendQuery() throws MalformedURLException, IOException, SQRLException {
+    public SQRLResponse createAndSendQuery() throws MalformedURLException, IOException, SQRLException, GeneralSecurityException {
         SQRLQueryRequest request = new SQRLQueryRequest(getConnectionFactory(), getIdentity(), getResponseFactory());
         this.mPreviousResponse = request.send();
         
@@ -55,7 +57,7 @@ public class SQRLRequestFactory {
      * @throws NoNutException  If the qry value in the last server response did not contain a nut parameter.
      * @throws SQRLException  If the send fails.
      */
-    public SQRLResponse createAndSendIdent() throws MalformedURLException, IOException, NoNutException, SQRLException {
+    public SQRLResponse createAndSendIdent() throws MalformedURLException, IOException, NoNutException, SQRLException, GeneralSecurityException {
         SQRLIdentRequest request = new SQRLIdentRequest(getConnectionFactory(), getIdentity(), getResponseFactory(), this.mPreviousResponse);
         this.mPreviousResponse = request.send();
 
@@ -70,7 +72,7 @@ public class SQRLRequestFactory {
         return this.mConnectionFactory;
     }
 
-    private SQRLIdentity getIdentity() {
+    private SQRLIdentity getIdentity() throws GeneralSecurityException, IncorrectPasswordException {
         if (this.mIdentity == null) {
             this.mIdentity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri, "");
         }

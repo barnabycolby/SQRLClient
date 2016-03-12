@@ -15,6 +15,7 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * An AsyncTask that querys a SQRL server to determine whether a user account already exists, setting the text of a TextView to indicate the
@@ -60,7 +61,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
             // Perform the query and return the result
             this.mResponse = this.sqrlRequestFactory.createAndSendQuery();
             return Boolean.valueOf(mResponse.currentAccountExists());
-        } catch (SQRLException | IOException ex) {
+        } catch (SQRLException | IOException | GeneralSecurityException ex) {
             Log.e(TAG, "Account exists task failed: " + ex.getMessage());
             return null;
         }

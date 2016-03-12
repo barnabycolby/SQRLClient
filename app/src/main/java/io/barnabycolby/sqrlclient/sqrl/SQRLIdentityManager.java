@@ -9,9 +9,11 @@ import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeDeletedException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeWrittenToDiskException;
 import io.barnabycolby.sqrlclient.exceptions.IdentityDoesNotExistException;
+import io.barnabycolby.sqrlclient.exceptions.IncorrectPasswordException;
 import io.barnabycolby.sqrlclient.exceptions.InvalidMasterKeyException;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class SQRLIdentityManager {
     /**
      * Stores the runtime object containing the identities, which is simply a mapping from identity name to master key.
      */
-    private SimpleArrayMap<String, byte[]> mIdentities;
+    private SimpleArrayMap<String, EncryptedIdentity> mIdentities;
 
     /**
      * Stores the currently selected identity, that should be used when creating SQRLIdentity objects.
@@ -54,19 +56,22 @@ public class SQRLIdentityManager {
      * @throws IdentityAlreadyExistsException  If an identity with the same name already exists.
      * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be opened.
      */
-    public void save(String identityName, byte[] masterKey, String password) throws IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException, IdentitiesCouldNotBeLoadedException {
+    public void save(String identityName, byte[] masterKey, String password) throws IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException, IdentitiesCouldNotBeLoadedException, GeneralSecurityException {
         if (mIdentities.containsKey(identityName)) {
             throw new IdentityAlreadyExistsException();
         }
 
+        // We need to encrypt the identity before we can use
+        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, password);
+
         // We write it to disk before adding it to the runtime array in case the writeNewIdentityToDisk call throws an exception
         try {
-            this.mIdentityFolder.createNewIdentity(identityName, masterKey);
+            this.mIdentityFolder.createNewIdentity(identityName, encryptedIdentity);
         } catch (IOException ex) {
             Log.e(TAG, "Could not write new identity to disk: " + ex.getMessage());
             throw new IdentityCouldNotBeWrittenToDiskException();
         }
-        mIdentities.put(identityName, masterKey);
+        mIdentities.put(identityName, encryptedIdentity);
     }
 
     /**
@@ -163,11 +168,21 @@ public class SQRLIdentityManager {
     /**
      * Gets a SQRLIdentity instance of the currently selected identity for the given site.
      *
+     * As the identity will need to be decrypted using the password, this call may take 5 or more seconds to complete.
+     *
      * @param uri  The SQRLUri for the site.
      * @param password  The password to unlock the identity.
+     *
+     * @throws IncorrectPasswordException  If the password was incorrect.
      */
-    public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri, String password) {
-        byte[] masterKeyForCurrentIdentity = this.mIdentities.get(this.getCurrentIdentityName());
+    public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri, String password) throws GeneralSecurityException, IncorrectPasswordException {
+        EncryptedIdentity encryptedIdentity = this.mIdentities.get(this.getCurrentIdentityName());
+        byte[] masterKeyForCurrentIdentity = null;
+        try {
+            masterKeyForCurrentIdentity = encryptedIdentity.decrypt(password);
+        } catch (javax.crypto.AEADBadTagException ex) {
+            throw new IncorrectPasswordException();
+        }
         if (masterKeyForCurrentIdentity == null) {
             Log.wtf(TAG, "getCurrentIdentityName() returned a string not present in mIdentities");
             throw new RuntimeException();

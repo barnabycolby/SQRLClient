@@ -11,6 +11,7 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 import io.barnabycolby.sqrlclient.sqrl.protocol.SQRLResponse;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * An AsyncTask that sends an ident request to a SQRL server.
@@ -40,7 +41,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         try {
             mRequestFactory.createAndSendIdent();
-        } catch (IOException | SQRLException ex) {
+        } catch (IOException | SQRLException | GeneralSecurityException ex) {
             Log.e(TAG, "Ident request task failed: " + ex.getMessage());
             return App.getApplicationResources().getString(R.string.authorisation_request_failed);
         }
