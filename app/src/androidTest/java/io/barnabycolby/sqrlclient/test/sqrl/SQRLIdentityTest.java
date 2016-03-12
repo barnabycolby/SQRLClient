@@ -92,8 +92,8 @@ public class SQRLIdentityTest {
         String message = "bakedbeans";
         byte[] messageAsByteArray = message.getBytes(Charset.forName("UTF-8"));
         String actual = this.mIdentity.signUsingIdentityPrivateKey(message);
-        byte[] expectedAsByteArray = new byte[messageAsByteArray.length + Ed25519.SIGNBYTES];
-        Ed25519.sign(expectedAsByteArray, messageAsByteArray, this.mPrivateKey);
+        byte[] expectedAsByteArray = new byte[Ed25519.SIGNBYTES];
+        Ed25519.signDetached(expectedAsByteArray, messageAsByteArray, this.mPrivateKey);
         String expected = Base64.encodeToString(expectedAsByteArray, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
         Assert.assertEquals(expected, actual);
     }
