@@ -41,7 +41,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         try {
             mRequestFactory.createAndSendIdent();
-        } catch (IOException | SQRLException | GeneralSecurityException ex) {
+        } catch (IOException | SQRLException ex) {
             Log.e(TAG, "Ident request task failed: " + ex.getMessage());
             return App.getApplicationResources().getString(R.string.authorisation_request_failed);
         }

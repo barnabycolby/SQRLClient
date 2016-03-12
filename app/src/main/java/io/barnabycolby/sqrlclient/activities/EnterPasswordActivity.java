@@ -17,12 +17,18 @@ import android.widget.Toast;
 
 import io.barnabycolby.sqrlclient.activities.fragments.EnterPasswordStateFragment;
 import io.barnabycolby.sqrlclient.activities.StateFragmentActivity;
+import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
+import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.tasks.PasswordVerificationTask;
 import io.barnabycolby.sqrlclient.views.IdentitySpinner;
+
+import java.security.GeneralSecurityException;
 
 /**
  * This activity asks the user to enter the password for the selected identity, and then proceeds to verify it.
@@ -161,10 +167,16 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
     public void onPasswordCryptResult(final boolean result) {
         try {
             Helper.runOnUIThread(this, new Lambda() {
-                public void run() {
+                public void run() throws SQRLException, GeneralSecurityException {
                     if (result) {
+                        String password = mPasswordEditText.getText().toString();
+                        SQRLUri sqrlUri = new SQRLUri(mUri);
+                        SQRLIdentity identity = App.getSQRLIdentityManager().getCurrentIdentityForSite(sqrlUri, password);
+
                         Intent intent = new Intent(mContext, LoginActivity.class);
-                        intent.setData(mUri);
+                        Bundle extras = new Bundle();
+                        extras.putParcelable("sqrlIdentity", identity);
+                        intent.putExtras(extras);
                         startActivity(intent);
                     } else {
                         mLoginClicked = false;

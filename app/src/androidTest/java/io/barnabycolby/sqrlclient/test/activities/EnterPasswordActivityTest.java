@@ -3,6 +3,7 @@ package io.barnabycolby.sqrlclient.test.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -10,9 +11,10 @@ import android.support.test.runner.AndroidJUnit4;
 import io.barnabycolby.sqrlclient.activities.EnterPasswordActivity;
 import io.barnabycolby.sqrlclient.activities.LoginActivity;
 import io.barnabycolby.sqrlclient.App;
-import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
+import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
+import io.barnabycolby.sqrlclient.test.Helper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -169,9 +171,9 @@ public class EnterPasswordActivityTest {
 
     @Test
     public void passwordCorrectRedirectsToLoginActivity() throws Exception {
-        this.mPasswordEditText.perform(typeText("clownjuggler"), closeSoftKeyboard());
+        this.mPasswordEditText.perform(typeText("1hL!#0tAdhlgm4GA"), closeSoftKeyboard());
         
-        Activity loginActivity = Helper.monitorForActivity(LoginActivity.class, 5000, new Lambda() {
+        Activity loginActivity = Helper.monitorForActivity(LoginActivity.class, 10000, new Lambda() {
             public void run() {
                 mLoginButton.perform(click());
 
@@ -181,9 +183,10 @@ public class EnterPasswordActivityTest {
         });
         assertNotNull(loginActivity);
 
-        // Check that the data uri was passed along
-        Uri actualUri = loginActivity.getIntent().getData();
-        assertEquals(this.mUri, actualUri);
+        // Check that the SQRLIdentity was passed along
+        Bundle bundle = loginActivity.getIntent().getExtras();
+        SQRLIdentity sqrlIdentity = bundle.getParcelable("sqrlIdentity");
+        assertNotNull(sqrlIdentity);
 
         loginActivity.finish();
     }

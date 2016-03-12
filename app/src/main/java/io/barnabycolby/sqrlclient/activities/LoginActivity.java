@@ -20,7 +20,7 @@ import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.tasks.AccountExistsTask;
 import io.barnabycolby.sqrlclient.tasks.IdentRequestTask;
-import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 
 /**
@@ -33,7 +33,6 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
 
     private SwappableTextView informationTextView;
     private TextView friendlySiteNameTextView;
-    private SQRLUri sqrlUri;
 
     private AccountExistsTask mAccountExistsTask;
     private IdentRequestTask mIdentRequestTask;
@@ -63,11 +62,16 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
 
     @Override
     protected LoginStateFragment initialise() {
-        // Get the uri from the data and the uri text box
-        Intent intent = getIntent();
-        Uri uri = intent.getData();
-        if (uri == null) {
-            Log.e(TAG, "Uri passed via intent was null.");
+        // Get the SQRLIdentity from the intent
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle == null) {
+            Log.e(TAG, "A Bundle was not passed to the login activity.");
+            this.mInitialiseSucceeded = false;
+            return null;
+        }
+        SQRLIdentity identity = bundle.getParcelable("sqrlIdentity");
+        if (identity == null) {
+            Log.e(TAG, "A SQRLIdentity object was not passed to the login activity.");
             this.mInitialiseSucceeded = false;
             return null;
         }
@@ -75,25 +79,16 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
         // Store the uri in a SQRLUri so that we can query it more easily
         TextView rawInformationTextView = (TextView)findViewById(R.id.InformationTextView);
         this.informationTextView = new SwappableTextView(rawInformationTextView);
-        try {
-            sqrlUri = new SQRLUri(uri);
-        } catch (SQRLException ex) {
-            String errorMessage = this.getResources().getString(R.string.invalid_link);
-            informationTextView.setText(errorMessage);
-            Log.e(TAG, "Could not create SQRLUri: " + ex.getMessage());
-            this.mInitialiseSucceeded = false;
-            return null;
-        }
 
         // Create the SQRLRequestFactory used to generate requests
-        SQRLRequestFactory requestFactory = new SQRLRequestFactory(this.sqrlUri);
+        SQRLRequestFactory requestFactory = new SQRLRequestFactory(identity);
 
         // Retrieve the friendly name
-        String displayName = sqrlUri.getDisplayName();
+        String displayName = identity.getSQRLUri().getDisplayName();
 
         // Create the state fragment to store the state
         this.mInitialiseSucceeded = true;
-        return new LoginStateFragment(this.informationTextView, this.sqrlUri, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
+        return new LoginStateFragment(this.informationTextView, identity, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
     }
 
     @Override
@@ -102,9 +97,6 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
         TextView rawInformationTextView = (TextView)findViewById(R.id.InformationTextView);
         this.informationTextView = this.mStateFragment.getInformationTextView();
         this.informationTextView.setTextView(rawInformationTextView);
-
-        // Retrieve the SQRL Uri
-        this.sqrlUri = this.mStateFragment.getSQRLUri();
 
         // Reattach the listeners used for callbacks
         this.mStateFragment.getAccountExistsDetachableListener().attach(this.getAccountExistsListener());

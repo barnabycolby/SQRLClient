@@ -9,7 +9,7 @@ import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortDetachableListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
-import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
+import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 
 /**
  * Stores the state required by the Login Activity, allowing it to recover after a runtime change, such as an orientation change.
@@ -18,7 +18,7 @@ import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
  */
 public class LoginStateFragment extends Fragment {
     private SwappableTextView mInformationTextView;
-    private SQRLUri mSQRLUri;
+    private SQRLIdentity mSQRLIdentity;
     private SQRLRequestFactory mRequestFactory;
     private ProceedAbortDetachableListener mAccountExistsDetachableListener;
     private ProceedAbortDetachableListener mDialogDetachableListener;
@@ -28,15 +28,15 @@ public class LoginStateFragment extends Fragment {
      * Constructs a new instance using the given objects.
      *
      * @param informationTextView  The information text view object to retain.
-     * @param sqrlUri  The SQRLUri object to retain.
+     * @param sqrlUri  The SQRLIdentity object to retain.
      * @param requestFactory  The SQRLRequestFactory object to retain.
      * @param accountExistsListener  The listener object used for account exists callbacks.
      * @param dialogListener  The listener object used for create account dialog callbacks.
      * @param displayName  The servers display name.
      */
-    public LoginStateFragment(SwappableTextView informationTextView, SQRLUri sqrlUri, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener, String displayName) {
+    public LoginStateFragment(SwappableTextView informationTextView, SQRLIdentity sqrlIdentity, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener, String displayName) {
         this.mInformationTextView = informationTextView;
-        this.mSQRLUri = sqrlUri;
+        this.mSQRLIdentity = sqrlIdentity;
         this.mRequestFactory = requestFactory;
         this.mAccountExistsDetachableListener = (ProceedAbortDetachableListener)DetachableListener.create(accountExistsListener, ProceedAbortDetachableListener.class);
         this.mDialogDetachableListener = (ProceedAbortDetachableListener)DetachableListener.create(dialogListener, ProceedAbortDetachableListener.class);
@@ -70,12 +70,12 @@ public class LoginStateFragment extends Fragment {
     }
 
     /**
-     * Gets the retained SQRLUri.
+     * Gets the retained SQRLIdentity.
      *
-     * @return The retained SQRLUri.
+     * @return The retained SQRLIdentity.
      */
-    public SQRLUri getSQRLUri() {
-        return this.mSQRLUri;
+    public SQRLIdentity getSQRLIdentity() {
+        return this.mSQRLIdentity;
     }
 
     /**

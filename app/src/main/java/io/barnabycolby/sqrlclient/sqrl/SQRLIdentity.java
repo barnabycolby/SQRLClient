@@ -158,4 +158,8 @@ public class SQRLIdentity implements Parcelable {
         SQRLIdentity that = (SQRLIdentity)thatBeforeCast;
         return this.getIdentityKey().equals(that.getIdentityKey());
     }
+
+    public SQRLUri getSQRLUri() {
+        return this.mUri;
+    }
 }
