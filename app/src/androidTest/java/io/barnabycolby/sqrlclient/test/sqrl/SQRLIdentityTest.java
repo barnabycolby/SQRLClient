@@ -1,5 +1,7 @@
 package io.barnabycolby.sqrlclient.test.sqrl;
 
+import android.net.Uri;
+import android.os.Parcel;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Base64;
 
@@ -96,5 +98,22 @@ public class SQRLIdentityTest {
         Ed25519.signDetached(expectedAsByteArray, messageAsByteArray, this.mPrivateKey);
         String expected = Base64.encodeToString(expectedAsByteArray, Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
         Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void parcelAndUnparcelCreatesTheSameObject() throws Exception {
+        // Create the identity to parcel
+        SQRLUri uri = new SQRLUri(Uri.parse("sqrl://sqrldemo.barnabycolby.io/login/sqrlauth.php?nut=54cf51b66a357f414441fff2ddad3b0ce060385bb5ce40ab7e170dc910be3942"));
+        SQRLIdentity identity = new SQRLIdentity(this.mMasterKey, uri);
+
+        // Parcel and unparcel the identity
+        Parcel parcel = Parcel.obtain();
+        identity.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+        SQRLIdentity recreatedIdentity = SQRLIdentity.CREATOR.createFromParcel(parcel);
+        parcel.recycle();
+
+        // Check that the two instances are equivalent
+        assertEquals(identity, recreatedIdentity);
     }
 }

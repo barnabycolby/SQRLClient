@@ -1,5 +1,6 @@
 package io.barnabycolby.sqrlclient.test.sqrl;
 
+import android.os.Parcel;
 import android.net.Uri;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -11,6 +12,8 @@ import java.net.MalformedURLException;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class SQRLUriTest {
@@ -144,6 +147,22 @@ public class SQRLUriTest {
 
         String expectedUri = baseUri + newPathAndQueryString;
         Assert.assertEquals(expectedUri, sqrlUri.getFullUriAsString());
+    }
+
+    @Test
+    public void parcelAndUnparcelCreatesTheSameObject() throws Exception {
+        Uri uri = Uri.parse("sqrl://www.grc.com/sqrl?nut=uediASXDPlsTTYBI-x7s3g&sfn=R1JD");
+        SQRLUri sqrlUri = new SQRLUri(uri);
+
+        // Parcel and unparcel the identity
+        Parcel parcel = Parcel.obtain();
+        sqrlUri.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+        SQRLUri recreatedSQRLUri = SQRLUri.CREATOR.createFromParcel(parcel);
+        parcel.recycle();
+        
+        // Check that the two instances are equivalent
+        assertEquals(sqrlUri, recreatedSQRLUri);
     }
 
     private Uri getUriSchemeAndNut(String scheme, String nut) {

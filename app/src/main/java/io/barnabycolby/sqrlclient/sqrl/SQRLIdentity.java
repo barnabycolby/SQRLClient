@@ -1,5 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Base64;
 
 import eu.artemisc.stodium.Ed25519;
@@ -17,7 +19,7 @@ import org.abstractj.kalium.Sodium;
 /**
  * Wraps a SQRL Identity to provide helper methods for using the identity.
  */
-public class SQRLIdentity {
+public class SQRLIdentity implements Parcelable {
     static {
         Stodium.StodiumInit();
     }
@@ -108,5 +110,52 @@ public class SQRLIdentity {
      */
     public String getVerifyUnlockKey() {
         return "17jqvZdMX6Ykcg-TNWQQdVnGyH_SGy3pwhiIrCVBdiY";
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeParcelable(this.mUri, flags);
+        out.writeByteArray(this.mMasterKey);
+    }
+
+    // This variable is required by the parcelable interface
+    public static final Parcelable.Creator<SQRLIdentity> CREATOR = new Parcelable.Creator<SQRLIdentity>() {
+        public SQRLIdentity createFromParcel(Parcel in) {
+            SQRLUri uri = in.readParcelable(SQRLUri.class.getClassLoader());
+            byte[] masterKey = new byte[32];
+            in.readByteArray(masterKey);
+
+            // Create the SQRLIdentity
+            SQRLIdentity identity = null;
+            try {
+                identity = new SQRLIdentity(masterKey, uri);
+            } catch (InvalidMasterKeyException ex) {
+                // As this was a valid master key before, this exception will not be thrown
+            } catch (CryptographyException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            return identity;
+        }
+
+        public SQRLIdentity[] newArray(int size) {
+            return new SQRLIdentity[size];
+        }
+    };
+
+    @Override
+    public boolean equals(Object thatBeforeCast) {
+        if (!(thatBeforeCast instanceof SQRLIdentity)) {
+            return false;
+        }
+
+        // Checking the public keys is enough here as it is generated from both the URI and the master key
+        SQRLIdentity that = (SQRLIdentity)thatBeforeCast;
+        return this.getIdentityKey().equals(that.getIdentityKey());
     }
 }

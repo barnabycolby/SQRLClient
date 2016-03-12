@@ -1,5 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Patterns;
@@ -14,7 +16,7 @@ import java.nio.charset.Charset;
 /**
  * A wrapper around a Uri object that provides extra validation and helper methods related to the SQRL protocol.
  */
-public class SQRLUri {
+public class SQRLUri implements Parcelable {
 
     private Uri uri;
 
@@ -148,5 +150,47 @@ public class SQRLUri {
         if (nut == null) {
             throw new NoNutException();
         }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeParcelable(this.uri, 0);
+    }
+
+    // Required by the Parcelable interface
+    public static final Parcelable.Creator<SQRLUri> CREATOR = new Parcelable.Creator<SQRLUri>() {
+        public SQRLUri createFromParcel(Parcel in) {
+            Uri uri = in.readParcelable(null);
+            SQRLUri sqrlUri = null;
+            try {
+                sqrlUri = new SQRLUri(uri);
+            } catch (SQRLException ex) {
+                // This should not be thrown, as we know that the uri must have previously been validated
+            }
+            return sqrlUri;
+        }
+
+        public SQRLUri[] newArray(int size) {
+            return new SQRLUri[size];
+        }
+    };
+
+    @Override
+    public boolean equals(Object that) {
+        if (!(that instanceof SQRLUri)) {
+            return false;
+        }
+
+        return this.toString().equals(that.toString());
+    }
+
+    @Override
+    public String toString() {
+        return this.uri.toString();
     }
 }
