@@ -25,6 +25,7 @@
             android:layout_below="@id/ExplanationTextView"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:layout_width="fill_parent"
             android:progress="0"
             android:progressDrawable="@drawable/green_progress_bar"

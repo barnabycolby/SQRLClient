@@ -64,6 +64,6 @@
     <string name="password_is_blank">The password cannot be blank!</string>
     <string name="incorrect_password" color="red">That password was incorrect!</string>
     <string name="login_activity_label">Logging in</string>
-    <string name="encrypting_identity_explanation">Encrypting your new identity to protect it from bad guys.</string>
+    <string name="encrypting_identity_explanation">In order to protect your identity against people who might steal your device, it needs to be encrypted using your password for 5 seconds.</string>
     <string name="encrypting_identity">Encrypting Identity</string>
 </resources>
