@@ -11,7 +11,7 @@ import io.barnabycolby.sqrlclient.exceptions.IdentityCouldNotBeWrittenToDiskExce
 import io.barnabycolby.sqrlclient.exceptions.IdentityDoesNotExistException;
 import io.barnabycolby.sqrlclient.exceptions.IncorrectPasswordException;
 import io.barnabycolby.sqrlclient.exceptions.InvalidMasterKeyException;
-import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -177,7 +177,7 @@ public class SQRLIdentityManager {
      *
      * @throws IncorrectPasswordException  If the password was incorrect.
      */
-    public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri, String password, DecryptIdentityListener listener) throws GeneralSecurityException, IncorrectPasswordException {
+    public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri, String password, PasswordCryptListener listener) throws GeneralSecurityException, IncorrectPasswordException {
         EncryptedIdentity encryptedIdentity = this.mIdentities.get(this.getCurrentIdentityName());
         byte[] masterKeyForCurrentIdentity = null;
         try {

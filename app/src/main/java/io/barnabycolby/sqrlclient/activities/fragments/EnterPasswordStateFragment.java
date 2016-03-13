@@ -4,8 +4,8 @@ import android.app.Fragment;
 import android.os.Bundle;
 
 import io.barnabycolby.sqrlclient.helpers.DetachableListener;
-import io.barnabycolby.sqrlclient.helpers.DecryptIdentityDetachableListener;
-import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+import io.barnabycolby.sqrlclient.helpers.PasswordCryptDetachableListener;
+import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 import io.barnabycolby.sqrlclient.tasks.DecryptIdentityTask;
 
 /**
@@ -14,7 +14,7 @@ import io.barnabycolby.sqrlclient.tasks.DecryptIdentityTask;
  * Includes help for attaching/detaching the listeners used by the activity.
  */
 public class EnterPasswordStateFragment extends Fragment {
-    private DecryptIdentityDetachableListener mDecryptIdentityDetachableListener;
+    private PasswordCryptDetachableListener mPasswordCryptDetachableListener;
     private DecryptIdentityTask mDecryptIdentityTask;
 
     /**
@@ -22,8 +22,8 @@ public class EnterPasswordStateFragment extends Fragment {
      *
      * @param passwordCryptDetachableListener  The listener object used for password verification.
      */
-    public EnterPasswordStateFragment(DecryptIdentityListener passwordCryptListener) {
-        this.mDecryptIdentityDetachableListener = (DecryptIdentityDetachableListener)DetachableListener.create(passwordCryptListener, DecryptIdentityDetachableListener.class);
+    public EnterPasswordStateFragment(PasswordCryptListener passwordCryptListener) {
+        this.mPasswordCryptDetachableListener = (PasswordCryptDetachableListener)DetachableListener.create(passwordCryptListener, PasswordCryptDetachableListener.class);
     }
 
     @Override
@@ -37,8 +37,8 @@ public class EnterPasswordStateFragment extends Fragment {
     /**
      * Returns the detachable listener used for password verification results.
      */
-    public DecryptIdentityDetachableListener getDecryptIdentityDetachableListener() {
-        return this.mDecryptIdentityDetachableListener;
+    public PasswordCryptDetachableListener getPasswordCryptDetachableListener() {
+        return this.mPasswordCryptDetachableListener;
     }
 
     public DecryptIdentityTask getDecryptIdentityTask() {

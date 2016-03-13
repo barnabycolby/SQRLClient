@@ -6,7 +6,7 @@ import eu.artemisc.stodium.Stodium;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 
 import java.nio.charset.Charset;
 
@@ -24,7 +24,7 @@ public class EnScrypt {
 
     private enum OperationCount { ITERATIONS, SECONDS };
 
-    private DecryptIdentityListener mListener;
+    private PasswordCryptListener mListener;
 
     /**
      * Default constructor, should be used when you don't need to listen for progress updates.
@@ -34,7 +34,7 @@ public class EnScrypt {
     /**
      * Use this constructor when you need to listen to progress updates.
      */
-    public EnScrypt(DecryptIdentityListener listener) {
+    public EnScrypt(PasswordCryptListener listener) {
         this.mListener = listener;
     }
 
@@ -137,7 +137,7 @@ public class EnScrypt {
                 // If we have a listener, we need to give it a progress update
                 if (this.mListener != null) {
                     int progress = (numberOfIterationsPerformed * 100) / count;
-                    this.mListener.onIdentityDecryptionProgressUpdate(progress);
+                    this.mListener.onPasswordCryptProgressUpdate(progress);
                 }
 
                 if (numberOfIterationsPerformed == count) {

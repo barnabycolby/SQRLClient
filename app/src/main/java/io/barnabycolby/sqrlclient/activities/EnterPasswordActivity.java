@@ -22,7 +22,7 @@ import io.barnabycolby.sqrlclient.exceptions.SQRLException;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 import io.barnabycolby.sqrlclient.tasks.DecryptIdentityTask;
@@ -33,7 +33,7 @@ import java.security.GeneralSecurityException;
 /**
  * This activity asks the user to enter the password for the selected identity, and then proceeds to verify it.
  */
-public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordStateFragment> implements TextWatcher, DecryptIdentityListener {
+public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordStateFragment> implements TextWatcher, PasswordCryptListener {
     private static String TAG = EnterPasswordActivity.class.getName();
 
     // Allows the context of this activity to be accessed from within an inner class
@@ -95,7 +95,7 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
 
     @Override
     protected void restore() {
-        this.mStateFragment.getDecryptIdentityDetachableListener().attach(this);
+        this.mStateFragment.getPasswordCryptDetachableListener().attach(this);
 
         // Restore the password verification progress to the Progress Bar
         DecryptIdentityTask decryptIdentityTask = this.mStateFragment.getDecryptIdentityTask();
@@ -136,7 +136,7 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
         // Start the identity decryption task
         // To support the testing of this activity, we need to check whether async tasks have been disabled
         if (!this.mAsyncTasksDisabled) {
-            DecryptIdentityTask decryptIdentityTask = new DecryptIdentityTask(this.mStateFragment.getDecryptIdentityDetachableListener(), this.mSQRLUri);
+            DecryptIdentityTask decryptIdentityTask = new DecryptIdentityTask(this.mStateFragment.getPasswordCryptDetachableListener(), this.mSQRLUri);
             this.mStateFragment.setDecryptIdentityTask(decryptIdentityTask);
             String password = this.mPasswordEditText.getText().toString();
             decryptIdentityTask.execute(password);
@@ -153,7 +153,7 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
 
         // Detach any listeners associated with this activity
         if (this.mStateFragment != null) {
-            this.mStateFragment.getDecryptIdentityDetachableListener().detach();
+            this.mStateFragment.getPasswordCryptDetachableListener().detach();
         }
     }
 
@@ -178,11 +178,11 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
     }
 
     @Override
-    public void onIdentityDecrypted(final SQRLIdentity identity) {
+    public void onPasswordCryptResult(final boolean result) {
         try {
             Helper.runOnUIThread(this, new Lambda() {
                 public void run() throws SQRLException, GeneralSecurityException {
-                    if (identity == null) {
+                    if (!result) {
                         mLoginClicked = false;
                         mLoginButton.setVisibility(View.VISIBLE);
                         mVerifyProgressBar.setProgress(0);
@@ -192,6 +192,8 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
                         mPasswordEditText.setText("");
                         mIdentitySpinner.setEnabled(true);
                     } else {
+                        SQRLIdentity identity = mStateFragment.getDecryptIdentityTask().getSQRLIdentity();
+
                         Intent intent = new Intent(mContext, LoginActivity.class);
                         Bundle extras = new Bundle();
                         extras.putParcelable("sqrlIdentity", identity);
@@ -207,7 +209,7 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
     }
 
     @Override
-    public void onIdentityDecryptionProgressUpdate(int progress) {
+    public void onPasswordCryptProgressUpdate(int progress) {
         this.mVerifyProgressBar.setProgress(progress);
     }
 

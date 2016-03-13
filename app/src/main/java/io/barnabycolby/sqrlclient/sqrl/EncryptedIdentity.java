@@ -1,6 +1,6 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
-import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 
 import java.util.Random;
 import java.security.GeneralSecurityException;
@@ -79,7 +79,7 @@ public class EncryptedIdentity {
      * @throws AEADBadTagException  If the password used was incorrect.
      * @throws GeneralSecurityException  If the decryption could not be completed.
      */
-    public byte[] decrypt(String password, DecryptIdentityListener listener) throws GeneralSecurityException {
+    public byte[] decrypt(String password, PasswordCryptListener listener) throws GeneralSecurityException {
         // Generate the decryption key
         EnScrypt enScrypt = new EnScrypt(listener);
         byte[] derivedKey = enScrypt.deriveKey(password, this.getSalt(), this.getIterations());

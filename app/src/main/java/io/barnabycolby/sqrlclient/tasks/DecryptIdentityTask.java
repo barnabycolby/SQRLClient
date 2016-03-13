@@ -3,7 +3,7 @@ package io.barnabycolby.sqrlclient.tasks;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.IncorrectPasswordException;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
-import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
 
@@ -12,41 +12,41 @@ import java.security.GeneralSecurityException;
 /**
  * Attempts to retrieve a SQRLIdentity using a given password.
  */
-public class DecryptIdentityTask extends TestableAsyncTask<String, Integer, SQRLIdentity> {
-    private DecryptIdentityListener mListener;
+public class DecryptIdentityTask extends TestableAsyncTask<String, Integer, Boolean> {
+    private PasswordCryptListener mListener;
     private SQRLUri mUri;
     private int mProgress = 0;
+    private SQRLIdentity mIdentity;
 
     /**
      * Constructs a new instance of this class.
      *
      * @param listener  The listener to use for progress and results callbacks.
      */
-    public DecryptIdentityTask(DecryptIdentityListener listener, SQRLUri uri) {
+    public DecryptIdentityTask(PasswordCryptListener listener, SQRLUri uri) {
         this.mListener = listener;
         this.mUri = uri;
     }
 
-    protected SQRLIdentity doInBackground(String... passwords) {
+    protected Boolean doInBackground(String... passwords) {
         // Extract the password
         if (passwords.length < 1) {
-            return null;
+            return new Boolean(false);
         }
         String password = passwords[0];
 
         // Decrypt the identity
-        SQRLIdentity identity = null;
         try {
-            identity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri, password, this.mListener);
+            this.mIdentity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri, password, this.mListener);
         } catch (IncorrectPasswordException | GeneralSecurityException ex) {
-            return null;
+            return new Boolean(false);
         }
 
-        return identity;
+        return new Boolean(true);
     }
 
-    protected void onPostExecute(SQRLIdentity identity) {
-        this.mListener.onIdentityDecrypted(identity);
+    protected void onPostExecute(Boolean result) {
+        this.mListener.onPasswordCryptResult(result.booleanValue());
 
         // We must call this because we are using the TestableAsyncTask
         executionFinished();
@@ -57,5 +57,9 @@ public class DecryptIdentityTask extends TestableAsyncTask<String, Integer, SQRL
      */
     public int getProgress() {
         return this.mProgress;
+    }
+
+    public SQRLIdentity getSQRLIdentity() {
+        return this.mIdentity;
     }
 }
