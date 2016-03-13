@@ -44,6 +44,11 @@
         />
 
         <activity
+            android:name=".activities.EncryptIdentityActivity"
+            android:label="@string/encrypting_identity"
+        />
+
+        <activity
             android:name=".activities.EnterNewPasswordActivity"
             android:label="@string/enter_new_password"
         />
