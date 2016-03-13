@@ -29,7 +29,7 @@ public class SQRLIdentityManagerTest {
     @Before
     public void setUp() throws Exception {
         this.mIdentityManager = App.getSQRLIdentityManager();
-        this.mIdentityManager.save(this.mIdentityName, new byte[32], "C5E8Yz5T4&kbipkN");
+        this.mIdentityManager.save(this.mIdentityName, new byte[32], "C5E8Yz5T4&kbipkN", null);
     }
 
     @After
@@ -83,7 +83,7 @@ public class SQRLIdentityManagerTest {
         SQRLUri uri = mock(SQRLUri.class);
         when(uri.getHost()).thenReturn("reddit.com");
 
-        this.mIdentityManager.save(identityName, masterKey, password);
+        this.mIdentityManager.save(identityName, masterKey, password, null);
         this.mIdentityManager.setCurrentIdentity(identityName);
         this.mIdentityManager.getCurrentIdentityForSite(uri, password, null);
     }
@@ -96,7 +96,7 @@ public class SQRLIdentityManagerTest {
         final SQRLUri uri = mock(SQRLUri.class);
         when(uri.getHost()).thenReturn("cr.yp.to");
 
-        this.mIdentityManager.save(identityName, masterKey, "AGBLQ^e91ot5&Qdy");
+        this.mIdentityManager.save(identityName, masterKey, "AGBLQ^e91ot5&Qdy", null);
         this.mIdentityManager.setCurrentIdentity(identityName);
 
         // Assert that an IncorrectPasswordException is thrown

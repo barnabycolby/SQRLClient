@@ -21,7 +21,7 @@
             />
 
         <ProgressBar
-            android:id="@+id/VerifyProgressBar"
+            android:id="@+id/EncryptProgressBar"
             android:layout_below="@id/ExplanationTextView"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"

@@ -30,7 +30,7 @@ public class EncryptIdentityActivityTest {
     private EncryptIdentityActivity mActivity;
 
     // Espresso UI components
-    private ViewInteraction mVerifyProgressBar;
+    private ViewInteraction mEncryptProgressBar;
     private ViewInteraction mExplanationTextView;
 
     private class TestRule extends ActivityTestRule<EncryptIdentityActivity> {
@@ -45,6 +45,10 @@ public class EncryptIdentityActivityTest {
             bundle.putString("identityName", "Noam Chomsky");
             bundle.putByteArray("masterKey", Helper.hexStringToByteArray("250528BEF79D42413248BAB67CC63A4B381F5004B6644F5D6EF6C1ECD8542087"));
             bundle.putString("password", "S9dE%4kAYVRRkcPI");
+
+            // We want to disable the async task so that we can perform Espresso tests
+            bundle.putBoolean("disableAsyncTasks", true);
+
             intent.putExtras(bundle);
 
             return intent;
@@ -60,7 +64,7 @@ public class EncryptIdentityActivityTest {
 
         // Get espresso references to the UI components
         this.mExplanationTextView = onView(withId(R.id.ExplanationTextView));
-        this.mVerifyProgressBar = onView(withId(R.id.VerifyProgressBar));
+        this.mEncryptProgressBar = onView(withId(R.id.EncryptProgressBar));
     }
 
     @After
@@ -72,6 +76,6 @@ public class EncryptIdentityActivityTest {
     public void displaysCorrectInitialUIComponents() {
         this.mExplanationTextView.check(matches(isDisplayed()));
         this.mExplanationTextView.check(matches(withText(R.string.encrypting_identity_explanation)));
-        this.mVerifyProgressBar.check(matches(isDisplayed()));
+        this.mEncryptProgressBar.check(matches(isDisplayed()));
     }
 }

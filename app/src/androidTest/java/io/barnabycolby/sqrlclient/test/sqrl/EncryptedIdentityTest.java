@@ -22,7 +22,7 @@ public class EncryptedIdentityTest {
         // Encrytp the master key
         byte[] masterKey = io.barnabycolby.sqrlclient.helpers.Helper.hexStringToByteArray("A001A1B086A1AD531831208011D3451E882D077EFA0215A5B37521884376156A");
         String password = "7pfRpj#YtAdP5hML";
-        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, password);
+        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, password, null);
         byte[] encryptedMasterKey = encryptedIdentity.getEncryptedMasterKey();
 
         // Decrypt the master key
@@ -35,7 +35,7 @@ public class EncryptedIdentityTest {
     public void decryptingWithTheWrongPasswordThrowsAnAEADBadTagException() throws Exception {
         // Encrypt the master key
         byte[] masterKey = io.barnabycolby.sqrlclient.helpers.Helper.hexStringToByteArray("A001A1B086A1AD531831208011D3451E882D077EFA0215A5B37521884376156A");
-        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, "beans");
+        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, "beans", null);
         final byte[] encryptedMasterKey = encryptedIdentity.getEncryptedMasterKey();
 
         // Decrypt the master key

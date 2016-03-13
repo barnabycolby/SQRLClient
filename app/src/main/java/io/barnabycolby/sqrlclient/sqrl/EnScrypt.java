@@ -145,6 +145,13 @@ public class EnScrypt {
                 }
             } else if (operationType.equals(OperationCount.SECONDS)) {
                 long duration = System.currentTimeMillis() - startTime;
+
+                // If we have a listener, we need to give it a progress update
+                if (this.mListener != null) {
+                    int progress = (int)duration / (count * 10);
+                    this.mListener.onPasswordCryptProgressUpdate(progress);
+                }
+
                 if (duration >= count * 1000) {
                     break;
                 }

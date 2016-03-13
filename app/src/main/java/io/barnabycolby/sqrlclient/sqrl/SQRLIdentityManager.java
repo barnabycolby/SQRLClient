@@ -54,16 +54,18 @@ public class SQRLIdentityManager {
      * @param identityName  The name of the new identity. This will be used for UI identification and system identification.
      * @param masterKey  The master key of the new identity.
      * @param password  The password that protects the new identity.
+     * @param listener  The listener used for progress updates.
+     *
      * @throws IdentityAlreadyExistsException  If an identity with the same name already exists.
      * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be opened.
      */
-    public void save(String identityName, byte[] masterKey, String password) throws IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException, IdentitiesCouldNotBeLoadedException, GeneralSecurityException {
+    public void save(String identityName, byte[] masterKey, String password, PasswordCryptListener listener) throws IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException, IdentitiesCouldNotBeLoadedException, GeneralSecurityException {
         if (mIdentities.containsKey(identityName)) {
             throw new IdentityAlreadyExistsException();
         }
 
         // We need to encrypt the identity before we can use
-        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, password);
+        EncryptedIdentity encryptedIdentity = EncryptedIdentity.create(masterKey, password, listener);
 
         // We write it to disk before adding it to the runtime array in case the writeNewIdentityToDisk call throws an exception
         try {

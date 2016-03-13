@@ -47,11 +47,13 @@ public class EncryptedIdentity {
      *
      * @param masterKey  The master key to encrypt.
      * @param password  The password to encrypt the master key with.
+     * @param listener  The listener used for progress updates.
+     *
      * @throws GeneralSecurityException  If the encryption cannot be completed.
      */
-    public static EncryptedIdentity create(byte[] masterKey, String password) throws GeneralSecurityException {
+    public static EncryptedIdentity create(byte[] masterKey, String password, PasswordCryptListener listener) throws GeneralSecurityException {
         // Generate the encryption key
-        EnScrypt enScrypt = new EnScrypt();
+        EnScrypt enScrypt = new EnScrypt(listener);
         byte[] salt = EncryptedIdentity.generateSalt();
         byte[] derivedKey = enScrypt.deriveKeyFor5Seconds(password, salt);
         int iterations = enScrypt.getIterations();

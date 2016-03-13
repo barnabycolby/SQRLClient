@@ -71,18 +71,12 @@ public class EnterNewPasswordActivity extends AppCompatActivity implements TextW
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
     public void onNextClicked(View view) throws IdentitiesCouldNotBeLoadedException, IdentityCouldNotBeWrittenToDiskException, GeneralSecurityException {
-        // Attempt to save the new identity, displaying a dialog if it already exists
-        try {
-            App.getSQRLIdentityManager().save(this.mIdentityName, this.mMasterKey, this.mPasswordEditText.getText().toString());
-        } catch (IdentityAlreadyExistsException ex) {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
-
-            // We only finish the activity if an identity has been successfully created
-            // Otherwise the user would have to regenerate the entropy
-            return;
-        }
-
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, EncryptIdentityActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString("identityName", this.mIdentityName);
+        extras.putByteArray("masterKey", this.mMasterKey);
+        extras.putString("password", this.mPasswordEditText.getText().toString());
+        intent.putExtras(extras);
         startActivity(intent);
     }
 

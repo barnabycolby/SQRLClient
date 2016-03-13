@@ -162,8 +162,8 @@ public class IdentityManagementTest {
         SQRLIdentityManager identityManager = App.getSQRLIdentityManager();
         String identityName1 = "Pablo Escobar";
         String identityName2 = "Walter White";
-        identityManager.save(identityName1, new byte[32], mPassword);
-        identityManager.save(identityName2, new byte[32], mPassword);
+        identityManager.save(identityName1, new byte[32], mPassword, null);
+        identityManager.save(identityName2, new byte[32], mPassword, null);
         identityManager.setCurrentIdentity(identityName2);
 
         // Trigger the transition back to MainActivity by going to the create identity activity and pressing back

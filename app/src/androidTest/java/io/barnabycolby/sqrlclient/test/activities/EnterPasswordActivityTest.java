@@ -62,8 +62,8 @@ public class EnterPasswordActivityTest {
         public void beforeActivityLaunched() {
             // Set up the identities
             try {
-                App.getSQRLIdentityManager().save("Harriet", new byte[32], "1hL!#0tAdhlgm4GA");
-                App.getSQRLIdentityManager().save("Rupert", new byte[32], "SfZgFVhVE6s%t#C&");
+                App.getSQRLIdentityManager().save("Harriet", new byte[32], "1hL!#0tAdhlgm4GA", null);
+                App.getSQRLIdentityManager().save("Rupert", new byte[32], "SfZgFVhVE6s%t#C&", null);
                 App.getSQRLIdentityManager().setCurrentIdentity("Harriet");
             } catch (Exception ex) {
                 // Do nothing if an exception gets thrown
