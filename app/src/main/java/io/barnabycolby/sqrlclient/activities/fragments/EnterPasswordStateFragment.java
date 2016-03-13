@@ -4,9 +4,9 @@ import android.app.Fragment;
 import android.os.Bundle;
 
 import io.barnabycolby.sqrlclient.helpers.DetachableListener;
-import io.barnabycolby.sqrlclient.helpers.PasswordCryptDetachableListener;
-import io.barnabycolby.sqrlclient.sqrl.PasswordCryptListener;
-import io.barnabycolby.sqrlclient.tasks.PasswordVerificationTask;
+import io.barnabycolby.sqrlclient.helpers.DecryptIdentityDetachableListener;
+import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+import io.barnabycolby.sqrlclient.tasks.DecryptIdentityTask;
 
 /**
  * Stores the state required by the EnterPassword Activity, allowing it to recover after a runtime change, such as an orientation change.
@@ -14,16 +14,16 @@ import io.barnabycolby.sqrlclient.tasks.PasswordVerificationTask;
  * Includes help for attaching/detaching the listeners used by the activity.
  */
 public class EnterPasswordStateFragment extends Fragment {
-    private PasswordCryptDetachableListener mPasswordCryptDetachableListener;
-    private PasswordVerificationTask mPasswordVerificationTask;
+    private DecryptIdentityDetachableListener mDecryptIdentityDetachableListener;
+    private DecryptIdentityTask mDecryptIdentityTask;
 
     /**
      * Constructs a new instance using the given objects.
      *
      * @param passwordCryptDetachableListener  The listener object used for password verification.
      */
-    public EnterPasswordStateFragment(PasswordCryptListener passwordCryptListener) {
-        this.mPasswordCryptDetachableListener = (PasswordCryptDetachableListener)DetachableListener.create(passwordCryptListener, PasswordCryptDetachableListener.class);
+    public EnterPasswordStateFragment(DecryptIdentityListener passwordCryptListener) {
+        this.mDecryptIdentityDetachableListener = (DecryptIdentityDetachableListener)DetachableListener.create(passwordCryptListener, DecryptIdentityDetachableListener.class);
     }
 
     @Override
@@ -37,15 +37,15 @@ public class EnterPasswordStateFragment extends Fragment {
     /**
      * Returns the detachable listener used for password verification results.
      */
-    public PasswordCryptDetachableListener getPasswordCryptDetachableListener() {
-        return this.mPasswordCryptDetachableListener;
+    public DecryptIdentityDetachableListener getDecryptIdentityDetachableListener() {
+        return this.mDecryptIdentityDetachableListener;
     }
 
-    public PasswordVerificationTask getPasswordVerificationTask() {
-        return this.mPasswordVerificationTask;
+    public DecryptIdentityTask getDecryptIdentityTask() {
+        return this.mDecryptIdentityTask;
     }
 
-    public void setPasswordVerificationTask(PasswordVerificationTask passwordVerificationTask) {
-        this.mPasswordVerificationTask = passwordVerificationTask;
+    public void setDecryptIdentityTask(DecryptIdentityTask passwordVerificationTask) {
+        this.mDecryptIdentityTask = passwordVerificationTask;
     }
 }

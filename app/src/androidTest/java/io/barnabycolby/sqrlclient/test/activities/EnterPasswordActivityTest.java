@@ -75,9 +75,6 @@ public class EnterPasswordActivityTest {
             Intent intent = super.getActivityIntent();
             intent.setData(mUri);
 
-            // Disable async task execution so that the tests can proceed without the async tasks starting any new activities
-            intent.putExtra(EnterPasswordActivity.ASYNC_TASKS_DISABLED, true);
-
             return intent;
         }
     }
@@ -126,6 +123,10 @@ public class EnterPasswordActivityTest {
 
     @Test
     public void progressBarDisplayedOnceLoginClicked() {
+        // Espresso waits for async tasks to complete before executing test steps
+        // As we want to perform the UI check in the middle of this, we need to disable the async tasks
+        this.mActivity.disableAsyncTasks();
+
         this.mPasswordEditText.perform(typeText("gorillas"), closeSoftKeyboard());
         this.mLoginButton.perform(click());
         this.mLoginButton.check(matches(not(isDisplayed())));
@@ -136,7 +137,11 @@ public class EnterPasswordActivityTest {
     }
 
     @Test
-    public void uiStateSurvivesOrientationChange() {
+    public void uiStateSurvivesOrientationChange() throws Exception {
+        // Espresso waits for async tasks to complete before executing test steps
+        // As we want to perform the orientation change in the middle of this, we need to disable the async tasks
+        this.mActivity.disableAsyncTasks();
+
         String password = "crocodile";
         this.mPasswordEditText.perform(typeText(password), closeSoftKeyboard());
         this.mLoginButton.perform(click());
@@ -144,7 +149,7 @@ public class EnterPasswordActivityTest {
         // Switch the orientation. As we don't know what the current orientation is then we switch to both landscape and portrait
         onView(isRoot()).perform(orientationLandscape());
         onView(isRoot()).perform(orientationPortrait());
-
+       
         this.mPasswordEditText.check(matches(withText(password)));
         this.mLoginButton.check(matches(not(isDisplayed())));
         this.mVerifyProgressBar.check(matches(isDisplayed()));
@@ -154,12 +159,12 @@ public class EnterPasswordActivityTest {
     }
 
     @Test
-    public void passwordIncorrectResetsUIAndDisplaysErrorMessage() {
+    public void passwordIncorrectResetsUIAndDisplaysErrorMessage() throws Exception {
         this.mPasswordEditText.perform(typeText("liontamer"), closeSoftKeyboard());
         this.mLoginButton.perform(click());
 
-        // Fake the password incorrect result
-        this.mActivity.onPasswordCryptResult(false);
+        // The identity takes at least 5 seconds to decrypt, so we need to wait
+        Thread.sleep(7000);
 
         this.mLoginButton.check(matches(isDisplayed()));
         this.mVerifyProgressBar.check(matches(not(isDisplayed())));
@@ -176,9 +181,6 @@ public class EnterPasswordActivityTest {
         Activity loginActivity = Helper.monitorForActivity(LoginActivity.class, 10000, new Lambda() {
             public void run() {
                 mLoginButton.perform(click());
-
-                // Fake the password correct result
-                mActivity.onPasswordCryptResult(true);
             }
         });
         assertNotNull(loginActivity);
