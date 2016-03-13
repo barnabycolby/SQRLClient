@@ -85,7 +85,7 @@ public class SQRLIdentityManagerTest {
 
         this.mIdentityManager.save(identityName, masterKey, password);
         this.mIdentityManager.setCurrentIdentity(identityName);
-        this.mIdentityManager.getCurrentIdentityForSite(uri, password);
+        this.mIdentityManager.getCurrentIdentityForSite(uri, password, null);
     }
 
     @Test public void getCurrentIdentityShouldThrowExceptionWithIncorrectPassword() throws Exception {
@@ -102,7 +102,7 @@ public class SQRLIdentityManagerTest {
         // Assert that an IncorrectPasswordException is thrown
         io.barnabycolby.sqrlclient.test.Helper.assertExceptionThrown(IncorrectPasswordException.class, new Lambda() {
             public void run() throws Exception {
-                mIdentityManager.getCurrentIdentityForSite(uri, "TJjt*G9GP$@M&c*D");
+                mIdentityManager.getCurrentIdentityForSite(uri, "TJjt*G9GP$@M&c*D", null);
             }
         });
     }

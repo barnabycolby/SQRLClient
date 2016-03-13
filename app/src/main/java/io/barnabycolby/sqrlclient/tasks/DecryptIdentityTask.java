@@ -37,16 +37,12 @@ public class DecryptIdentityTask extends TestableAsyncTask<String, Integer, SQRL
         // Decrypt the identity
         SQRLIdentity identity = null;
         try {
-            identity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri, password);
+            identity = App.getSQRLIdentityManager().getCurrentIdentityForSite(this.mUri, password, this.mListener);
         } catch (IncorrectPasswordException | GeneralSecurityException ex) {
             return null;
         }
 
         return identity;
-    }
-
-    protected void onProgressUpdate(Integer... values) {
-        this.mListener.onIdentityDecryptionProgressUpdate(values[0]);
     }
 
     protected void onPostExecute(SQRLIdentity identity) {

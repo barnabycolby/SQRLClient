@@ -1,5 +1,7 @@
 package io.barnabycolby.sqrlclient.sqrl;
 
+import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
+
 import java.util.Random;
 import java.security.GeneralSecurityException;
 import java.security.Key;
@@ -72,13 +74,14 @@ public class EncryptedIdentity {
      * Callers of this function should be aware that it will take at least 5 seconds to return.
      *
      * @param password  The password used to encrypt the master key.
+     * @param listener  The listener for decryption progress updates.
      *
      * @throws AEADBadTagException  If the password used was incorrect.
      * @throws GeneralSecurityException  If the decryption could not be completed.
      */
-    public byte[] decrypt(String password) throws GeneralSecurityException {
+    public byte[] decrypt(String password, DecryptIdentityListener listener) throws GeneralSecurityException {
         // Generate the decryption key
-        EnScrypt enScrypt = new EnScrypt();
+        EnScrypt enScrypt = new EnScrypt(listener);
         byte[] derivedKey = enScrypt.deriveKey(password, this.getSalt(), this.getIterations());
         Key key = new SecretKeySpec(derivedKey, "AES");
 

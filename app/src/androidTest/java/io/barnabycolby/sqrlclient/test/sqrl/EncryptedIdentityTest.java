@@ -27,7 +27,7 @@ public class EncryptedIdentityTest {
 
         // Decrypt the master key
         encryptedIdentity = new EncryptedIdentity(encryptedMasterKey, encryptedIdentity.getSalt(), encryptedIdentity.getIterations(), encryptedIdentity.getIv());
-        byte[] decryptedMasterKey = encryptedIdentity.decrypt(password);
+        byte[] decryptedMasterKey = encryptedIdentity.decrypt(password, null);
         assertArrayEquals(masterKey, decryptedMasterKey);
     }
 
@@ -42,7 +42,7 @@ public class EncryptedIdentityTest {
         final EncryptedIdentity encryptedIdentity2 = new EncryptedIdentity(encryptedMasterKey, encryptedIdentity.getSalt(), encryptedIdentity.getIterations(), encryptedIdentity.getIv());
         io.barnabycolby.sqrlclient.test.Helper.assertExceptionThrown(AEADBadTagException.class, new Lambda() {
             public void run() throws GeneralSecurityException {
-                encryptedIdentity2.decrypt("sausages");
+                encryptedIdentity2.decrypt("sausages", null);
             }
         });
     }

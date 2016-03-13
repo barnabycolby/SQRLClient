@@ -6,6 +6,7 @@ import eu.artemisc.stodium.Stodium;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.R;
+import io.barnabycolby.sqrlclient.sqrl.DecryptIdentityListener;
 
 import java.nio.charset.Charset;
 
@@ -22,6 +23,20 @@ public class EnScrypt {
     private int mIterations;
 
     private enum OperationCount { ITERATIONS, SECONDS };
+
+    private DecryptIdentityListener mListener;
+
+    /**
+     * Default constructor, should be used when you don't need to listen for progress updates.
+     */
+    public EnScrypt() {}
+
+    /**
+     * Use this constructor when you need to listen to progress updates.
+     */
+    public EnScrypt(DecryptIdentityListener listener) {
+        this.mListener = listener;
+    }
 
     /**
      * Performs an EnScrypt key derivation on the given password, using the given password, salt and number of iterations.
@@ -119,6 +134,12 @@ public class EnScrypt {
             numberOfIterationsPerformed++;
 
             if (operationType.equals(OperationCount.ITERATIONS)) {
+                // If we have a listener, we need to give it a progress update
+                if (this.mListener != null) {
+                    int progress = (numberOfIterationsPerformed * 100) / count;
+                    this.mListener.onIdentityDecryptionProgressUpdate(progress);
+                }
+
                 if (numberOfIterationsPerformed == count) {
                     break;
                 }

@@ -185,6 +185,7 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
                     if (identity == null) {
                         mLoginClicked = false;
                         mLoginButton.setVisibility(View.VISIBLE);
+                        mVerifyProgressBar.setProgress(0);
                         mVerifyProgressBar.setVisibility(View.GONE);
                         mInformationTextView.setText(R.string.incorrect_password);
                         mPasswordEditText.setEnabled(true);
