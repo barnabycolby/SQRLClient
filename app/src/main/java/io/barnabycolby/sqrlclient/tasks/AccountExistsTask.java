@@ -45,6 +45,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
     /**
      * Sets the initial text of the text view and ensures it's visible.
      */
+    @Override
     protected void onPreExecute() {
         String contactingServerText = App.getApplicationResources().getString(R.string.contacting_server);
         this.accountExistsTextView.setText(contactingServerText);
@@ -56,6 +57,7 @@ public class AccountExistsTask extends TestableAsyncTask<Void, Void, Boolean> {
      *
      * @return Null if an exception occurred when communicating with the server. True if the account exists and false if the account does not exist. 
      */
+    @Override
     protected Boolean doInBackground(Void... params) {
         try {
             // Perform the query and return the result

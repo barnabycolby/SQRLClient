@@ -36,11 +36,13 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
         this.mListener = listener;
     }
 
+    @Override
     protected void onPreExecute() {
         String contactingServerText = App.getApplicationResources().getString(R.string.contacting_server);
         this.mTextView.setText(contactingServerText);
     }
 
+    @Override
     protected String doInBackground(Void... params) {
         try {
             mRequestFactory.createAndSendIdent();
@@ -52,6 +54,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
         return App.getApplicationResources().getString(R.string.authorisation_request_sent);
     }
 
+    @Override
     protected void onPostExecute(String result) {
         this.mTextView.setText(result);
 
