@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
-import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
@@ -42,10 +41,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
     public void testCreateNewIdentityButtonDisplayed() {
         assertThatButtonIsVisibleAndDisplaysCorrectText(R.id.CreateNewIdentityButton, R.string.create_new_identity);
-    }
-
-    public void testLoginChoicesActivityStartedOnLoginButtonClick() throws Exception {
-        assertThatButtonStartsActivity(R.id.LoginButton, LoginChoicesActivity.class);
     }
 
     public void testCreateNewIdentityActivityStartedOnCreateNewIdentityButtonClick() throws Exception {

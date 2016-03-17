@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.*;
 
 import io.barnabycolby.sqrlclient.activities.fragments.LoginStateFragment;
+import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.activities.StateFragmentActivity;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;
@@ -134,7 +135,7 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
      * Called if the user chooses not to create a new account, when presented with a dialog offering the choice.
      */
     public void abortIdentRequest() {
-        Intent intent = new Intent(this, LoginChoicesActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

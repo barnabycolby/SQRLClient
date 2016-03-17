@@ -1,13 +1,17 @@
 package io.barnabycolby.sqrlclient.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import io.barnabycolby.sqrlclient.activities.ConfirmSiteNameActivity;
 import io.barnabycolby.sqrlclient.activities.CreateNewIdentityActivity;
-import io.barnabycolby.sqrlclient.activities.LoginChoicesActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.IdentitiesCouldNotBeLoadedException;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
@@ -42,8 +46,19 @@ public class MainActivity extends AppCompatActivity {
      * Called when the login button is pressed.
      */
     public void login(View view) {
-        Intent intent = new Intent(this, LoginChoicesActivity.class);
-        startActivity(intent);
+        // Start the QR code scanner
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.initiateScan();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            Uri uri = Uri.parse(scanResult.getContents());
+            Intent confirmSiteNameIntent = new Intent(this, ConfirmSiteNameActivity.class);
+            confirmSiteNameIntent.setData(uri);
+            startActivity(confirmSiteNameIntent);
+        }
     }
 
     /**

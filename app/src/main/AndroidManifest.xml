@@ -64,11 +64,6 @@
             />
 
         <activity
-            android:name=".activities.LoginChoicesActivity"
-            android:label="@string/login_choices_activity_label"
-            />
-
-        <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             >

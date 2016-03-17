@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             />
+
     </LinearLayout>
 
     <TableLayout
@@ -78,5 +79,20 @@
                 />
         </TableRow>
     </TableLayout>
+
+    <LinearLayout
+        android:gravity="bottom"
+        android:layout_centerHorizontal="true"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        >
+        <TextView
+            android:gravity="center"
+            android:id="@+id/LoginOnDeviceTextView"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/login_on_this_device"
+            />
+    </LinearLayout>
 
 </RelativeLayout>

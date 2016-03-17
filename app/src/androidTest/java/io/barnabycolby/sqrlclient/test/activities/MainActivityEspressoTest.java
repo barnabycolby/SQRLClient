@@ -1,54 +1,42 @@
 package io.barnabycolby.sqrlclient.test.activities;
 
 import android.app.Activity;
-import android.app.Instrumentation;
-import android.app.Instrumentation.ActivityMonitor;
-import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.activities.MainActivity;
-import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
+import io.barnabycolby.sqrlclient.exceptions.IdentityAlreadyExistsException;
+import io.barnabycolby.sqrlclient.R;
 
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityEspressoTest {
-    /**
-     * ActivityTestRule that overrides before and after activity launch methods, in order to monitor whether the NoIdentityActivity is launched as soon as the activity is started.
-     *
-     * This could not be done using standard JUnit before and after methods as the before method only runs once the activity has been launched.
-     */
     private class MainActivityTestRule extends ActivityTestRule<MainActivity> {
-        protected Instrumentation mInstrumentation;
-        protected ActivityMonitor mNoIdentityActivityMonitor;
-
         public MainActivityTestRule() {
             super(MainActivity.class);
         }
 
         @Override
         protected void beforeActivityLaunched() {
-            this.mInstrumentation = InstrumentationRegistry.getInstrumentation();
             try {
-                App.getSQRLIdentityManager().removeAllIdentities();
-            } catch (Exception ex) {}
-            this.mNoIdentityActivityMonitor = this.mInstrumentation.addMonitor(NoIdentityActivity.class.getName(), null, false);
-        }
-
-        @Override
-        protected void afterActivityFinished() {
-            this.mInstrumentation.removeMonitor(mNoIdentityActivityMonitor);
-        }
-
-        public ActivityMonitor getActivityMonitor() {
-            return this.mNoIdentityActivityMonitor;
+                App.getSQRLIdentityManager().save("Eleri", new byte[32], "&Nx^!sLQ47KTqubw", null);
+            } catch (IdentityAlreadyExistsException ex) {
+                // Do nothing
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     };
 
@@ -61,8 +49,9 @@ public class MainActivityEspressoTest {
     }
 
     @Test
-    public void redirectsToNoIdentityActivityIfNoIdentitiesExist() {
-        // As we haven't actually created any identities, all we need to do is check that the NoIdentityActivity has been launched
-        assertEquals(1, this.mActivityTestRule.getActivityMonitor().getHits());
+    public void loginOnThisDeviceTipDisplayed() {
+        ViewInteraction textView = onView(withId(R.id.LoginOnDeviceTextView));
+        textView.check(matches(isDisplayed()));
+        textView.check(matches(withText(R.string.login_on_this_device)));
     }
 }
