@@ -52,13 +52,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        // Check that we actually scanned a URL
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-            Uri uri = Uri.parse(scanResult.getContents());
-            Intent confirmSiteNameIntent = new Intent(this, ConfirmSiteNameActivity.class);
-            confirmSiteNameIntent.setData(uri);
-            startActivity(confirmSiteNameIntent);
+        if (scanResult == null || scanResult.getContents() == null) {
+            return;
         }
+        Uri uri = Uri.parse(scanResult.getContents());
+
+        // Start the login process, passing it the url
+        Intent confirmSiteNameIntent = new Intent(this, ConfirmSiteNameActivity.class);
+        confirmSiteNameIntent.setData(uri);
+        startActivity(confirmSiteNameIntent);
     }
 
     /**
