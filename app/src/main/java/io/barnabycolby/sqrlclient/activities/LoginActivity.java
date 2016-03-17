@@ -55,10 +55,6 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
         this.friendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
         friendlySiteNameTextView.setText(this.mStateFragment.getDisplayName());
         friendlySiteNameTextView.setVisibility(View.VISIBLE);
-
-        // Start the login procedure
-        this.mAccountExistsTask = new AccountExistsTask(this.mStateFragment.getRequestFactory(), informationTextView, this.mStateFragment.getAccountExistsDetachableListener());
-        this.mAccountExistsTask.execute();
     }
 
     @Override
@@ -89,7 +85,13 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
 
         // Create the state fragment to store the state
         this.mInitialiseSucceeded = true;
-        return new LoginStateFragment(this.informationTextView, identity, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
+        LoginStateFragment stateFragment =  new LoginStateFragment(this.informationTextView, identity, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
+
+        // Start the login procedure
+        this.mAccountExistsTask = new AccountExistsTask(requestFactory, this.informationTextView, stateFragment.getAccountExistsDetachableListener());
+        this.mAccountExistsTask.execute();
+
+        return stateFragment;
     }
 
     @Override
