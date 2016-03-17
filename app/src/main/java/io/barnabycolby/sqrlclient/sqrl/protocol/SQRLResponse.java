@@ -43,7 +43,13 @@ public class SQRLResponse {
         // Extract the values from the data
         InputStream inputStream = connection.getInputStream();
         byte[] encodedServerResponse = convertInputStreamToByteArray(inputStream);
-        byte[] decodedResponse = Base64.decode(encodedServerResponse, Base64.URL_SAFE);
+        byte[] decodedResponse;
+        try {
+            decodedResponse = Base64.decode(encodedServerResponse, Base64.URL_SAFE);
+        } catch (IllegalArgumentException ex) {
+            String errorMessage = App.getApplicationResources().getString(R.string.bad_base_64);
+            throw new InvalidServerResponseException(errorMessage);
+        }
         String serverResponse = new String(decodedResponse, Charset.forName("UTF-8"));
         this.nameValuePairs = convertServerResponseToMap(serverResponse);
 

@@ -207,6 +207,13 @@ public class SQRLResponseTest {
         Assert.assertEquals(serverResponse, sqrlResponse.toString());
     }
 
+    @Test
+    public void shouldThrowInvalidServerResponseIfBadBase64() throws Exception {
+        // Incorrect padding, should only have one =
+        String serverResponse = "YW55IGNhcm5hbCBwbGVhc3VyZS4==";
+        assertExceptionThrownForGivenServerResponse(InvalidServerResponseException.class, serverResponse);
+    }
+
     private SQRLResponse instantiateSQRLResponseFromServerResponseString(String serverResponse) throws Exception {
         // Create the necessary mocks
         SQRLConnection connectionMock = mock(SQRLConnection.class);
