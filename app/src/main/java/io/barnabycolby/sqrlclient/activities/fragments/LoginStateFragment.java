@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import io.barnabycolby.sqrlclient.helpers.DetachableListener;
+import io.barnabycolby.sqrlclient.helpers.IdentRequestListener;
+import io.barnabycolby.sqrlclient.helpers.IdentRequestDetachableListener;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortDetachableListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
@@ -22,6 +24,7 @@ public class LoginStateFragment extends Fragment {
     private SQRLRequestFactory mRequestFactory;
     private ProceedAbortDetachableListener mAccountExistsDetachableListener;
     private ProceedAbortDetachableListener mDialogDetachableListener;
+    private IdentRequestDetachableListener mIdentRequestDetachableListener;
     private String mDisplayName;
 
     /**
@@ -32,14 +35,16 @@ public class LoginStateFragment extends Fragment {
      * @param requestFactory  The SQRLRequestFactory object to retain.
      * @param accountExistsListener  The listener object used for account exists callbacks.
      * @param dialogListener  The listener object used for create account dialog callbacks.
+     * @param identRequestListener  The listener object used for ident request callbacks.
      * @param displayName  The servers display name.
      */
-    public LoginStateFragment(SwappableTextView informationTextView, SQRLIdentity sqrlIdentity, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener, String displayName) {
+    public LoginStateFragment(SwappableTextView informationTextView, SQRLIdentity sqrlIdentity, SQRLRequestFactory requestFactory, ProceedAbortListener accountExistsListener, ProceedAbortListener dialogListener, IdentRequestListener identRequestListener, String displayName) {
         this.mInformationTextView = informationTextView;
         this.mSQRLIdentity = sqrlIdentity;
         this.mRequestFactory = requestFactory;
         this.mAccountExistsDetachableListener = (ProceedAbortDetachableListener)DetachableListener.create(accountExistsListener, ProceedAbortDetachableListener.class);
         this.mDialogDetachableListener = (ProceedAbortDetachableListener)DetachableListener.create(dialogListener, ProceedAbortDetachableListener.class);
+        this.mIdentRequestDetachableListener = (IdentRequestDetachableListener)DetachableListener.create(identRequestListener, IdentRequestDetachableListener.class);
         this.mDisplayName = displayName;
     }
 
@@ -90,6 +95,13 @@ public class LoginStateFragment extends Fragment {
      */
     public ProceedAbortDetachableListener getDialogDetachableListener() {
         return this.mDialogDetachableListener;
+    }
+
+    /**
+     * Returns the detachable listener used for ident request callbacks.
+     */
+    public IdentRequestDetachableListener getIdentRequestDetachableListener() {
+        return this.mIdentRequestDetachableListener;
     }
 
     /**

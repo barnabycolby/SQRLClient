@@ -4,6 +4,7 @@ import android.util.Log;
 
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.exceptions.SQRLException;
+import io.barnabycolby.sqrlclient.helpers.IdentRequestListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.helpers.TestableAsyncTask;
 import io.barnabycolby.sqrlclient.R;
@@ -21,6 +22,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
 
     private SQRLRequestFactory mRequestFactory;
     private SwappableTextView mTextView;
+    private IdentRequestListener mListener;
 
     /**
      * Constructs a new instance of the IdentRequestTask.
@@ -28,9 +30,10 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
      * @param requestFactory  The request factory used to generate the ident reqeust.
      * @param textView  This text view will be used to indicate progress and the results of the ident request.
      */
-    public IdentRequestTask(SQRLRequestFactory requestFactory, SwappableTextView textView) {
+    public IdentRequestTask(SQRLRequestFactory requestFactory, SwappableTextView textView, IdentRequestListener listener) {
         this.mRequestFactory = requestFactory;
         this.mTextView = textView;
+        this.mListener = listener;
     }
 
     protected void onPreExecute() {
@@ -51,6 +54,11 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
 
     protected void onPostExecute(String result) {
         this.mTextView.setText(result);
+
+        // Inform the listener that we're finished
+        if (this.mListener != null) {
+            this.mListener.onIdentRequestFinished();
+        }
 
         // We must call this as we are implementing TestableAsyncTask and not AsyncTask
         this.executionFinished();

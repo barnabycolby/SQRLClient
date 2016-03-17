@@ -25,11 +25,22 @@
 
         <TextView
             android:id="@+id/InformationTextView"
-            android:layout_below="@id/ConfirmDenySiteButtons"
+            android:layout_below="@id/FriendlySiteNameTextView"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
+            />
+
+        <Button
+            android:id="@+id/DoneButton"
+            android:layout_below="@id/InformationTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="onDoneClicked"
+            android:text="@string/done"
+            android:visibility="gone"
             />
 
     </RelativeLayout>

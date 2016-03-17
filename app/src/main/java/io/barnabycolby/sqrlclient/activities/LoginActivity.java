@@ -16,6 +16,7 @@ import io.barnabycolby.sqrlclient.activities.StateFragmentActivity;
 import io.barnabycolby.sqrlclient.dialogs.CreateAccountDialogFragment;
 import io.barnabycolby.sqrlclient.exceptions.*;
 import io.barnabycolby.sqrlclient.helpers.Helper;
+import io.barnabycolby.sqrlclient.helpers.IdentRequestListener;
 import io.barnabycolby.sqrlclient.helpers.ProceedAbortListener;
 import io.barnabycolby.sqrlclient.helpers.SwappableTextView;
 import io.barnabycolby.sqrlclient.R;
@@ -27,7 +28,7 @@ import io.barnabycolby.sqrlclient.sqrl.factories.SQRLRequestFactory;
 /**
  * Performs the login sequence to a given site.
  */
-public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
+public class LoginActivity extends StateFragmentActivity<LoginStateFragment> implements IdentRequestListener {
     private static final String TAG = LoginActivity.class.getName();
 
     private boolean mInitialiseSucceeded = true;
@@ -37,6 +38,9 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
 
     private AccountExistsTask mAccountExistsTask;
     private IdentRequestTask mIdentRequestTask;
+
+    private boolean mDoneButtonVisible = false;
+    private String mDoneButtonVisibleKey = "mDoneButtonVisible";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +89,7 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
 
         // Create the state fragment to store the state
         this.mInitialiseSucceeded = true;
-        LoginStateFragment stateFragment =  new LoginStateFragment(this.informationTextView, identity, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), displayName);
+        LoginStateFragment stateFragment =  new LoginStateFragment(this.informationTextView, identity, requestFactory, this.getAccountExistsListener(), this.getDialogListener(), this, displayName);
 
         // Start the login procedure
         this.mAccountExistsTask = new AccountExistsTask(requestFactory, this.informationTextView, stateFragment.getAccountExistsDetachableListener());
@@ -104,6 +108,7 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
         // Reattach the listeners used for callbacks
         this.mStateFragment.getAccountExistsDetachableListener().attach(this.getAccountExistsListener());
         this.mStateFragment.getDialogDetachableListener().attach(this.getDialogListener());
+        this.mStateFragment.getIdentRequestDetachableListener().attach(this);
     }
 
     @Override
@@ -114,6 +119,24 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
         if (this.mStateFragment != null) {
             this.mStateFragment.getAccountExistsDetachableListener().detach();
             this.mStateFragment.getDialogDetachableListener().detach();
+            this.mStateFragment.getIdentRequestDetachableListener().detach();
+        }
+
+        // Store the state of the done button
+        outState.putBoolean(this.mDoneButtonVisibleKey, this.mDoneButtonVisible);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+
+        // Restore the state of the done button
+        View doneButton = this.findViewById(R.id.DoneButton);
+        this.mDoneButtonVisible = inState.getBoolean(this.mDoneButtonVisibleKey);
+        if (this.mDoneButtonVisible) {
+            doneButton.setVisibility(View.VISIBLE);
+        } else {
+            doneButton.setVisibility(View.GONE);
         }
     }
 
@@ -145,7 +168,7 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
      * Called if the users account already exists, or they have chosen to create a new account when presented with a dialog offering the choice.
      */
     public void proceedWithIdentRequest() {
-        this.mIdentRequestTask = new IdentRequestTask(this.mStateFragment.getRequestFactory(), informationTextView);
+        this.mIdentRequestTask = new IdentRequestTask(this.mStateFragment.getRequestFactory(), informationTextView, this.mStateFragment.getIdentRequestDetachableListener());
         this.mIdentRequestTask.execute();
     }
 
@@ -166,6 +189,23 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> {
     protected void onResume() {
         super.onResume();
         Helper.checkIdentitiesExist(this);
+    }
+
+    @Override
+    public void onIdentRequestFinished() {
+        // Show the done button
+        View doneButton = this.findViewById(R.id.DoneButton);
+        doneButton.setVisibility(View.VISIBLE);
+        this.mDoneButtonVisible = true;
+    }
+
+    /**
+     * Called when the done button is clicked.
+     */
+    public void onDoneClicked(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        this.finish();
     }
 
     /**

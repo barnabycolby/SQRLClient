@@ -66,4 +66,5 @@
     <string name="encrypting_identity_explanation">In order to protect your identity against people who might steal your device, it needs to be encrypted using your password for 5 seconds.</string>
     <string name="encrypting_identity">Encrypting Identity</string>
     <string name="bad_base_64">The response contained bad base64.</string>
+    <string name="done">Done</string>
 </resources>
