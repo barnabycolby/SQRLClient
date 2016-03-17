@@ -31,8 +31,8 @@ public class SQRLUri implements Parcelable {
         this.uri = uri;
 
         // Check the scheme of the URI is recognised
-        String uriScheme = uri.getScheme().toLowerCase();
-        if (!uriScheme.equals("sqrl") && !uriScheme.equals("qrl")) {
+        String uriScheme = uri.getScheme();
+        if (uriScheme == null || !uriScheme.toLowerCase().equals("sqrl") && !uriScheme.toLowerCase().equals("qrl")) {
             throw new UnknownSchemeException(uriScheme);
         }
 

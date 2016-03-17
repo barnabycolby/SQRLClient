@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.exceptions.*;
+import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
+import io.barnabycolby.sqrlclient.test.Helper;
 
 import java.net.MalformedURLException;
 
@@ -163,6 +165,16 @@ public class SQRLUriTest {
         
         // Check that the two instances are equivalent
         assertEquals(sqrlUri, recreatedSQRLUri);
+    }
+
+    @Test
+    public void throwExceptionForUriWithoutScheme() throws Exception {
+        final Uri uri = Uri.parse("6VraX@9qf8r0$BX0");
+        Helper.assertExceptionThrown(UnknownSchemeException.class, new Lambda() {
+            public void run() throws Exception {
+                new SQRLUri(uri);
+            }
+        });
     }
 
     private Uri getUriSchemeAndNut(String scheme, String nut) {
