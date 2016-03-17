@@ -14,7 +14,7 @@ import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -61,7 +61,7 @@ public class NoIdentityActivityTest {
 
     @Test
     public void createNewIdentityButtonTakesYouToTheCreateNewIdentityActivity() throws Exception {
-        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)Helper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
+        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)TestHelper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
             public void run() {
                 // Click the button
                 mCreateNewIdentityButton.check(matches(isDisplayed()));
@@ -75,9 +75,9 @@ public class NoIdentityActivityTest {
 
     @Test
     public void createIdentityNavigatesToMainActivity() throws Exception {
-        MainActivity mainActivity = (MainActivity)Helper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
+        MainActivity mainActivity = (MainActivity)TestHelper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
             public void run() throws Exception {
-                Helper.createNewIdentity("Elon Musk");
+                TestHelper.createNewIdentity("Elon Musk");
             }
         });
 

@@ -18,7 +18,7 @@ import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
 import io.barnabycolby.sqrlclient.test.activities.CreateNewIdentityActivityTest;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +37,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-import static io.barnabycolby.sqrlclient.test.Helper.withSpinnerItemText;
+import static io.barnabycolby.sqrlclient.test.TestHelper.withSpinnerItemText;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
@@ -75,12 +75,12 @@ public class IdentityManagementTest {
     @Test
     public void identityListContainsCreatedIdentity() throws Exception {
         String identityName = "Alice";
-        Helper.createNewIdentity(identityName);
+        TestHelper.createNewIdentity(identityName);
 
         onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName)));
 
         String identityName2 = "Barney";
-        Helper.createNewIdentity(identityName2);
+        TestHelper.createNewIdentity(identityName2);
 
         onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName2)));
     }
@@ -88,12 +88,12 @@ public class IdentityManagementTest {
     @Test
     public void maliciousIdentityNamesDoNotCauseProblems() throws Exception {
         String identityName = "/etc/shadow";
-        Helper.createNewIdentity(identityName);
+        TestHelper.createNewIdentity(identityName);
 
         onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName)));
 
         String identityName2 = "beans; cat /etc/shadow";
-        Helper.createNewIdentity(identityName2);
+        TestHelper.createNewIdentity(identityName2);
 
         onView(withId(R.id.IdentitySpinner)).check(matches(withSpinnerItemText(identityName2)));
     }
@@ -101,10 +101,10 @@ public class IdentityManagementTest {
     @Test
     public void cannotCreateTwoIdentitiesWithTheSameName() throws Exception {
         final String identityName = "Oscar";
-        Helper.createNewIdentity(identityName);
+        TestHelper.createNewIdentity(identityName);
 
         // Try to recreate an identity with the same name
-        CreateNewIdentityActivity createnewIdentityActivity = (CreateNewIdentityActivity)Helper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
+        CreateNewIdentityActivity createnewIdentityActivity = (CreateNewIdentityActivity)TestHelper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
             public void run() throws Exception {
                 onView(withId(R.id.CreateNewIdentityButton)).perform(click());
                 UiDevice device = UiDevice.getInstance(mInstrumentation);
@@ -123,8 +123,8 @@ public class IdentityManagementTest {
     public void deleteIdentityRemovesIdentityFromList() throws Exception {
         // We need to create two identities, as otherwise when we delete the identity,
         // the NoIdentityActivity will be started and the list won't be updated
-        Helper.createNewIdentity("Zane Lowe");
-        Helper.createNewIdentity("David Rodigan");
+        TestHelper.createNewIdentity("Zane Lowe");
+        TestHelper.createNewIdentity("David Rodigan");
 
         onView(withId(R.id.DeleteIdentityButton)).perform(click());
         checkToastIsDisplayed(R.string.identity_deleted);
@@ -138,9 +138,9 @@ public class IdentityManagementTest {
     @Test
     public void redirectToNoIdentityPageOnceAllIdentitiesAreDeleted() throws Exception {
         String identityName = "Bruce Schneier";
-        Helper.createNewIdentity(identityName);
+        TestHelper.createNewIdentity(identityName);
 
-        NoIdentityActivity activity = (NoIdentityActivity)Helper.monitorForActivity(NoIdentityActivity.class, 5000, new Lambda() {
+        NoIdentityActivity activity = (NoIdentityActivity)TestHelper.monitorForActivity(NoIdentityActivity.class, 5000, new Lambda() {
             public void run() throws Exception {
                 onView(withId(R.id.DeleteIdentityButton)).perform(click());
             }
@@ -151,7 +151,7 @@ public class IdentityManagementTest {
     @Test
     public void currentIdentityIsFirstIdentityWhenCreated() throws Exception {
         String identityName = "Martin Fowler";
-        Helper.createNewIdentity(identityName);
+        TestHelper.createNewIdentity(identityName);
         assertEquals(identityName, App.getSQRLIdentityManager().getCurrentIdentityName());
     }
 
@@ -177,8 +177,8 @@ public class IdentityManagementTest {
     public void currentIdentityUpdatedAfterCurrentIdentityDeleted() throws Exception {
         String identityName1 = "Alan Turing";
         String identityName2 = "Charles Babbage";
-        Helper.createNewIdentity(identityName1);
-        Helper.createNewIdentity(identityName2);
+        TestHelper.createNewIdentity(identityName1);
+        TestHelper.createNewIdentity(identityName2);
 
         assertEquals(identityName1, App.getSQRLIdentityManager().getCurrentIdentityName());
         onView(withId(R.id.DeleteIdentityButton)).perform(click());
@@ -189,8 +189,8 @@ public class IdentityManagementTest {
     public void currentIdentityUpdatedWhenSpinnerSelected() throws Exception {
         String identityName1 = "Dan North";
         String identityName2 = "Haskell Curry";
-        Helper.createNewIdentity(identityName1);
-        Helper.createNewIdentity(identityName2);
+        TestHelper.createNewIdentity(identityName1);
+        TestHelper.createNewIdentity(identityName2);
 
         assertEquals(identityName1, App.getSQRLIdentityManager().getCurrentIdentityName());
         selectIdentitySpinnerItem(identityName2);
@@ -201,8 +201,8 @@ public class IdentityManagementTest {
 
     @Test
     public void identityNotCreatedIfCancelledOnEnterNewPasswordActivity() throws Exception {
-        Helper.createNewIdentity("Oliver");
-        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)Helper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
+        TestHelper.createNewIdentity("Oliver");
+        CreateNewIdentityActivity createNewIdentityActivity = (CreateNewIdentityActivity)TestHelper.monitorForActivity(CreateNewIdentityActivity.class, 5000, new Lambda() {
             public void run() throws Exception {
                 onView(withId(R.id.CreateNewIdentityButton)).perform(click());
                 UiDevice device = UiDevice.getInstance(mInstrumentation);

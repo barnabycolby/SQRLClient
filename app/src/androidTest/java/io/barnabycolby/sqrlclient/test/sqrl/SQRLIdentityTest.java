@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 
 import io.barnabycolby.sqrlclient.exceptions.InvalidMasterKeyException;
 import io.barnabycolby.sqrlclient.sqrl.*;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 
 import static org.junit.Assert.assertEquals;
@@ -61,13 +61,13 @@ public class SQRLIdentityTest {
     @Test
     public void constructorThrowsIfMasterKeyIsWrongLengthOrNull() throws Exception {
         final SQRLUri uri = mock(SQRLUri.class);
-        Helper.assertExceptionThrown(NullPointerException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(NullPointerException.class, new Lambda() {
             public void run() throws Exception {
                 new SQRLIdentity(null, uri);
             }
         });
 
-        Helper.assertExceptionThrown(InvalidMasterKeyException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(InvalidMasterKeyException.class, new Lambda() {
             public void run() throws Exception {
                 new SQRLIdentity(new byte[12], uri);
             }
@@ -76,7 +76,7 @@ public class SQRLIdentityTest {
 
     @Test
     public void constructorThrowsIfUriIsNull() throws Exception {
-        Helper.assertExceptionThrown(NullPointerException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(NullPointerException.class, new Lambda() {
             public void run() throws Exception {
                 new SQRLIdentity(new byte[32], null);
             }

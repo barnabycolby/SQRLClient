@@ -20,7 +20,7 @@ import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -141,7 +141,7 @@ public class CreateNewIdentityActivityTest {
         waitForEntropyCollectionToFinish(mActivity);
         mIdentityNameEditText.perform(typeText("Jason Statham"));
 
-        Activity enterNewPasswordActivity = Helper.monitorForActivity(EnterNewPasswordActivity.class, 5000, new Lambda() {
+        Activity enterNewPasswordActivity = TestHelper.monitorForActivity(EnterNewPasswordActivity.class, 5000, new Lambda() {
             public void run() {
                 mCreateButton.perform(click());
             }

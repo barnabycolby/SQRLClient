@@ -3,7 +3,7 @@ package io.barnabycolby.sqrlclient.test.sqrl;
 import android.support.test.runner.AndroidJUnit4;
 
 import io.barnabycolby.sqrlclient.sqrl.EnScrypt;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 
 import org.junit.Before;
@@ -45,19 +45,19 @@ public class EnScryptTest {
 
     @Test
     public void shouldDenyPasswordsWithNulValue() throws Exception {
-        Helper.assertExceptionThrown(IllegalArgumentException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(IllegalArgumentException.class, new Lambda() {
             public void run() {
                 mEnScrypt.deriveKey("\0", (String)null, 1);
             }
         });
 
-        Helper.assertExceptionThrown(IllegalArgumentException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(IllegalArgumentException.class, new Lambda() {
             public void run() {
                 mEnScrypt.deriveKey("Barney\0", (String)null, 1);
             }
         });
 
-        Helper.assertExceptionThrown(IllegalArgumentException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(IllegalArgumentException.class, new Lambda() {
             public void run() {
                 mEnScrypt.deriveKey("Bar\0ney", (String)null, 1);
             }

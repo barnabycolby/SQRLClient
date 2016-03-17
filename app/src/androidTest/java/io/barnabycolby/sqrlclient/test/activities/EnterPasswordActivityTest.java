@@ -14,7 +14,7 @@ import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentity;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -178,7 +178,7 @@ public class EnterPasswordActivityTest {
     public void passwordCorrectRedirectsToLoginActivity() throws Exception {
         this.mPasswordEditText.perform(typeText("1hL!#0tAdhlgm4GA"), closeSoftKeyboard());
         
-        Activity loginActivity = Helper.monitorForActivity(LoginActivity.class, 10000, new Lambda() {
+        Activity loginActivity = TestHelper.monitorForActivity(LoginActivity.class, 10000, new Lambda() {
             public void run() {
                 mLoginButton.perform(click());
             }

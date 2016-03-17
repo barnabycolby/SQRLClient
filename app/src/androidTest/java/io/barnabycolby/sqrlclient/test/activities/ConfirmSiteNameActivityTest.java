@@ -12,7 +12,7 @@ import io.barnabycolby.sqrlclient.activities.NoIdentityActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 
 public class ConfirmSiteNameActivityTest extends ActivityInstrumentationTestCase2<ConfirmSiteNameActivity> {
 
@@ -77,7 +77,7 @@ public class ConfirmSiteNameActivityTest extends ActivityInstrumentationTestCase
         // As this test is a special case, we need to manually remove it
         App.getSQRLIdentityManager().removeAllIdentities();
 
-        NoIdentityActivity activity = (NoIdentityActivity)Helper.monitorForActivity(NoIdentityActivity.class, 5000, new Lambda() {
+        NoIdentityActivity activity = (NoIdentityActivity)TestHelper.monitorForActivity(NoIdentityActivity.class, 5000, new Lambda() {
             public void run() {
                 String sqrlUri = "sqrl://www.grc.com/sqrl?nut=mCwPTJWrbcBNMJKc76sI8w&sfn=R1JD";
                 startActivityWithGivenURI(sqrlUri);

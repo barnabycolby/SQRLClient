@@ -13,7 +13,7 @@ import android.support.test.runner.AndroidJUnit4;
 import io.barnabycolby.sqrlclient.activities.EnterNewPasswordActivity;
 import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 
 import org.junit.After;
@@ -117,7 +117,7 @@ public class EnterNewPasswordActivityTest {
         this.mSecondPasswordEditText.perform(typeText(password));
         Espresso.closeSoftKeyboard();
 
-        Activity mainActivity = Helper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
+        Activity mainActivity = TestHelper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
             public void run() {
                 mNextButton.perform(click());
             }
@@ -129,7 +129,7 @@ public class EnterNewPasswordActivityTest {
     public void throwsExceptionIfMissingRequiredIntentExtras() throws Exception {
         final Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         final Intent intent = new Intent(instrumentation.getContext(), EnterNewPasswordActivity.class);
-        Helper.assertExceptionThrown(RuntimeException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(RuntimeException.class, new Lambda() {
             public void run() throws Exception {
                 instrumentation.startActivitySync(intent);
             }

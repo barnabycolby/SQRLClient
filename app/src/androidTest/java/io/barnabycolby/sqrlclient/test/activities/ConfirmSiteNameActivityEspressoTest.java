@@ -15,7 +15,7 @@ import io.barnabycolby.sqrlclient.activities.MainActivity;
 import io.barnabycolby.sqrlclient.App;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.R;
-import io.barnabycolby.sqrlclient.test.Helper;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -68,7 +68,7 @@ public class ConfirmSiteNameActivityEspressoTest {
 
     @Test
     public void denySiteStartsMainActivity() throws Exception {
-        Activity mainActivity = Helper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
+        Activity mainActivity = TestHelper.monitorForActivity(MainActivity.class, 5000, new Lambda() {
             public void run() {
                 onView(withId(R.id.DenySiteButton)).perform(click());
             }
@@ -78,7 +78,7 @@ public class ConfirmSiteNameActivityEspressoTest {
 
     @Test
     public void confirmSiteStartsEnterPasswordActivity() throws Exception {
-        Activity enterPasswordActivity = Helper.monitorForActivity(EnterPasswordActivity.class, 5000, new Lambda() {
+        Activity enterPasswordActivity = TestHelper.monitorForActivity(EnterPasswordActivity.class, 5000, new Lambda() {
             public void run() {
                 onView(withId(R.id.ConfirmSiteButton)).perform(click());
             }

@@ -26,7 +26,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 import static org.junit.Assert.fail;
 
-public class Helper {
+public class TestHelper {
 
     public static void createNewIdentity(final String identityName) throws Exception {
         // Create an activity monitor so that we can retrieve an instance of any activities we start

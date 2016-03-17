@@ -9,6 +9,7 @@ import io.barnabycolby.sqrlclient.helpers.Helper;
 import io.barnabycolby.sqrlclient.helpers.Lambda;
 import io.barnabycolby.sqrlclient.sqrl.SQRLIdentityManager;
 import io.barnabycolby.sqrlclient.sqrl.SQRLUri;
+import io.barnabycolby.sqrlclient.test.TestHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -77,7 +78,7 @@ public class SQRLIdentityManagerTest {
     public void getCurrentIdentityShouldSucceedWithCorrectPassword() throws Exception {
         String identityName = "Abraham Lincoln";
         String password = "mKkyWf*5K&@pSEcU";
-        byte[] masterKey = io.barnabycolby.sqrlclient.helpers.Helper.hexStringToByteArray("5A078E19A846275E34F525895BA90AA0CC1FA274B5582E121FA216E30CBB04A7");
+        byte[] masterKey = Helper.hexStringToByteArray("5A078E19A846275E34F525895BA90AA0CC1FA274B5582E121FA216E30CBB04A7");
 
         // Create the mock Uri
         SQRLUri uri = mock(SQRLUri.class);
@@ -90,7 +91,7 @@ public class SQRLIdentityManagerTest {
 
     @Test public void getCurrentIdentityShouldThrowExceptionWithIncorrectPassword() throws Exception {
         String identityName = "Barack Obama";
-        byte[] masterKey = io.barnabycolby.sqrlclient.helpers.Helper.hexStringToByteArray("148A68E32EAB1C0D78A142C415D993E91044577CDA40B153B60CC40AC087F704");
+        byte[] masterKey = Helper.hexStringToByteArray("148A68E32EAB1C0D78A142C415D993E91044577CDA40B153B60CC40AC087F704");
 
         // Create the mock Uri
         final SQRLUri uri = mock(SQRLUri.class);
@@ -100,7 +101,7 @@ public class SQRLIdentityManagerTest {
         this.mIdentityManager.setCurrentIdentity(identityName);
 
         // Assert that an IncorrectPasswordException is thrown
-        io.barnabycolby.sqrlclient.test.Helper.assertExceptionThrown(IncorrectPasswordException.class, new Lambda() {
+        TestHelper.assertExceptionThrown(IncorrectPasswordException.class, new Lambda() {
             public void run() throws Exception {
                 mIdentityManager.getCurrentIdentityForSite(uri, "TJjt*G9GP$@M&c*D", null);
             }
