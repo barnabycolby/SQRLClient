@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SQRLClient</string>
+    <string name="app_name">SQRL</string>
     <string name="login_on_this_device">You can login to a site on this device by tapping on the QR code in the browser.</string>
     <string name="invalid_link">The link was not valid.</string>
     <string name="confirm_site_name">Confirm</string>
@@ -9,7 +9,7 @@
     <string name="account_does_not_exist">The account does not yet exist.</string>
     <string name="something_went_wrong">Something went wrong.</string>
     <string name="contacting_server">Contacting server...</string>
-    <string name="transient_error">A transient error occurred, sender should resend request using new nut and qry values.</string>
+    <string name="transient_error">A transient error occurred. The sender should resend the request using the new nut and qry values.</string>
     <string name="unknown_scheme">The uri scheme %s is not supported.</string>
     <string name="no_nut">The required nut parameter was not present.</string>
     <string name="enable_test_mode">You must enable test mode before calling await.</string>
@@ -17,11 +17,11 @@
     <string name="tif_value_not_hexadecimal">\"tif\" value in server response was not hexadecimal.</string>
     <string name="unknown_error">An unknown error occurred.</string>
     <string name="query_function_not_supported">Query function is not supported by server.</string>
-    <string name="client_failure">Some aspect of the request was incorrect, according to the server.</string>
-    <string name="bad_id_association">Perhaps the wrong SQRL Identity was used?</string>
-    <string name="server_response_missing_parameter">\"%s\" parameter was not present in server response.</string>
+    <string name="client_failure">According to the server, something about the request was incorrect.</string>
+    <string name="bad_id_association">A \"bad id association\" error occurred. Perhaps the wrong SQRL Identity was used?</string>
+    <string name="server_response_missing_parameter">The \"%s\" parameter was not present in server response.</string>
     <string name="invalid_server_response">Servers response was in an unrecognised format.</string>
-    <string name="non_200_response_code">The response code of the servers response was %d instead of 200.</string>
+    <string name="non_200_response_code">The status code of the servers response was %d instead of 200.</string>
     <string name="dialog_create_account">Would you like to create an account?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -31,10 +31,10 @@
     <string name="scan_qr">Scan QR</string>
     <string name="login">Login</string>
     <string name="create_new_identity">Create New Identity</string>
-    <string name="create_new_identity_explanation">To make sure the identity created is secure, shake the camera and wave it as many different things as possible until the bar turns green.</string>
+    <string name="create_new_identity_explanation">To make sure your new identity is as secure as possible, shake the camera and wave it as many different things as possible until the bar turns green. For extra security, keep shaking and waving the camera after the bar has turned green, the longer the better.</string>
     <string name="camera_service_not_supported">The camera service is not supported by this system.</string>
     <string name="no_cameras">There are no available cameras.</string>
-    <string name="camera_permission_not_granted">Permission to use the camera has not been granted.</string>
+    <string name="camera_permission_not_granted">This app requires permission to use the camera! Please enable it in the phones settings.</string>
     <string name="camera_disconnected">The camera is no longer available for use.</string>
     <string name="camera_error_occurred">An error occurred whilst trying to open the camera.</string>
     <string name="camera_configuration_failed">The camera configuration failed.</string>
@@ -56,12 +56,12 @@
     <string name="enter_new_password_explanation">Please enter the password you would like to use to protect your identity. It needs to be as strong as possible to protect against bad guys, so make it as long and random as you can! You will need to enter it every time you login to a site.</string>
     <string name="password_hint">Enter password...</string>
     <string name="second_password_hint">Enter password again...</string>
-    <string name="password_contains_null">The password contained a NUL character, illegal for use in SQRL.</string>
+    <string name="password_contains_null">The password contained a NUL character, illegal for use with SQRL.</string>
     <string name="enter_password">Enter Password</string>
     <string name="enter_password_help">Enter the password for the selected identity.</string>
     <string name="verifying_password">Verifying password...</string>
-    <string name="password_is_blank">The password cannot be blank!</string>
-    <string name="incorrect_password" color="red">That password was incorrect!</string>
+    <string name="password_is_blank">You didn\'t give me a password!</string>
+    <string name="incorrect_password">That password was incorrect!</string>
     <string name="login_activity_label">Logging in</string>
     <string name="encrypting_identity_explanation">In order to protect your identity against people who might steal your device, it needs to be encrypted using your password for 5 seconds.</string>
     <string name="encrypting_identity">Encrypting Identity</string>
