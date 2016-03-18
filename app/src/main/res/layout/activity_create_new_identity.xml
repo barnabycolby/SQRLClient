@@ -78,6 +78,7 @@
         </RelativeLayout>
 
         <TextView
+            android:gravity="center"
             android:id="@+id/ErrorTextView"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
