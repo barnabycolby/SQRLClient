@@ -21,7 +21,7 @@
 
         <activity
             android:name=".activities.ConfirmSiteNameActivity"
-            android:label="@string/confirm_site_name_activity_label"
+            android:label="@string/confirm_site_name_label"
             >
             <!-- SQRL and QRL URI schemes -->
             <intent-filter android:label="@string/app_name">
@@ -40,32 +40,32 @@
 
         <activity
             android:name=".activities.CreateNewIdentityActivity"
-            android:label="@string/create_new_identity"
+            android:label="@string/create_new_identity_label"
         />
 
         <activity
             android:name=".activities.EncryptIdentityActivity"
-            android:label="@string/encrypting_identity"
+            android:label="@string/encrypting_identity_label"
         />
 
         <activity
             android:name=".activities.EnterNewPasswordActivity"
-            android:label="@string/enter_new_password"
+            android:label="@string/enter_new_password_label"
         />
 
         <activity
             android:name=".activities.EnterPasswordActivity"
-            android:label="@string/enter_password"
+            android:label="@string/enter_password_label"
         />
 
         <activity
             android:name=".activities.LoginActivity"
-            android:label="@string/login_activity_label"
+            android:label="@string/login_label"
             />
 
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name"
+            android:label="@string/main_label"
             >
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -76,7 +76,7 @@
 
         <activity
             android:name=".activities.NoIdentityActivity"
-            android:label="@string/app_name"
+            android:label="@string/no_identity_label"
             />
     </application>
 

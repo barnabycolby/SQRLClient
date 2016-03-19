@@ -1,4 +1,14 @@
 <resources>
+    <!-- Activity labels -->
+    <string name="encrypting_identity_label">SQRL | Encrypting Identity</string>
+    <string name="confirm_site_name_label">SQRL | Confirm Site Name</string>
+    <string name="create_new_identity_label">SQRL | Create New Identity</string>
+    <string name="enter_new_password_label">SQRL | Enter New Password</string>
+    <string name="enter_password_label">SQRL | Enter Password</string>
+    <string name="login_label">SQRL | Authenticating</string>
+    <string name="main_label">SQRL | Main Menu</string>
+    <string name="no_identity_label">SQRL | No Identity</string>
+
     <string name="app_name">SQRL</string>
     <string name="login_on_this_device">You can login to a site on this device by tapping on the QR code in the browser.</string>
     <string name="invalid_link">The link was not valid.</string>
@@ -27,7 +37,6 @@
     <string name="no">No</string>
     <string name="authorisation_request_failed">Authorisation request failed.</string>
     <string name="authorisation_request_sent">Authorisation request sent.</string>
-    <string name="confirm_site_name_activity_label">Confirm site name</string>
     <string name="scan_qr">Scan QR</string>
     <string name="login">Login</string>
     <string name="create_new_identity">Create New Identity</string>
@@ -52,19 +61,15 @@
     <string name="invalid_master_key">The provided master key was invalid.</string>
     <string name="key_generation_failed">A failure occurred while trying to generate the SQRL keypair.</string>
     <string name="next">Next</string>
-    <string name="enter_new_password">Enter New Password</string>
     <string name="enter_new_password_explanation">Please enter the password you would like to use to protect your identity. It needs to be as strong as possible to protect against bad guys, so make it as long and random as you can! You will need to enter it every time you login to a site.</string>
     <string name="password_hint">Enter password...</string>
     <string name="second_password_hint">Enter password again...</string>
     <string name="password_contains_null">The password contained a NUL character, illegal for use with SQRL.</string>
-    <string name="enter_password">Enter Password</string>
     <string name="enter_password_help">Enter the password for the selected identity.</string>
     <string name="verifying_password">Verifying password...</string>
     <string name="password_is_blank">You didn\'t give me a password!</string>
     <string name="incorrect_password">That password was incorrect!</string>
-    <string name="login_activity_label">Logging in</string>
     <string name="encrypting_identity_explanation">In order to protect your identity against people who might steal your device, it needs to be encrypted using your password for 5 seconds.</string>
-    <string name="encrypting_identity">Encrypting Identity</string>
     <string name="bad_base_64">The response contained bad base64.</string>
     <string name="done">Done</string>
 </resources>
