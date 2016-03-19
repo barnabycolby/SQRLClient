@@ -33,7 +33,7 @@ public class IdentRequestTaskTest {
     @Test
     public void shouldCreateAndSendAnIdentRequest() throws Exception {
         // Execute the ident request
-        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView);
+        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView, null);
         identRequestTask.enableTestMode();
         identRequestTask.execute();
         boolean result = identRequestTask.await(10, TimeUnit.SECONDS);
@@ -46,7 +46,7 @@ public class IdentRequestTaskTest {
     @Test
     public void shouldSetSuccessTextWhenNoException() throws Exception {
         // Execute the ident request
-        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView);
+        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView, null);
         identRequestTask.enableTestMode();
         identRequestTask.execute();
         boolean result = identRequestTask.await(10, TimeUnit.SECONDS);
@@ -63,7 +63,7 @@ public class IdentRequestTaskTest {
         doThrow(new InvalidServerResponseException("Thrown from a unit test.")).when(mRequestFactory).createAndSendIdent();
 
         // Execute the ident request
-        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView);
+        IdentRequestTask identRequestTask = new IdentRequestTask(mRequestFactory, mTextView, null);
         identRequestTask.enableTestMode();
         identRequestTask.execute();
         boolean result = identRequestTask.await(10, TimeUnit.SECONDS);
