@@ -25,11 +25,10 @@
             android:layout_below="@id/ExplanationTextView"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/activity_vertical_large_margin"
             android:layout_width="fill_parent"
             android:progress="0"
-            android:progressDrawable="@drawable/green_progress_bar"
-            style="@android:style/Widget.ProgressBar.Horizontal"
+            style="@style/AppTheme.ProgressBar"
             />
     </RelativeLayout>
 

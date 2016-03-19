@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:text="@string/identity"
-            android:textColor="@color/green"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/identity_selector_text_size"
             />
 
@@ -52,6 +52,7 @@
         <TableRow
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
             >
             <Button
                 android:id="@+id/CreateNewIdentityButton"
@@ -61,11 +62,13 @@
                 android:layout_width="wrap_content"
                 android:onClick="createNewIdentity"
                 android:text="@string/create_new_identity"
+                style="@style/AppTheme.SecondaryButton"
                 />
         </TableRow>
 
         <TableRow
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             >
             <Button
@@ -76,6 +79,7 @@
                 android:layout_width="wrap_content"
                 android:onClick="deleteIdentity"
                 android:text="@string/delete_identity"
+                style="@style/AppTheme.SecondaryButton"
                 />
         </TableRow>
     </TableLayout>

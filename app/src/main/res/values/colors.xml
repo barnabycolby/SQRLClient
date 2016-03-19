@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="red">#EF6155</color>
-    <color name="green">#48B685</color>
+    <!-- These values exist to make the colours below more obvious than if direct hex codes were used -->
+    <color name="black">#000000</color>
+    <color name="grey">#808080</color>
+    <!-- SQRL colour: #007CC3 -->
+    <color name="lightBlue">#33AFF6</color>
+    <color name="lightGrey">#E0E0E0</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="accent">@color/lightBlue</color>
+    <color name="background">@color/white</color>
+    <color name="primaryButtonText">@color/white</color>
+    <color name="primaryButtonDisabledText">@color/secondaryText</color>
+    <color name="primaryText">@color/black</color>
+    <color name="secondaryText">@color/grey</color>
 </resources>

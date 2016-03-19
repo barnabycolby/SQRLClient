@@ -6,6 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:padding="5dip"
-    android:textColor="@color/red"
+    android:textColor="@color/accent"
     android:textSize="@dimen/identity_selector_text_size"
     />

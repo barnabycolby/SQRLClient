@@ -49,8 +49,7 @@
                     android:layout_marginTop="@dimen/activity_vertical_separate_margin"
                     android:layout_width="fill_parent"
                     android:progress="0"
-                    android:progressDrawable="@drawable/green_progress_bar"
-                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    style="@style/AppTheme.ProgressBar"
                     />
 
                 <Button

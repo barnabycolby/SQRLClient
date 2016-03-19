@@ -1,11 +1,46 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/background</item>
+        <item name="colorPrimaryDark">@color/primaryText</item>
+        <item name="colorAccent">@color/accent</item>
+
+        <!-- Set background colour -->
+        <item name="android:windowBackground">@color/background</item>
+
+        <!-- Set text colour -->
+        <item name="android:textColor">@color/secondaryText</item>
+
+        <!-- Set custom styles -->
+        <item name="actionBarStyle">@style/AppTheme.ActionBarNoShadow</item>
+        <item name="buttonStyle">@style/AppTheme.PrimaryButton</item>
+        <item name="android:textViewStyle">@style/AppTheme.CenteredTextView</item>
+    </style>
+
+    <style name="AppTheme.ActionBarNoShadow" parent="style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <!-- Removes actionbar shadow -->
+        <item name="android:elevation">1dp</item>
+        <item name="elevation">1dp</item>
+    </style>
+
+    <style name="AppTheme.PrimaryButton" parent="style/Widget.AppCompat.Button">
+        <item name="android:background">@drawable/primary_button</item>
+        <item name="android:textColor">@drawable/primary_button_text</item>
+    </style>
+
+    <style name="AppTheme.SecondaryButton" parent="style/Widget.AppCompat.Button">
+        <item name="android:background">@drawable/secondary_button</item>
+        <item name="android:textColor">@color/primaryText</item>
+    </style>
+
+    <style name="AppTheme.ProgressBar" parent="style/android:Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/themed_progress_bar</item>
+    </style>
+
+    <style name="AppTheme.CenteredTextView" parent="style/android:Widget.TextView">
+        <item name="android:gravity">center</item>
     </style>
 
 </resources>
