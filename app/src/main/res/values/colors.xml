@@ -3,8 +3,8 @@
     <!-- These values exist to make the colours below more obvious than if direct hex codes were used -->
     <color name="black">#000000</color>
     <color name="grey">#808080</color>
-    <!-- SQRL colour: #007CC3 -->
     <color name="lightBlue">#33AFF6</color>
+    <color name="sqrlBlue">#007CC3</color>
     <color name="lightGrey">#E0E0E0</color>
     <color name="white">#FFFFFF</color>
 
@@ -14,4 +14,5 @@
     <color name="primaryButtonDisabledText">@color/secondaryText</color>
     <color name="primaryText">@color/black</color>
     <color name="secondaryText">@color/grey</color>
+    <color name="progressBar">@color/grey</color>
 </resources>
