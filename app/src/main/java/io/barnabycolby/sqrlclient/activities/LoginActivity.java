@@ -177,11 +177,13 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> imp
         super.onDestroy();
 
         // We need to cancel the async tasks before exiting, otherwise they may behave badly
-        if (this.mAccountExistsTask != null && this.mAccountExistsTask.getStatus() != AsyncTask.Status.FINISHED) {
-            this.mAccountExistsTask.cancel(true);
-        }
-        if (this.mIdentRequestTask != null && this.mIdentRequestTask.getStatus() != AsyncTask.Status.FINISHED) {
-            this.mIdentRequestTask.cancel(true);
+        if (this.isFinishing()) {
+            if (this.mAccountExistsTask != null && this.mAccountExistsTask.getStatus() != AsyncTask.Status.FINISHED) {
+                this.mAccountExistsTask.cancel(true);
+            }
+            if (this.mIdentRequestTask != null && this.mIdentRequestTask.getStatus() != AsyncTask.Status.FINISHED) {
+                this.mIdentRequestTask.cancel(true);
+            }
         }
     }
 
