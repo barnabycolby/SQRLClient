@@ -62,7 +62,6 @@
                 android:layout_width="wrap_content"
                 android:onClick="createNewIdentity"
                 android:text="@string/create_new_identity"
-                style="@style/AppTheme.SecondaryButton"
                 />
         </TableRow>
 
@@ -79,7 +78,6 @@
                 android:layout_width="wrap_content"
                 android:onClick="deleteIdentity"
                 android:text="@string/delete_identity"
-                style="@style/AppTheme.SecondaryButton"
                 />
         </TableRow>
     </TableLayout>
