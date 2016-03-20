@@ -20,7 +20,7 @@ public class EnterPasswordStateFragment extends Fragment {
     /**
      * Constructs a new instance using the given objects.
      *
-     * @param passwordCryptDetachableListener  The listener object used for password verification.
+     * @param passwordCryptListener  The listener object used for password verification.
      */
     public EnterPasswordStateFragment(PasswordCryptListener passwordCryptListener) {
         this.mPasswordCryptDetachableListener = (PasswordCryptDetachableListener)DetachableListener.create(passwordCryptListener, PasswordCryptDetachableListener.class);

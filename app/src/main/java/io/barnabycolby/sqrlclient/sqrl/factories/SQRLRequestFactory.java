@@ -25,7 +25,7 @@ public class SQRLRequestFactory {
     /**
      * Constructs a new factory using the given uri.
      *
-     * @param sqrlIdentity  The SQRLIdentity which will be used to create requests.
+     * @param identity  The SQRLIdentity which will be used to create requests.
      */
     public SQRLRequestFactory(SQRLIdentity identity) {
         this.mIdentity = identity;

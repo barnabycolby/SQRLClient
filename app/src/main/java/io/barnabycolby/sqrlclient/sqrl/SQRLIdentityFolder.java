@@ -161,7 +161,7 @@ public class SQRLIdentityFolder {
      * Writes a new identity to the internal file storage.
      *
      * @param identityName  The name of the new identity. This will be used for UI identification and system identification.
-     * @param encryptedIdentity  The identity to write.
+     * @param identity  The identity to write.
      * @throws IdentityAlreadyExistsException  If an identity with the same name already exists.
      * @throws IOException  If an IO error occurred.
      * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be opened.

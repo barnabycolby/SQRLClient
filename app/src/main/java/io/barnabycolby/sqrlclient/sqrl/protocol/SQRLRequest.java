@@ -41,7 +41,7 @@ public abstract class SQRLRequest {
     /**
      * Constructs a new SQRLRequest object using the previous response to chain the requests appropriately.
      *
-     * @param sqrlConnection  The SQRL connection to send the request over.
+     * @param sqrlConnectionFactory  The SQRL connection factory to use when sending the request.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param previousResponse  The previous response sent by the server.

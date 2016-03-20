@@ -25,7 +25,7 @@ public class SQRLResponse {
     /**
      * Constructs a SQRLResponse object using the given connection.
      *
-     * @param connection The connection that the request was sent over.
+     * @param sqrlConnection The connection that the request was sent over.
      *
      * @throws IOException  If an IO error occurs when reading the response.
      * @throws SQRLException  If the servers response resulted in an unrecoverable error.

@@ -31,7 +31,7 @@ public class LoginStateFragment extends Fragment {
      * Constructs a new instance using the given objects.
      *
      * @param informationTextView  The information text view object to retain.
-     * @param sqrlUri  The SQRLIdentity object to retain.
+     * @param sqrlIdentity  The SQRLIdentity object to retain.
      * @param requestFactory  The SQRLRequestFactory object to retain.
      * @param accountExistsListener  The listener object used for account exists callbacks.
      * @param dialogListener  The listener object used for create account dialog callbacks.
