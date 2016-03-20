@@ -143,10 +143,9 @@ public abstract class SQRLRequest {
             lastServerResponse = ex.getLastServerResponse();
 
             // Now we try one last time to contact the server
+            generateAndSendRequest(outputStreamWriter, clientValue, lastServerResponse);
+            return this.sqrlResponseFactory.create(this.sqrlConnection);
         }
-
-        generateAndSendRequest(outputStreamWriter, clientValue, lastServerResponse);
-        return this.sqrlResponseFactory.create(this.sqrlConnection);
     }
 
     /**
