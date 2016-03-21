@@ -15,7 +15,9 @@ public class Helper {
     /**
      * Ensures that a given lambda is run on the UI thread.
      *
+     * @param activity  Provides access to the runOnUiThread method.
      * @param lambda  The lambda to run.
+     *
      * @throws Exception  If the lambda throws an exception.
      */
     public static void runOnUIThread(Activity activity, final Lambda lambda) throws Exception {

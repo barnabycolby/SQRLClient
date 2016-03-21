@@ -13,6 +13,8 @@ public interface SQRLResponseFactory {
     /**
      * Creates a SQRLResponse using the given connection.
      *
+     * @return The servers response.
+     *
      * @param connection  The connection passed directly to the SQRLResponse constructor.
      * @throws IOException  If the server response could not be retrieved.
      * @throws SQRLException  If the server response indicated that we could not continue, perhaps because it was invalid or because it sent an error flag.

@@ -23,6 +23,8 @@ public class UnknownSchemeException extends SQRLException {
 
     /**
      * Gets the scheme that was not recognised.
+     *
+     * @return The unrecognised scheme.
      */
     public String getScheme() {
         return this.scheme;

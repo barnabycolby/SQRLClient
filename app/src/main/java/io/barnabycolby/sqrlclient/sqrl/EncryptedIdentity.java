@@ -7,6 +7,7 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.SecureRandom;
 
+import javax.crypto.AEADBadTagException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -49,6 +50,8 @@ public class EncryptedIdentity {
      * @param password  The password to encrypt the master key with.
      * @param listener  The listener used for progress updates.
      *
+     * @return The newly created EncryptedIdentity.
+     *
      * @throws GeneralSecurityException  If the encryption cannot be completed.
      */
     public static EncryptedIdentity create(byte[] masterKey, String password, PasswordCryptListener listener) throws GeneralSecurityException {
@@ -78,6 +81,8 @@ public class EncryptedIdentity {
      * @param password  The password used to encrypt the master key.
      * @param listener  The listener for decryption progress updates.
      *
+     * @return The decrypted master key.
+     *
      * @throws AEADBadTagException  If the password used was incorrect.
      * @throws GeneralSecurityException  If the decryption could not be completed.
      */
@@ -97,6 +102,8 @@ public class EncryptedIdentity {
 
     /**
      * Gets the master key in encrypted form.
+     *
+     * @return The encrypted master key.
      */
     public byte[] getEncryptedMasterKey() {
         return this.mEncryptedMasterKey;
@@ -104,6 +111,8 @@ public class EncryptedIdentity {
 
     /**
      * Gets the salt used for EnScrypt key derivation.
+     *
+     * @return The salt used for EnScrypt key derivation.
      */
     public byte[] getSalt() {
         return this.mSalt;
@@ -111,6 +120,8 @@ public class EncryptedIdentity {
 
     /**
      * Gets the IV used for AES-GCM encryption.
+     *
+     * @return The AES-GCM IV value.
      */
     public byte[] getIv() {
         return this.mIv;
@@ -118,6 +129,8 @@ public class EncryptedIdentity {
 
     /**
      * Gets the number of EnScrypt iterations performed during the key derivation.
+     *
+     * @return The number of EnScrypt iterations performed.
      */
     public int getIterations() {
         return this.mIterations;

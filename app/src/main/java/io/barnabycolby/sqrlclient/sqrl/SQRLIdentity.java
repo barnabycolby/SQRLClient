@@ -71,6 +71,8 @@ public class SQRLIdentity implements Parcelable {
     /**
      * Signs a message using the private key of the SQRL Identity.
      *
+     * @param message  The message to sign.
+     *
      * @return The signed message.
      * @throws CryptographyException  If an unrecoverable cryptographic error occurs when signing the message.
      */

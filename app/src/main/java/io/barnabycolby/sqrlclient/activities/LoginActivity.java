@@ -203,6 +203,8 @@ public class LoginActivity extends StateFragmentActivity<LoginStateFragment> imp
 
     /**
      * Called when the done button is clicked.
+     *
+     * @param view  The view that was clicked.
      */
     public void onDoneClicked(View view) {
         Intent intent = new Intent(this, MainActivity.class);

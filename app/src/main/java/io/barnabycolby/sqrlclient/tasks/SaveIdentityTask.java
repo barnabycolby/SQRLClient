@@ -26,6 +26,9 @@ public class SaveIdentityTask extends AsyncTask<Void, Integer, Boolean> {
     /**
      * Constructs a new instance of this class.
      *
+     * @param identityName  The name of the new identity.
+     * @param masterKey  The new identities master key.
+     * @param password  The new identities password.
      * @param listener  The listener to use for progress and results callbacks.
      */
     public SaveIdentityTask(String identityName, byte[] masterKey, String password, PasswordCryptListener listener) {
@@ -52,6 +55,8 @@ public class SaveIdentityTask extends AsyncTask<Void, Integer, Boolean> {
 
     /**
      * Gets the latest published progress value.
+     *
+     * @return The 0-100 progress value.
      */
     public int getProgress() {
         return this.mProgress;
@@ -59,6 +64,8 @@ public class SaveIdentityTask extends AsyncTask<Void, Integer, Boolean> {
 
     /**
      * If an error occurred during execution, you can get the associated error message by calling this.
+     *
+     * @return The error message.
      */
     public String getErrorMessage() {
         return this.mErrorMessage;

@@ -59,6 +59,8 @@ public class SQRLConnection {
      * Gets the SQRLUri object used for communication with the server.
      *
      * This object starts as the SQRLUri passed to the constructor, but may have changed since then.
+     *
+     * @return The SQRLUri object used for communication.
      */
     public SQRLUri getSQRLUri() {
         return this.sqrlUri;
@@ -66,6 +68,8 @@ public class SQRLConnection {
 
     /**
      * Gets the connection object that this object wraps.
+     *
+     * @return The underlying connection object used by this class.
      */
     public HttpURLConnection getConnection() {
         return this.connection;

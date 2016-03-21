@@ -32,6 +32,8 @@ public class TransientErrorException extends SQRLException {
     /**
      * Gets the nut value returned in the server response.
      * The nut value should be used in the resent request to the server.
+     *
+     * @return The new nut value from the servers response.
      */
     public String getNut() {
         return this.nut;
@@ -40,6 +42,8 @@ public class TransientErrorException extends SQRLException {
     /**
      * Gets the qry value returned in the server response.
      * The qry value should be used in the resent request to the server.
+     *
+     * @return The qry value in the servers response.
      */
     public String getQry() {
         return this.qry;
@@ -48,6 +52,8 @@ public class TransientErrorException extends SQRLException {
     /**
      * Gets the last server response which should be a base64url encoded name value list.
      * The response value should be used in the resent request to the server.
+     *
+     * @return The last server response.
      */
     public String getLastServerResponse() {
         return this.lastServerResponse;

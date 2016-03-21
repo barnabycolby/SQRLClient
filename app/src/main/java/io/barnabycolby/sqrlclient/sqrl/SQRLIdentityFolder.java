@@ -27,6 +27,8 @@ public class SQRLIdentityFolder {
 
     /**
      * Loads the SQRL identities from disk into a map.
+     *
+     * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be loaded.
      */
     public SimpleArrayMap<String, EncryptedIdentity> load() throws IdentitiesCouldNotBeLoadedException {
         SimpleArrayMap<String, EncryptedIdentity> identities = new SimpleArrayMap<String, EncryptedIdentity>();
@@ -223,8 +225,10 @@ public class SQRLIdentityFolder {
      * Removes a single identity from the list.
      *
      * @param identityName  The name of the identity to remove.
+     *
      * @throws IdentityDoesNotExistException  If the identity given by the identity name does not exist.
      * @throws IdentityCouldNotBeDeletedException  If the identity file on disk could not be deleted.
+     * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be loaded.
      */
     public void remove(String identityName) throws IdentityDoesNotExistException, IdentityCouldNotBeDeletedException, IdentitiesCouldNotBeLoadedException {
         // Remove the identity file

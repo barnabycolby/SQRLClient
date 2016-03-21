@@ -50,6 +50,8 @@ public class SQRLRequestFactory {
     /**
      * Creates a new SQRLIdentRequest object, sends the request and returns the response.
      *
+     * @return The servers response.
+     *
      * @throws MalformedURLException  If the URI used to create the request is malformed. The URI is retrieved from the SQRLUri object passed in via the constructor.
      * @throws IOException  If the connection to the server could not be created.
      * @throws NoNutException  If the qry value in the last server response did not contain a nut parameter.

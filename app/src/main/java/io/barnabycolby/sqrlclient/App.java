@@ -36,6 +36,8 @@ public class App extends Application {
      * Gets the SQRLIdentityManager associated with this application instance.
      *
      * If an instance does not already exist, it will be created.
+     *
+     * @return The SQRLIdentityManager.
      */
     public static SQRLIdentityManager getSQRLIdentityManager() {
         if (sIdentityManager == null) {

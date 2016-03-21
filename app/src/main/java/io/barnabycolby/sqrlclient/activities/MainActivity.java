@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Called when the login button is pressed.
+     *
+     * @param view  The view that was clicked.
      */
     public void login(View view) {
         // Start the QR code scanner
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Called when the create new identity button is pressed.
+     *
+     * @param view  The view that was clicked.
      */
     public void createNewIdentity(View view) {
         Intent intent = new Intent(this, CreateNewIdentityActivity.class);
@@ -75,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Called when the delete identity button is pressed.
+     *
+     * @param view  The view that was clicked.
      */
     public void deleteIdentity(View view) {
         String currentlySelectedIdentityName = (String)this.mIdentitySpinner.getSelectedItem();

@@ -36,16 +36,28 @@ public class EnterPasswordStateFragment extends Fragment {
 
     /**
      * Returns the detachable listener used for password verification results.
+     *
+     * @return The detachable listener used for password verification results.
      */
     public PasswordCryptDetachableListener getPasswordCryptDetachableListener() {
         return this.mPasswordCryptDetachableListener;
     }
 
+    /**
+     * Gets the task used for decrypting the identity.
+     *
+     * @return The task used for decrypting the identity.
+     */
     public DecryptIdentityTask getDecryptIdentityTask() {
         return this.mDecryptIdentityTask;
     }
 
-    public void setDecryptIdentityTask(DecryptIdentityTask passwordVerificationTask) {
-        this.mDecryptIdentityTask = passwordVerificationTask;
+    /**
+     * Stores the given DecryptIdentityTask.
+     *
+     * @param decryptIdentityTask  The task to store.
+     */
+    public void setDecryptIdentityTask(DecryptIdentityTask decryptIdentityTask) {
+        this.mDecryptIdentityTask = decryptIdentityTask;
     }
 }

@@ -27,6 +27,10 @@ public class SQRLIdentRequest extends SQRLRequest {
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param previousResponse  The last response sent by the server, this is required in order to determine whether the account exists.
+     *
+     * @throws MalformedURLException If the SQRLRequest constructor throws this exception.
+     * @throws IOException If the SQRLRequest constructor throws this exception.
+     * @throws NoNutException If the SQRLRequest constructor throws this exception.
      */
     public SQRLIdentRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, IOException, NoNutException {
         super(sqrlConnectionFactory, sqrlIdentity, sqrlResponseFactory, previousResponse);

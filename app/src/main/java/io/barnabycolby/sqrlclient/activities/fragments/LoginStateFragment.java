@@ -85,6 +85,8 @@ public class LoginStateFragment extends Fragment {
 
     /**
      * Returns the detachable listener used for account exists callbacks.
+     *
+     * @return The detachable listener used for account exists callbacks.
      */
     public ProceedAbortDetachableListener getAccountExistsDetachableListener() {
         return this.mAccountExistsDetachableListener;
@@ -92,6 +94,8 @@ public class LoginStateFragment extends Fragment {
 
     /**
      * Returns the detachable listener used for create account dialog callbacks.
+     *
+     * @return The Detachable listener used for create account dialog callbacks.
      */
     public ProceedAbortDetachableListener getDialogDetachableListener() {
         return this.mDialogDetachableListener;
@@ -99,6 +103,8 @@ public class LoginStateFragment extends Fragment {
 
     /**
      * Returns the detachable listener used for ident request callbacks.
+     *
+     * @return The detachable listener used for ident request callbacks.
      */
     public IdentRequestDetachableListener getIdentRequestDetachableListener() {
         return this.mIdentRequestDetachableListener;
@@ -106,6 +112,8 @@ public class LoginStateFragment extends Fragment {
 
     /**
      * Gets the retained SQRLRequestFactory.
+     *
+     * @return  The retained SQRLRequestFactory.
      */
     public SQRLRequestFactory getRequestFactory() {
         return this.mRequestFactory;
@@ -113,6 +121,8 @@ public class LoginStateFragment extends Fragment {
 
     /**
      * Gets the retained server display name.
+     *
+     * @return The server display name.
      */
     public String getDisplayName() {
         return this.mDisplayName;

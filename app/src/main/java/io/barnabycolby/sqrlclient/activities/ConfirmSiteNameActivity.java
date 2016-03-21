@@ -74,6 +74,8 @@ public class ConfirmSiteNameActivity extends IdentityMustExistActivity {
 
     /**
      * Called when the deny site button is clicked.
+     *
+     * @param view  The view that was clicked.
      */
     public void denySite(View view) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -82,6 +84,8 @@ public class ConfirmSiteNameActivity extends IdentityMustExistActivity {
 
     /**
      * Called when the confirm site button is clicked.
+     *
+     * @param view  The view that was clicked.
      */
     public void confirmSite(View view) {
         Intent intent = new Intent(this, EnterPasswordActivity.class);

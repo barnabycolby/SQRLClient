@@ -23,6 +23,8 @@ public class SwappableTextView {
 
     /**
      * @see android.widget.TextView#setText
+     *
+     * @param textToSet  The new text to set.
      */
     public void setText(String textToSet) {
         this.mRawTextView.setText(textToSet);
@@ -30,6 +32,8 @@ public class SwappableTextView {
 
     /**
      * @see android.widget.TextView#getText
+     *
+     * @return The text of this TextView.
      */
     public String getText() {
         return this.mRawTextView.getText().toString();
@@ -37,6 +41,8 @@ public class SwappableTextView {
 
     /**
      * @see android.widget.TextView#setVisibility
+     *
+     * @param visibility  The new visibility value.
      */
     public void setVisibility(int visibility) {
         this.mRawTextView.setVisibility(visibility);

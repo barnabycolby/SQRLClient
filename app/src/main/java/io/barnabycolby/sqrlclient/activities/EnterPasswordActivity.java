@@ -115,6 +115,8 @@ public class EnterPasswordActivity extends StateFragmentActivity<EnterPasswordSt
 
     /**
      * Called when the login button is clicked.
+     *
+     * @param view  The view that was clicked.
      */
     public void onLoginButtonClicked(View view) {
         this.mLoginClicked = true;

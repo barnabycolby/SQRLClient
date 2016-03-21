@@ -57,7 +57,9 @@ public class SQRLIdentityManager {
      * @param listener  The listener used for progress updates.
      *
      * @throws IdentityAlreadyExistsException  If an identity with the same name already exists.
+     * @throws IdentityCouldNotBeWrittenToDiskException  If the new identity could not be written to disk.
      * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be opened.
+     * @throws GeneralSecurityException  If the cryptographic operations failed.
      */
     public void save(String identityName, byte[] masterKey, String password, PasswordCryptListener listener) throws IdentityAlreadyExistsException, IdentityCouldNotBeWrittenToDiskException, IdentitiesCouldNotBeLoadedException, GeneralSecurityException {
         if (mIdentities.containsKey(identityName)) {
@@ -116,8 +118,10 @@ public class SQRLIdentityManager {
      * Removes a single identity from the list.
      *
      * @param identityName  The name of the identity to remove.
+     *
      * @throws IdentityDoesNotExistException  If the identity given by the identity name does not exist.
      * @throws IdentityCouldNotBeDeletedException  If the identity file on disk could not be deleted.
+     * @throws IdentitiesCouldNotBeLoadedException  If the identities folder could not be loaded.
      */
     public void removeIdentity(String identityName) throws IdentityDoesNotExistException, IdentityCouldNotBeDeletedException, IdentitiesCouldNotBeLoadedException {
         // Check that the given identityName is valid
@@ -177,6 +181,9 @@ public class SQRLIdentityManager {
      * @param password  The password to unlock the identity.
      * @param listener  The listener to listen for decryption progress updates.
      *
+     * @return The current SQRLIdentity for the given site.
+     *
+     * @throws GeneralSecurityException  If a cryptographic operation failed.
      * @throws IncorrectPasswordException  If the password was incorrect.
      */
     public SQRLIdentity getCurrentIdentityForSite(SQRLUri uri, String password, PasswordCryptListener listener) throws GeneralSecurityException, IncorrectPasswordException {

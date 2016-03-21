@@ -29,6 +29,7 @@ public class IdentRequestTask extends TestableAsyncTask<Void, Void, String> {
      *
      * @param requestFactory  The request factory used to generate the ident reqeust.
      * @param textView  This text view will be used to indicate progress and the results of the ident request.
+     * @param listener  The listener used to report the tasks progress.
      */
     public IdentRequestTask(SQRLRequestFactory requestFactory, SwappableTextView textView, IdentRequestListener listener) {
         this.mRequestFactory = requestFactory;

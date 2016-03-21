@@ -86,6 +86,8 @@ public class SQRLUri implements Parcelable {
 
     /**
      * Gets the hostname of the URI.
+     *
+     * @return The hostname.
      */
     public String getHost() {
         return this.uri.getHost();
@@ -93,6 +95,8 @@ public class SQRLUri implements Parcelable {
 
     /**
      * Gets the URI as a string.
+     *
+     * @return The full URI.
      */
     public String getFullUriAsString() {
         return this.uri.toString();

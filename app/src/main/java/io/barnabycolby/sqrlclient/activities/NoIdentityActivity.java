@@ -35,6 +35,8 @@ public class NoIdentityActivity extends AppCompatActivity {
 
     /**
      * Called when the "Create New Identity" button is pressed.
+     *
+     * @param view  The view that was clicked.
      */
     public void createNewIdentity(View view) {
         Intent intent = new Intent(this, CreateNewIdentityActivity.class);

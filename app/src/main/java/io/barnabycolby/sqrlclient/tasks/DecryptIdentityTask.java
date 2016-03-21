@@ -22,6 +22,7 @@ public class DecryptIdentityTask extends TestableAsyncTask<String, Integer, Bool
      * Constructs a new instance of this class.
      *
      * @param listener  The listener to use for progress and results callbacks.
+     * @param uri  The returned identity will be primed for this site.
      */
     public DecryptIdentityTask(PasswordCryptListener listener, SQRLUri uri) {
         this.mListener = listener;
@@ -54,6 +55,8 @@ public class DecryptIdentityTask extends TestableAsyncTask<String, Integer, Bool
 
     /**
      * Gets the latest published progress value.
+     *
+     * @return The 0-100 progress value.
      */
     public int getProgress() {
         return this.mProgress;

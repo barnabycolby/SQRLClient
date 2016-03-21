@@ -39,6 +39,8 @@ public class DetachableListener implements InvocationHandler {
      *
      * @param listener  The listener to wrap.
      * @param detachableListenerClass  The class of the detachable interface, as described in the DetachableListener class description.
+     *
+     * @return The new detachable listener.
      */
     public static Object create(Object listener, Class detachableListenerClass) {
         ClassLoader classLoader = detachableListenerClass.getClassLoader();
@@ -98,6 +100,11 @@ public class DetachableListener implements InvocationHandler {
      * Attaches a new listener to handle callbacks.
      *
      * @param listener  The new listener.
+     *
+     * @throws IllegalAccessException  If the method we try to invoke is not accessible.
+     * @throws InvocationTargetException  If the method we try to invoke throws an exception.
+     * @throws NoSuchMethodException  If the method we try to invoke does not exist.
+     * @throws IllegalArgumentException  If the given listener was of an unexpected type.
      */
     public void attach(Object listener) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         // Sanity check: The listener should be of the same type as the last listener

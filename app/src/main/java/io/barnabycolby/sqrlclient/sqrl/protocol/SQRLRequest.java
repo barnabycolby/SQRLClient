@@ -30,6 +30,9 @@ public abstract class SQRLRequest {
      * @param sqrlConnectionFactory  The factory used to create the SQRL connection to send the request over.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
+     *
+     * @throws MalformedURLException  If the connection factory cannot create a sqrl connection.
+     * @throws IOException  If the connection factory cannot create a sqrl connection.
      */
     public SQRLRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory) throws MalformedURLException, IOException {
         this.sqrlConnectionFactory = sqrlConnectionFactory;
@@ -45,6 +48,10 @@ public abstract class SQRLRequest {
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
      * @param previousResponse  The previous response sent by the server.
+     *
+     * @throws MalformedURLException  If the connection factory cannot create a sqrl connection.
+     * @throws NoNutException  If the path and query in the previous response did not contain a nut.
+     * @throws IOException  If the connection factory cannot create a sqrl connection.
      */
     public SQRLRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory, SQRLResponse previousResponse) throws MalformedURLException, NoNutException, IOException {
         this.sqrlConnectionFactory = sqrlConnectionFactory;
@@ -117,6 +124,8 @@ public abstract class SQRLRequest {
 
     /**
      * Generates and sends the request to the SQRL server, returning a SQRLResponse object that can be used to easily inspect the servers response.
+     *
+     * @return The response returned by the server.
      *
      * @throws MalformedURLException  If the URL used to communicate with the server was malformed.
      * @throws IOException  If an IO error occurs during communication.

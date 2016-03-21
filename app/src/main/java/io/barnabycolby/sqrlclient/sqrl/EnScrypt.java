@@ -33,6 +33,8 @@ public class EnScrypt {
 
     /**
      * Use this constructor when you need to listen to progress updates.
+     *
+     * @param listener  The listener for progress updates.
      */
     public EnScrypt(PasswordCryptListener listener) {
         this.mListener = listener;
@@ -44,6 +46,8 @@ public class EnScrypt {
      * @param password  The password to derive a key from.
      * @param salt  The salt to use.
      * @param iterations  The number of SCRYPT iterations that should be performed.
+     *
+     * @return The derived key.
      */
     public String deriveKey(String password, String salt, int iterations) throws SecurityException {
         return deriveKey(password, salt, OperationCount.ITERATIONS, iterations);
@@ -55,6 +59,8 @@ public class EnScrypt {
      * @param password  The password to derive a key from.
      * @param salt  The salt to use.
      * @param iterations  The number of SCRYPT iterations that should be performed.
+     *
+     * @return The derived key.
      */
     public byte[] deriveKey(String password, byte[] salt, int iterations) throws SecurityException {
         return deriveKey(password, salt, OperationCount.ITERATIONS, iterations);
@@ -65,6 +71,8 @@ public class EnScrypt {
      *
      * @param password  The password to derive a key from.
      * @param salt  The salt to use.
+     *
+     * @return The derived key.
      */
     public String deriveKeyFor5Seconds(String password, String salt) throws SecurityException {
         return deriveKey(password, salt, OperationCount.SECONDS, 5);
@@ -75,6 +83,8 @@ public class EnScrypt {
      *
      * @param password  The password to derive a key from.
      * @param salt  The salt to use.
+     *
+     * @return The derived key.
      */
     public byte[] deriveKeyFor5Seconds(String password, byte[] salt) throws SecurityException {
         return deriveKey(password, salt, OperationCount.SECONDS, 5);

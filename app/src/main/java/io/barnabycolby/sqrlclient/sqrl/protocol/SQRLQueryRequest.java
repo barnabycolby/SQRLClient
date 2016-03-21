@@ -24,6 +24,9 @@ public class SQRLQueryRequest extends SQRLRequest {
      * @param sqrlConnectionFactory  The factory used to create the SQRL connection to send the request over.
      * @param sqrlIdentity  The identity to use for server communication.
      * @param sqrlResponseFactory  The factory to use when creating a new response object.
+     *
+     * @throws IOException If the SQRLRequest constructor throws IOException.
+     * @throws MalformedURLException If the SQRLRequest constructor throws IOException.
      */
     public SQRLQueryRequest(SQRLConnectionFactory sqrlConnectionFactory, SQRLIdentity sqrlIdentity, SQRLResponseFactory sqrlResponseFactory) throws MalformedURLException, IOException {
         super(sqrlConnectionFactory, sqrlIdentity, sqrlResponseFactory);
