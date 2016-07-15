@@ -40,6 +40,16 @@ public class SQRLUri implements Parcelable {
     }
 
     /**
+     * Determines whether the sqrl uri has a friendly name or not
+     *
+     * @return True if it does, false otherwise
+     */
+    public boolean hasFriendlyName() {
+        String friendlyNameParameter = this.uri.getQueryParameter("sfn");
+        return friendlyNameParameter != null;
+    }
+
+    /**
      * Gets the display name, which is the encoded friendly name, or the hostname if this is not present.
      *
      * @return The display name.

@@ -67,10 +67,13 @@ public class ConfirmSiteNameActivity extends IdentityMustExistActivity {
         this.mFriendlySiteNameTextView.setText(sqrlUri.getDisplayName());
         this.mFriendlySiteNameTextView.setVisibility(View.VISIBLE);
 
-        // Display the FQDN
-        TextView fqdnTextView = (TextView)findViewById(R.id.FQDNTextView);
-        fqdnTextView.setText(sqrlUri.getHost());
-        fqdnTextView.setVisibility(View.VISIBLE);
+        // Display the FQDN, but only if the friendly name is being shown
+        // Otherwise, we would display the same URL twice
+        if (sqrlUri.hasFriendlyName()) {
+            TextView fqdnTextView = (TextView)findViewById(R.id.FQDNTextView);
+            fqdnTextView.setText(sqrlUri.getHost());
+            fqdnTextView.setVisibility(View.VISIBLE);
+        }
 
         // Show the confirm/deny site buttons
         View confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);
