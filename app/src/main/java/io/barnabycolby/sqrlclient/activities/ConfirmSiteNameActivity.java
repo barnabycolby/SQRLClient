@@ -62,10 +62,15 @@ public class ConfirmSiteNameActivity extends IdentityMustExistActivity {
             return;
         }
 
-        // Set the textview to display the URI
+        // Display the friendly name
         this.mFriendlySiteNameTextView = (TextView)findViewById(R.id.FriendlySiteNameTextView);
         this.mFriendlySiteNameTextView.setText(sqrlUri.getDisplayName());
         this.mFriendlySiteNameTextView.setVisibility(View.VISIBLE);
+
+        // Display the FQDN
+        TextView fqdnTextView = (TextView)findViewById(R.id.FQDNTextView);
+        fqdnTextView.setText(sqrlUri.getHost());
+        fqdnTextView.setVisibility(View.VISIBLE);
 
         // Show the confirm/deny site buttons
         View confirmDenySiteButtons = findViewById(R.id.ConfirmDenySiteButtons);

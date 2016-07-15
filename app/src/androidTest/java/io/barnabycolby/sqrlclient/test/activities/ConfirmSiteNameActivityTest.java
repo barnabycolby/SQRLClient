@@ -72,6 +72,17 @@ public class ConfirmSiteNameActivityTest extends ActivityInstrumentationTestCase
         assertThatConfirmDenySiteButtonsAreVisible(activity, true);
     }
 
+    public void testShowFQDNForValidURIWithFriendlyName() {
+        String sqrlUri = "sqrl://www.grc.com/sqrl?nut=4DAh4sL6vRzO85xSLjpiiQ&sfn=R1JD";
+        ConfirmSiteNameActivity activity = startActivityWithGivenURI(sqrlUri);
+
+        // Get the FQDN text box and verify that the uri matches
+        TextView fqdnTextView = (TextView)activity.findViewById(R.id.FQDNTextView);
+        assertNotNull("FQDNTextView is null", fqdnTextView);
+        assertEquals("www.grc.com", fqdnTextView.getText());
+        assertEquals(View.VISIBLE, fqdnTextView.getVisibility());
+    }
+
     public void testRedirectedToNoIdentityActivityIfNoIdentitiesExist() throws Exception {
         // The setUp method has created an identity for us
         // As this test is a special case, we need to manually remove it
