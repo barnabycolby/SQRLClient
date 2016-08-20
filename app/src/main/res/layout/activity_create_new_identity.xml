@@ -20,6 +20,7 @@
             >
 
             <EditText
+                android:hint="@string/new_identity_name_hint"
                 android:id="@+id/IdentityNameEditText"
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
