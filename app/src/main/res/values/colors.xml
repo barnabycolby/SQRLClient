@@ -5,7 +5,7 @@
     <color name="grey">#808080</color>
     <color name="lightBlue">#33AFF6</color>
     <color name="sqrlBlue">#007CC3</color>
-    <color name="lightGrey">#E0E0E0</color>
+    <color name="lightGrey">#CCCCCC</color>
     <color name="white">#FFFFFF</color>
 
     <color name="accent">@color/lightBlue</color>
@@ -15,4 +15,5 @@
     <color name="primaryText">@color/black</color>
     <color name="secondaryText">@color/grey</color>
     <color name="progressBar">@color/grey</color>
+    <color name="hintText">@color/lightGrey</color>
 </resources>

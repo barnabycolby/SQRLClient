@@ -12,6 +12,7 @@
 
         <!-- Set text colour -->
         <item name="android:textColor">@color/secondaryText</item>
+        <item name="android:textColorHint">@color/hintText</item>
 
         <!-- Set custom styles -->
         <item name="actionBarStyle">@style/AppTheme.ActionBarNoShadow</item>
