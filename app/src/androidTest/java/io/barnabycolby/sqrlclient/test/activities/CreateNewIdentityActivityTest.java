@@ -36,6 +36,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -118,8 +119,8 @@ public class CreateNewIdentityActivityTest {
     public void testBIdentityNameEditTextIsDisplayed() throws Exception {
         allowCameraPermissions(this.mDevice);
 
-        // Find the textbox and make sure it's visible
         mIdentityNameEditText.check(matches(isDisplayed()));
+        mIdentityNameEditText.check(matches(withHint(R.string.new_identity_name_hint)));
     }
 
     @Test
